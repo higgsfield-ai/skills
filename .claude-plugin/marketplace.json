@@ -1,0 +1,12 @@
+{
+  "name": "higgsfield",
+  "version": "0.1.0",
+  "description": "Authenticate and interact with Higgsfield AI API",
+  "skills": [
+    {
+      "name": "higgsfield",
+      "source": ".",
+      "description": "Login to Higgsfield AI via device authorization flow"
+    }
+  ]
+}

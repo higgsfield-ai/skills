@@ -1,0 +1,10 @@
+{
+  "name": "higgsfield",
+  "version": "0.1.0",
+  "description": "Generate images and videos using Higgsfield AI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/higgsfield-ai/clawhub-skill"
+  },
+  "license": "MIT"
+}
