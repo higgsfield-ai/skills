@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional, Tuple
 
 DEVICE_AUTH_URL = os.getenv(
     'HIGGSFIELD_DEVICE_AUTH_URL',
-    'https://fnf-device-auth.higgsfield.ai',
+    'https://dev-fnf-device-auth.higgsfield.ai',
 )
 CREDENTIALS_PATH = Path.home() / '.config' / 'higgsfield' / 'credentials.json'
 KEEP_POLLING_ERRORS = {'authorization_pending', 'slow_down'}
