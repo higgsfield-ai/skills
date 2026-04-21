@@ -18,9 +18,19 @@ curl -s https://dev-fnf.higgsfield.ai/agents/models \
   -H "Authorization: Bearer $(python3 get_token.py)" \
   | jq -r '.[] | select(.display_name == "<chosen>") | .params as $p
     | ($p.required // []) as $req
+    | ($p."$defs" // {}) as $defs
     | "Param|Type|Default|Required",
       ($p.properties | to_entries[] | .key as $k
-        | "\($k)|\(.value | if .enum then (.enum | join(",")) elif .type then .type else "object" end)|\(.value.default // "-")|\(if ($req | index($k)) then "yes" else "no" end)")' \
+        | "\($k)|\(
+            .value as $v
+            | if $v.enum then ($v.enum | join(","))
+              elif $v."$ref" then
+                ($defs[$v."$ref" | split("/")[-1]]) as $ref
+                | if $ref.enum then ($ref.enum | join(","))
+                  else ($ref.type // "object") end
+              elif $v.type then $v.type
+              else "object" end
+          )|\(.value.default // "-")|\(if ($req | index($k)) then "yes" else "no" end)")' \
   | column -t -s '|'
 ```
 
