@@ -42,6 +42,7 @@ Read the relevant doc before running commands for that area:
 - **Balance & Transactions** → `docs/balance.md`
 - **Uploads** (image, video, audio) → `docs/uploads.md`
 - **Soul Character** (train personalized model & use) → `docs/soul.md`
+- **Marketing Studio** (avatars, products, branded image/video gen) → `docs/marketing-studio.md`
 
 ## Common failures
 
