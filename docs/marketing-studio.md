@@ -57,7 +57,7 @@ curl -s "https://dev-fnf.higgsfield.ai/agents/marketing-studio/products?limit=20
 
 ### Create from uploaded images
 
-Use when you already have product images uploaded — skips the URL scrape and creates a `completed` product directly.
+Use when you already have product images uploaded — skips the URL fetch and creates a `completed` product directly.
 
 ```bash
 curl -s -X POST https://dev-fnf.higgsfield.ai/agents/marketing-studio/products \
@@ -114,7 +114,7 @@ curl -s "https://dev-fnf.higgsfield.ai/agents/marketing-studio/webproducts?limit
 
 ### Create manually
 
-Use when you already have screenshots/copy and don't need scraping.
+Use when you already have screenshots/copy and don't need a URL fetch.
 
 ```bash
 curl -s -X POST https://dev-fnf.higgsfield.ai/agents/marketing-studio/webproducts \
