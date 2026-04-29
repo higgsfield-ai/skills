@@ -1,0 +1,78 @@
+---
+version: 0.1.0
+name: higgsfield-soul
+description: |
+  Train a Soul Character — a personalized model on a person's face that
+  Higgsfield uses for identity-faithful image and video generation.
+  Use when: "create my Soul", "train my face", "make my digital twin",
+  "build me an avatar", "learn my appearance", "create a character of me",
+  "set up identity for video", "I want my face in generated images".
+  Chain: train Soul (one-time, returns reference_id) → use in
+  higgsfield-generate via `--custom_reference_id <id>` with models like
+  `text2image_soul_v2` or `soul_cinema_studio`.
+  NOT for: one-shot face swaps (use higgsfield-generate with --image),
+  named-character / non-photo avatars (use higgsfield-generate with prompt).
+argument-hint: "[name] [photo paths...]"
+allowed-tools: Bash
+---
+
+# Higgsfield Soul Character
+
+Train a face-faithful identity model. Reusable across all Soul-powered generations.
+
+## Prerequisites
+
+- `hf` CLI: `curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh`
+- Authenticated: `hf auth login`
+- Paid plan (Basic+) — Soul training requires it.
+
+## UX Rules
+
+1. Be concise. No raw IDs in chat. Just say "Soul ready" with a name reference.
+2. Detect language and respond in it. CLI flags stay English.
+3. Ask for the smallest set of inputs: name + photos. Pick a sensible model variant.
+4. Polling is silent — training takes minutes. Don't repeat status updates.
+
+## Workflow
+
+1. **Get name.** One word, used for later reference. Ask if missing.
+2. **Get photos.** 5–20 face photos, varied angles and lighting. Can be local paths or already-uploaded IDs.
+3. **Upload.** For each local path: `hf upload create <path>`. Collect the returned IDs.
+4. **Pick variant.**
+   - `--soul-2` — for image generation (default)
+   - `--soul-cinematic` — for cinematic / video work
+   Choose based on user's stated downstream use. Default to `--soul-2`.
+5. **Submit.**
+   ```bash
+   hf soul create --name "<name>" --soul-2 --image <id> --image <id> ...
+   ```
+   Captures returned reference id.
+6. **Wait.** `hf soul wait <id>`. Silent. Default timeout 30m.
+7. **Deliver.** "Soul `<name>` ready. Use in generate with `--custom_reference_id <id>`."
+
+## Use the Soul
+
+Once trained, pass to `higgsfield-generate`:
+
+```bash
+hf generate create text2image_soul_v2 --prompt "..." --custom_reference_id <ref_id>
+hf generate create soul_cinema_studio --prompt "..." --custom_reference_id <ref_id>
+```
+
+## Listing existing Souls
+
+```bash
+hf soul list                   # all references
+hf soul get <id>               # one by id
+```
+
+## Errors
+
+- `Minimum Basic plan required` — user is on free plan; tell them.
+- `Training failed` — check photos quality (5+ unique faces, well-lit).
+- `Session expired` → `hf auth login`.
+
+## Reference docs
+
+- `references/photo-guide.md` — what photos work best
+- `references/troubleshooting.md` — common training failures
