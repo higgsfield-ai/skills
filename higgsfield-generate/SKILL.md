@@ -44,23 +44,23 @@ Submit jobs to any Higgsfield model. Wraps the `hf` CLI.
    - Image-to-video → `kling3_0`
    - Generic video → `veo3_1`
    - See `references/model-catalog.md` for the full map.
-2. **Resolve media inputs.** If the user provided a local file path, upload it: `hf upload create <path>`. Stash the returned id. If a job id (UUID) is given, pass it as-is — CLI auto-detects job vs upload.
+2. **Pass media inputs straight to flags.** Media flags accept a local file path **or** a UUID. CLI auto-uploads paths and auto-detects job vs upload for UUIDs. No need to pre-upload.
 3. **Validate quickly.** If unsure of params, run `hf model get <jst> --json` once and pass only what's needed. Use schema defaults otherwise.
 4. **Submit.** `hf generate create <jst> --prompt "..." [media flags] [param flags]`. Capture job id.
 5. **Wait.** `hf generate wait <id>` — blocks until terminal, prints result URL on stdout.
 6. **Deliver.** Send the URL plus a one-line summary (model, duration if video).
 
-## Media flags (CLI auto-detects upload vs job)
+## Media flags
 
 | Flag | Use for |
 |---|---|
-| `--image <id>` | reference image |
-| `--start-image <id>` | first frame for image-to-video transitions |
-| `--end-image <id>` | last frame for transitions |
-| `--video <id>` | reference video |
-| `--audio <id>` | reference audio (lipsync) |
+| `--image <path-or-id>` | reference image |
+| `--start-image <path-or-id>` | first frame for image-to-video transitions |
+| `--end-image <path-or-id>` | last frame for transitions |
+| `--video <path-or-id>` | reference video |
+| `--audio <path-or-id>` | reference audio (lipsync) |
 
-All flags accept both upload IDs (from `hf upload create`) and job IDs (from previous `hf generate create`).
+Each flag accepts either a local file path (auto-uploaded) or a UUID (upload id from `hf upload create`, or a previous job id).
 
 ## Common params
 
@@ -68,7 +68,7 @@ Flags pass through to model schema. Use `hf model get <jst>` to discover.
 
 ```bash
 hf generate create flux_2 --prompt "neon city at dusk" --aspect_ratio 16:9 --resolution 2k
-hf generate create kling3_0 --prompt "camera dollies in" --start-image <id> --duration 8
+hf generate create kling3_0 --prompt "camera dollies in" --start-image ./first.png --duration 8
 hf generate create text2image_soul_v2 --prompt "..." --custom_reference_id <soul_ref_id>
 ```
 
