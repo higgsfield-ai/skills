@@ -36,19 +36,19 @@ Train a face-faithful identity model. Reusable across all Soul-powered generatio
 ## Workflow
 
 1. **Get name.** One word, used for later reference. Ask if missing.
-2. **Get photos.** 5–20 face photos, varied angles and lighting. Can be local paths or already-uploaded IDs.
-3. **Upload.** For each local path: `hf upload create <path>`. Collect the returned IDs.
-4. **Pick variant.**
+2. **Get photos.** 5–20 face photos, varied angles and lighting. Local paths or already-uploaded IDs both work — `--image` accepts either.
+3. **Pick variant.**
    - `--soul-2` — for image generation (default)
    - `--soul-cinematic` — for cinematic / video work
    Choose based on user's stated downstream use. Default to `--soul-2`.
-5. **Submit.**
+4. **Submit.**
    ```bash
-   hf soul create --name "<name>" --soul-2 --image <id> --image <id> ...
+   hf soul create --name "<name>" --soul-2 --image ./photo1.png --image ./photo2.png ...
+   hf soul create --name "<name>" --soul-2 --image <upload_id> --image <upload_id> ...
    ```
-   Captures returned reference id.
-6. **Wait.** `hf soul wait <id>`. Silent. Default timeout 30m.
-7. **Deliver.** "Soul `<name>` ready. Use in generate with `--custom_reference_id <id>`."
+   CLI auto-uploads paths. Captures returned reference id.
+5. **Wait.** `hf soul wait <id>`. Silent. Default timeout 30m.
+6. **Deliver.** "Soul `<name>` ready. Use in generate with `--custom_reference_id <id>`."
 
 ## Use the Soul
 
