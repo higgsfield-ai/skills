@@ -27,7 +27,7 @@ allowed-tools: Bash
 
 # Product Photoshoot
 
-Brand-image generation via the `hf photoshoot create` command. The CLI calls a backend prompt enhancer that holds mode-specific photography vocabulary and structural templates, then submits to `nano_banana_2` and returns image URLs.
+Brand-image generation via the `hf product-photoshoot create` command. The CLI calls a backend prompt enhancer that holds mode-specific photography vocabulary and structural templates, then submits to `nano_banana_2` and returns image URLs.
 
 ## Prerequisites
 
@@ -136,7 +136,7 @@ After answers → return to the relevant Type A–E.
 Single command. Backend assembles the final prompt and submits to `nano_banana_2`. URLs print on stdout.
 
 ```bash
-hf photoshoot create \
+hf product-photoshoot create \
   --mode <mode> \
   --prompt "<short user-intent description from interview answers>" \
   [--image <path-or-upload-id>]... \
@@ -147,7 +147,7 @@ hf photoshoot create \
 Examples:
 
 ```bash
-hf photoshoot create \
+hf product-photoshoot create \
   --mode lifestyle_scene \
   --prompt "bottle of cold-brew on a sunlit kitchen counter, IG feed" \
   --image bottle.jpg \
@@ -155,14 +155,14 @@ hf photoshoot create \
 ```
 
 ```bash
-hf photoshoot create \
+hf product-photoshoot create \
   --mode pinterest_pin \
   --prompt "vertical pin for my candle brand, cottagecore mood" \
   --image candle.jpg
 ```
 
 ```bash
-hf photoshoot create \
+hf product-photoshoot create \
   --mode restyle \
   --prompt "Christmas version, quiet-luxury aesthetic" \
   --image existing-shot.jpg
@@ -204,6 +204,6 @@ Print the image URLs as a short bulleted list. No JSON, no IDs, no internal mode
 
 - Asking more than 4 interview questions in a single message.
 - Picking the wrong mode (e.g. `product_shot` when the user wants a Pinterest pin).
-- Calling `hf gen create nano_banana_2 --prompt ...` directly instead of `hf photoshoot create` — bypasses the prompt enhancer and produces noticeably worse output.
+- Calling `hf gen create nano_banana_2 --prompt ...` directly instead of `hf product-photoshoot create` — bypasses the prompt enhancer and produces noticeably worse output.
 - Pasting the assembled prompt back to the user — they want the URLs.
 - Using a `--mode` value not in the table above.
