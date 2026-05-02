@@ -13,12 +13,11 @@ Works with Claude Code, Cursor, Codex, and other AI coding agents that load Mark
 
 ## Skills
 
-- **`higgsfield-generate`** — image and video gen across 35+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2, …)
+- **`higgsfield-generate`** — image and video gen across 35+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2, …) plus Marketing Studio for branded ads (avatars, products, UGC modes)
 - **`higgsfield-soul`** — train a Soul Character (reusable face identity)
-- **`higgsfield-marketing`** — branded marketing video/image via Marketing Studio (avatars, products, UGC modes)
 - **`higgsfield-product-photoshoot`** — brand-quality product imagery with mode-specific prompt enhancement (10 modes: studio, lifestyle, Pinterest, hero banner, ad packs, virtual try-on, …)
 
-They chain: train Soul → use it in generate or marketing. Product photoshoot enhances brand-aware prompts before submitting to Nano Banana 2.
+They chain: train Soul → use it in generate (including Marketing Studio jobs). Product photoshoot enhances brand-aware prompts before submitting to GPT Image 2.
 
 ## Install
 

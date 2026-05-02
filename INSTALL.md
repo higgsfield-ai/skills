@@ -1,13 +1,12 @@
 # Install Higgsfield Skills
 
-Four skills ship in this repo:
+Three skills ship in this repo:
 
-- **`higgsfield-generate`** — image and video generation, 35+ models
+- **`higgsfield-generate`** — image and video generation, 35+ models, plus Marketing Studio (branded ads with avatars and imported products)
 - **`higgsfield-soul`** — train a face-faithful Soul Character
-- **`higgsfield-marketing`** — branded marketing video/image via Marketing Studio
 - **`higgsfield-product-photoshoot`** — brand-quality product imagery with mode-specific prompt enhancement
 
-They chain: `higgsfield-soul` returns a reference id consumable by `higgsfield-generate` (Soul models) and identity-aware Marketing Studio jobs. `higgsfield-product-photoshoot` is the single entry point for any professional product visual; backend enhances the prompt before submitting to `nano_banana_2`.
+They chain: `higgsfield-soul` returns a reference id consumable by `higgsfield-generate` (Soul models and identity-aware Marketing Studio jobs). `higgsfield-product-photoshoot` is the single entry point for any professional product visual; backend enhances the prompt before submitting to `gpt_image_2`.
 
 ## Prerequisites
 
@@ -24,7 +23,7 @@ hf auth login
 git clone https://github.com/higgsfield-ai/skills.git ~/.claude/skills/higgsfield
 ```
 
-All four skills are auto-discovered.
+All three skills are auto-discovered.
 
 ## Option 2 — Cursor
 
@@ -47,7 +46,6 @@ If you have GitHub CLI v2.90+:
 ```bash
 gh skill install higgsfield-ai/skills higgsfield-generate
 gh skill install higgsfield-ai/skills higgsfield-soul
-gh skill install higgsfield-ai/skills higgsfield-marketing
 gh skill install higgsfield-ai/skills higgsfield-product-photoshoot
 ```
 

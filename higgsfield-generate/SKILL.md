@@ -1,26 +1,33 @@
 ---
-version: 0.1.0
+version: 0.2.0
 name: higgsfield-generate
 description: |
   Generate images and videos via Higgsfield AI through 35+ models including
-  Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2.
+  Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2,
+  plus Marketing Studio for branded ad video/image with curated avatars and
+  imported products.
   Use when: "generate an image", "make a picture", "create artwork",
   "make a video", "animate this photo", "image-to-video", "img2vid",
   "edit this image with AI", "stylize a photo", "remix this image",
-  "produce a clip", "render a scene".
-  Supports text-to-image, image-to-image, image-to-video, and reference-based
-  generation. Auto-detects whether passed IDs are uploads or previous jobs.
+  "produce a clip", "render a scene", "create an ad", "make a UGC video",
+  "generate marketing video", "make a product demo", "create unboxing",
+  "TV spot", "virtual try-on", "product showcase", "brand video",
+  "presenter video for product", "import product from URL",
+  "create avatar for ad".
+  Supports text-to-image, image-to-image, image-to-video, reference-based
+  generation, and Marketing Studio (avatars + products + ad modes).
+  Auto-detects whether passed IDs are uploads or previous jobs.
   Chain with higgsfield-soul when the user wants their face in the output.
-  NOT for: training Soul Character (use higgsfield-soul), branded
-  marketing ads with avatars/products (use higgsfield-marketing),
-  text-only / chat / TTS tasks.
+  NOT for: training Soul Character (use higgsfield-soul), professional product
+  photoshoots with mode-specific prompt enhancement (use
+  higgsfield-product-photoshoot), text-only / chat / TTS tasks.
 argument-hint: "[prompt] [--model <name>] [--image <path-or-id>]"
 allowed-tools: Bash
 ---
 
 # Higgsfield Generate
 
-Submit jobs to any Higgsfield model. Wraps the `hf` CLI.
+Submit jobs to any Higgsfield model. Wraps the `hf` CLI. Covers generic image/video gen and Marketing Studio (branded ads, avatars, products).
 
 ## Prerequisites
 
@@ -36,13 +43,14 @@ Submit jobs to any Higgsfield model. Wraps the `hf` CLI.
 5. Don't pre-estimate cost. Just submit unless the user asks.
 6. Polling is silent. Wait until terminal status, then deliver.
 
-## Workflow
+## Workflow — generic generation
 
 1. **Pick a model.** Use the user's intent to choose. If unclear, default:
    - Image, photorealistic → `nano_banana_2`
    - Image, with user's face → `text2image_soul_v2` (needs Soul ref)
    - Image-to-video → `kling3_0`
    - Generic video → `veo3_1`
+   - Branded ad video → `marketing_studio_video` (see Marketing Studio below)
    - See `references/model-catalog.md` for the full map.
 2. **Pass media inputs straight to flags.** Media flags accept a local file path **or** a UUID. CLI auto-uploads paths and auto-detects job vs upload for UUIDs. No need to pre-upload.
 3. **Validate quickly.** If unsure of params, run `hf model get <jst> --json` once and pass only what's needed. Use schema defaults otherwise.
@@ -74,6 +82,55 @@ hf generate create text2image_soul_v2 --prompt "..." --custom_reference_id <soul
 
 Stdin prompt: `echo "..." | hf generate create z_image`.
 
+## Marketing Studio
+
+Branded image/video gen: avatars + products + ad-style modes. Use models `marketing_studio_video` and `marketing_studio_image`.
+
+### Concepts
+
+- **Avatar** — presenter face. Curated `preset` (browse `hf marketing-studio avatars list`) or `custom` (uploaded photos via `hf marketing-studio avatars create`).
+- **Product** — brand item with title + reference images. Imported from URL (`hf marketing-studio products fetch --url ...`) or created from uploaded images (`hf marketing-studio products create`).
+- **Webproduct** — App Store / web page version. Auto-routes when fetching App Store URLs.
+
+### UX rules (additional)
+
+- One question per phase. Don't ask product+avatar+mode upfront.
+
+### Workflow — quick ad video
+
+1. **Get product.**
+   - URL → `hf marketing-studio products fetch --url <url> --wait` (polls until import done)
+   - Local images → `hf upload create <photo>...` then `hf marketing-studio products create --title "..." --image <id>...`
+   Capture product id.
+2. **Pick avatar.**
+   - Default: `hf marketing-studio avatars list` and pick a preset matching the brand voice.
+   - Custom: `hf marketing-studio avatars create --name "..." --image <upload_id>`.
+3. **Pick mode.** Common: `ugc`, `ugc_unboxing`, `product_showcase`, `tv_spot`. See `references/marketing-modes.md`.
+4. **Generate.**
+   ```bash
+   hf generate create marketing_studio_video \
+     --prompt "..." \
+     --avatars '[{"id":"<avatar_id>","type":"preset"}]' \
+     --product_ids '[<product_id>]' \
+     --mode ugc \
+     --duration 15 \
+     --resolution 720p \
+     --aspect_ratio 9:16
+   ```
+5. **Wait.** `hf generate wait <id>`.
+6. **Deliver.** URL + one-line summary (mode, duration).
+
+### Workflow — marketing image
+
+Same as above but use `marketing_studio_image` model:
+
+```bash
+hf generate create marketing_studio_image \
+  --prompt "..." \
+  --aspect_ratio 1:1 \
+  --resolution 2k
+```
+
 ## Errors
 
 - `Missing required params: prompt` → user gave no prompt; ask for it.
@@ -91,3 +148,6 @@ Load on demand:
 - `references/prompt-engineering.md` — writing prompts that work
 - `references/media-inputs.md` — image/video reference flows
 - `references/troubleshooting.md` — common errors and fixes
+- `references/marketing-avatars.md` — preset vs custom avatars
+- `references/marketing-products.md` — URL fetch vs manual product create
+- `references/marketing-modes.md` — every Marketing Studio mode

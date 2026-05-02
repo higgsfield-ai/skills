@@ -19,8 +19,9 @@ description: |
   Backend assembles the final prompt — never write gpt_image_2
   prompts freehand. Always go through this skill.
   NOT for: raw text-to-image with no brand/product (use
-  higgsfield-generate), branded marketing video (use
-  higgsfield-marketing), Soul Character training (use higgsfield-soul).
+  higgsfield-generate), branded marketing video with avatars (use
+  higgsfield-generate's Marketing Studio), Soul Character training
+  (use higgsfield-soul).
 argument-hint: "[--mode <mode>] [--count N] [prompt]"
 allowed-tools: Bash
 ---
@@ -197,7 +198,7 @@ Print the image URLs as a short bulleted list. No JSON, no IDs, no internal mode
 
 - Does not write gpt_image_2 prompts directly. Backend owns prompt assembly.
 - Does not auto-pick a different image-gen model. Always `gpt_image_2`.
-- Does not replace `higgsfield-marketing` for branded video / avatar workflows.
+- Does not replace `higgsfield-generate` Marketing Studio for branded video / avatar workflows.
 - Does not replace `higgsfield-generate` for raw text-to-image without a product or brand context.
 
 ## Common mistakes to avoid

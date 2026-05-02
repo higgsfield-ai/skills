@@ -39,9 +39,9 @@ Live catalog: `hf model list` for the actual list. This file is intent → model
 - `cinematic_studio_video` / `cinematic_studio_video_v2` — earlier variants.
 - `cinematic_studio_2_5` — Cinematic Studio 2.5 (image).
 
-### Marketing-only (use higgsfield-marketing skill)
-- `marketing_studio_image`
-- `marketing_studio_video`
+### Marketing Studio (branded ads — see Marketing Studio section in SKILL.md)
+- `marketing_studio_image` — branded image with avatars + products
+- `marketing_studio_video` — branded ad video with avatars + products + mode
 
 ### Special
 - `soul_cast` — multi-character cast assembly.
