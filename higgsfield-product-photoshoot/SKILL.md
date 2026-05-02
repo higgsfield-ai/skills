@@ -3,7 +3,7 @@ version: 0.1.0
 name: higgsfield-product-photoshoot
 description: |
   Generate brand-quality product images via mode-specific prompt
-  enhancement on Higgsfield's nano_banana_2 model. The single entry
+  enhancement on Higgsfield's gpt_image_2 model. The single entry
   point for any professional brand visual involving a product.
   Use when: "make a product photo", "studio shot", "lifestyle photo",
   "in use", "Pinterest pin", "hero banner", "website header",
@@ -16,7 +16,7 @@ description: |
   Modes: product_shot, lifestyle_scene, closeup_product_with_person,
   pinterest_pin, hero_banner, social_carousel, ad_creative_pack,
   virtual_model_tryout, conceptual_product, restyle.
-  Backend assembles the final prompt — never write nano_banana_2
+  Backend assembles the final prompt — never write gpt_image_2
   prompts freehand. Always go through this skill.
   NOT for: raw text-to-image with no brand/product (use
   higgsfield-generate), branded marketing video (use
@@ -27,7 +27,7 @@ allowed-tools: Bash
 
 # Product Photoshoot
 
-Brand-image generation via the `hf product-photoshoot create` command. The CLI calls a backend prompt enhancer that holds mode-specific photography vocabulary and structural templates, then submits to `nano_banana_2` and returns image URLs.
+Brand-image generation via the `hf product-photoshoot create` command. The CLI calls a backend prompt enhancer that holds mode-specific photography vocabulary and structural templates, then submits to `gpt_image_2` and returns image URLs.
 
 ## Prerequisites
 
@@ -40,7 +40,7 @@ Brand-image generation via the `hf product-photoshoot create` command. The CLI c
 2. Detect language, respond in it. Mode names and CLI flags stay English.
 3. Ask at most 4 short questions before submitting. Use labeled options, never open-ended.
 4. Skip questions whose answer is obvious from context (uploaded image, prior turn, brand memory).
-5. Never write the nano_banana_2 prompt yourself — backend assembles it.
+5. Never write the gpt_image_2 prompt yourself — backend assembles it.
 6. Polling is silent. Wait until URLs are ready, then deliver.
 
 ## Modes
@@ -133,7 +133,7 @@ After answers → return to the relevant Type A–E.
 
 ## Generation
 
-Single command. Backend assembles the final prompt and submits to `nano_banana_2`. URLs print on stdout.
+Single command. Backend assembles the final prompt and submits to `gpt_image_2`. URLs print on stdout.
 
 ```bash
 hf product-photoshoot create \
@@ -195,8 +195,8 @@ Print the image URLs as a short bulleted list. No JSON, no IDs, no internal mode
 
 ## What this skill does NOT do
 
-- Does not write nano_banana_2 prompts directly. Backend owns prompt assembly.
-- Does not auto-pick a different image-gen model. Always `nano_banana_2`.
+- Does not write gpt_image_2 prompts directly. Backend owns prompt assembly.
+- Does not auto-pick a different image-gen model. Always `gpt_image_2`.
 - Does not replace `higgsfield-marketing` for branded video / avatar workflows.
 - Does not replace `higgsfield-generate` for raw text-to-image without a product or brand context.
 
@@ -204,6 +204,6 @@ Print the image URLs as a short bulleted list. No JSON, no IDs, no internal mode
 
 - Asking more than 4 interview questions in a single message.
 - Picking the wrong mode (e.g. `product_shot` when the user wants a Pinterest pin).
-- Calling `hf gen create nano_banana_2 --prompt ...` directly instead of `hf product-photoshoot create` — bypasses the prompt enhancer and produces noticeably worse output.
+- Calling `hf gen create gpt_image_2 --prompt ...` directly instead of `hf product-photoshoot create` — bypasses the prompt enhancer and produces noticeably worse output.
 - Pasting the assembled prompt back to the user — they want the URLs.
 - Using a `--mode` value not in the table above.
