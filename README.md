@@ -43,6 +43,37 @@ git clone https://github.com/higgsfield-ai/skills.git ~/.claude/skills/higgsfiel
 
 The skills chain: train Soul → use the reference id in `generate` (including Marketing Studio jobs). `product-photoshoot` is self-contained — backend enhances the prompt before submitting to `gpt_image_2`.
 
+### Modes
+
+**`higgsfield-product-photoshoot`** — 10 modes for brand visuals:
+
+| Mode | What it's for |
+|---|---|
+| `product_shot` | Product on neutral / studio / catalog background |
+| `lifestyle_scene` | Product in a real environment — hands, action, atmosphere |
+| `closeup_product_with_person` | Tight crop with hands or partial face — beauty, demonstrating |
+| `pinterest_pin` | Vertical 2:3 Pinterest-native pin, moodboard feel |
+| `hero_banner` | Wide-format website / email / campaign header |
+| `social_carousel` | 3–10 connected slides for IG / LinkedIn / Facebook |
+| `ad_creative_pack` | Coordinated pack of static ad variants for Meta / TikTok / Pinterest / Google |
+| `virtual_model_tryout` | Product worn or used by an AI-rendered model |
+| `conceptual_product` | Surreal / CGI-style / levitating / splash / sculptural product |
+| `restyle` | Transform an existing image's aesthetic, mood, or seasonal context |
+
+**`higgsfield-generate` Marketing Studio** — 9 modes for branded ad video:
+
+| Mode | What it's for |
+|---|---|
+| `ugc` | Default. Casual, organic-feel content from a presenter |
+| `ugc_how_to` | Tutorial / explainer |
+| `ugc_unboxing` | Unboxing reveal |
+| `product_showcase` | Clean product highlight, polished |
+| `product_review` | Presenter giving an opinion |
+| `tv_spot` | Broadcast-style commercial |
+| `wild_card` | Experimental, model picks the vibe |
+| `ugc_virtual_try_on` | Trying on clothing — UGC vibe |
+| `virtual_try_on` | Trying on clothing — polished, model-driven |
+
 ## Quick Reference
 
 | What you want | Skill | Note |
