@@ -3,11 +3,23 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Version](https://img.shields.io/badge/version-0.3.0-green.svg)](./VERSION)
 [![Skills](https://img.shields.io/badge/skills-3-blueviolet.svg)](#skills)
-[![Higgsfield](https://img.shields.io/badge/api-higgsfield.ai-black.svg)](https://higgsfield.ai)
+[![Discord](https://img.shields.io/badge/discord-join-5865F2?logo=discord&logoColor=white)](https://discord.com/invite/higgsfield)
 
 AI agent skills for image and video generation via [Higgsfield AI](https://higgsfield.ai).
 
 Works with Claude Code, Cursor, Codex, and other AI coding agents that load Markdown-based skills.
+
+## Install
+
+See [INSTALL.md](./INSTALL.md) for human-facing options. For AI-agent-driven installs, see [INSTALL_FOR_AGENTS.md](./INSTALL_FOR_AGENTS.md).
+
+Quick path (Claude Code):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
+hf auth login
+git clone https://github.com/higgsfield-ai/skills.git ~/.claude/skills/higgsfield
+```
 
 ```text
 "Generate a cinematic shot of a fox in a snowy forest, golden hour."
@@ -41,18 +53,6 @@ The skills chain: train Soul → use the reference id in `generate` (including M
 | Branded ad video / UGC / unboxing / TV spot | `higgsfield-generate` | Marketing Studio mode with avatars + products |
 | Train a custom face identity | `higgsfield-soul` | 5–20 photos, returns `reference_id` |
 | Image-to-video animation | `higgsfield-generate` | `kling3_0` or `seedance_2_0` with `--start-image` |
-
-## Install
-
-See [INSTALL.md](./INSTALL.md) for human-facing options. For AI-agent-driven installs, see [INSTALL_FOR_AGENTS.md](./INSTALL_FOR_AGENTS.md).
-
-Quick path (Claude Code):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
-hf auth login
-git clone https://github.com/higgsfield-ai/skills.git ~/.claude/skills/higgsfield
-```
 
 ## How it works
 
