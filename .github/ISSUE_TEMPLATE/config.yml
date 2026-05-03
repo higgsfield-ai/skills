@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Higgsfield API docs
+    url: https://higgsfield.ai/docs
+    about: API reference and platform documentation
+  - name: hf CLI repository
+    url: https://github.com/higgsfield-ai/cli
+    about: Issues with the CLI binary itself (auth, install, network)
+  - name: Higgsfield support
+    url: https://higgsfield.ai/support
+    about: Account, billing, and platform-level questions

@@ -1,0 +1,26 @@
+# CODEOWNERS for higgsfield-ai/skills
+#
+# These owners are auto-requested for review on PRs touching the matching paths.
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+
+# Default — every PR
+*                                       @higgsfield-ai/skills-team
+
+# Per-skill ownership
+/higgsfield-generate/                   @higgsfield-ai/skills-team
+/higgsfield-soul/                       @higgsfield-ai/skills-team
+/higgsfield-product-photoshoot/         @higgsfield-ai/skills-team
+
+# Plugin manifests and distribution
+/.claude-plugin/                        @higgsfield-ai/skills-team
+/.codex-plugin/                         @higgsfield-ai/skills-team
+/.cursor-plugin/                        @higgsfield-ai/skills-team
+
+# CI and release automation (when added)
+/.github/                               @higgsfield-ai/skills-team
+
+# Top-level docs
+/README.md                              @higgsfield-ai/skills-team
+/INSTALL.md                             @higgsfield-ai/skills-team
+/INSTALL_FOR_AGENTS.md                  @higgsfield-ai/skills-team
+/CONTRIBUTING.md                        @higgsfield-ai/skills-team

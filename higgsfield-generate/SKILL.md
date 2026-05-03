@@ -1,5 +1,5 @@
 ---
-version: 0.2.0
+version: 0.3.0
 name: higgsfield-generate
 description: |
   Generate images and videos via Higgsfield AI through 35+ models including
@@ -45,30 +45,49 @@ Submit jobs to any Higgsfield model. Wraps the `hf` CLI. Covers generic image/vi
 
 ## Workflow — generic generation
 
-1. **Pick a model.** Use the user's intent to choose. If unclear, default:
-   - Image, photorealistic → `nano_banana_2`
-   - Image, with user's face → `text2image_soul_v2` (needs Soul ref)
-   - Image-to-video → `kling3_0`
-   - Generic video → `veo3_1`
-   - Branded ad video → `marketing_studio_video` (see Marketing Studio below)
-   - See `references/model-catalog.md` for the full map.
-2. **Pass media inputs straight to flags.** Media flags accept a local file path **or** a UUID. CLI auto-uploads paths and auto-detects job vs upload for UUIDs. No need to pre-upload.
-3. **Validate quickly.** If unsure of params, run `hf model get <jst> --json` once and pass only what's needed. Use schema defaults otherwise.
+1. **Pick a model.** Practical defaults from production use:
+
+   **Image:**
+   - Brand product visual (Pinterest pin, lifestyle, hero banner, ad pack, virtual try-on) → use `higgsfield-product-photoshoot` instead. NOT this skill.
+   - Branded ad image with avatar + product (Marketing Studio shape) → Marketing Studio Image (see Marketing Studio below)
+   - Aesthetic UGC / fashion editorial / lifestyle character → Soul 2.0
+   - Cinematic still frame → Soul Cinema
+   - Highly characterful creative persona (text-only, distinctive) → Soul Cast
+   - Locations / environments / no-people scenes → Soul Location (best in class)
+   - Vector illustrations OR face edit + complex scene swap → Seedream 4.5
+   - Soul Character (reference id from `higgsfield-soul`) → Soul 2.0 for stills, Soul Cinema for cinematic
+   - Fast and cheap iteration → Z Image
+   - Character or cartoon-style work → Nano Banana 2; step up to Nano Banana Pro on hard cases
+   - **Default for everything else → GPT Image 2.** Graphic design, UI, banners, typography, and high-fidelity general generation.
+
+   **Video:**
+   - All advertising / commercial / branded ad video → Marketing Studio (see Marketing Studio below)
+   - **Default all-purpose serious video (multi-shot, consistent identity, motion-heavy) → Seedance 2.0.** SOTA.
+   - Single-plane scene without strong dynamics, cheaper than Seedance 2.0 → Kling 3.0
+   - Cheap clean shot without cuts → Seedance 1.5 Pro
+   - Cinema-grade highest fidelity → Cinema Studio Video 3.0
+   - Cheap with strong physics, no audio needed → Minimax Hailuo
+   - Fast batch / volume → Veo 3.1 Lite
+
+   For the actual `--model` ID to pass to `hf generate create`, run `hf model list --json | jq` to map display names to IDs. See `references/model-catalog.md` for the full table.
+
+2. **Pass media inputs straight to flags.** Media flags accept a local file path **or** a UUID. CLI auto-uploads paths and auto-detects job vs upload for UUIDs. No need to pre-upload. Each model declares accepted roles (`image`, `start_image`, `end_image`, `video`, `audio`) — see `references/media-inputs.md`.
+3. **Validate quickly.** If unsure of params, run `hf model get <jst> --json` once and pass only what's needed. Use schema defaults otherwise. The server returns `adjustments` for non-fatal coercions (e.g. `aspect_ratio=99:99` → closest match) and a structured error for invalid declared-param values.
 4. **Submit.** `hf generate create <jst> --prompt "..." [media flags] [param flags]`. Capture job id.
 5. **Wait.** `hf generate wait <id>` — blocks until terminal, prints result URL on stdout.
 6. **Deliver.** Send the URL plus a one-line summary (model, duration if video).
 
 ## Media flags
 
-| Flag | Use for |
-|---|---|
-| `--image <path-or-id>` | reference image |
-| `--start-image <path-or-id>` | first frame for image-to-video transitions |
-| `--end-image <path-or-id>` | last frame for transitions |
-| `--video <path-or-id>` | reference video |
-| `--audio <path-or-id>` | reference audio (lipsync) |
+| Flag | Use for | Models that accept it |
+|---|---|---|
+| `--image <path-or-id>` | reference image | most image models, `seedance_2_0`, `veo3`, `marketing_studio_video` |
+| `--start-image <path-or-id>` | first frame for image-to-video transitions | `kling3_0`, `kling2_6`, `veo3_1`, `seedance_2_0`, `marketing_studio_video` |
+| `--end-image <path-or-id>` | last frame for transitions | `kling3_0`, `seedance_2_0`, `marketing_studio_video` |
+| `--video <path-or-id>` | reference video | `seedance_2_0` |
+| `--audio <path-or-id>` | reference audio (lipsync, soundtrack match) | `seedance_2_0` (use this, NOT `--generate-audio`) |
 
-Each flag accepts either a local file path (auto-uploaded) or a UUID (upload id from `hf upload create`, or a previous job id).
+Each flag accepts either a local file path (auto-uploaded) or a UUID (upload id from `hf upload create`, or a previous job id). Each model declares its own role set via `MEDIA_ROLES`. See `references/media-inputs.md` for the full table.
 
 ## Common params
 
@@ -105,7 +124,7 @@ Branded image/video gen: avatars + products + ad-style modes. Use models `market
 2. **Pick avatar.**
    - Default: `hf marketing-studio avatars list` and pick a preset matching the brand voice.
    - Custom: `hf marketing-studio avatars create --name "..." --image <upload_id>`.
-3. **Pick mode.** Common: `ugc`, `ugc_unboxing`, `product_showcase`, `tv_spot`. See `references/marketing-modes.md`.
+3. **Pick mode.** Default `ugc`. Other slugs (canonical from MCP): `ugc_how_to`, `ugc_unboxing`, `product_showcase`, `product_review`, `tv_spot`, `wild_card`, `ugc_virtual_try_on`, `virtual_try_on`. See `references/marketing-modes.md`.
 4. **Generate.**
    ```bash
    hf generate create marketing_studio_video \
@@ -117,8 +136,27 @@ Branded image/video gen: avatars + products + ad-style modes. Use models `market
      --resolution 720p \
      --aspect_ratio 9:16
    ```
+   Resolution is `480p` or `720p`. Aspect ratio is one of `auto`/`21:9`/`16:9`/`4:3`/`1:1`/`3:4`/`9:16`. `--generate-audio true` is supported here (unlike `seedance_2_0`).
 5. **Wait.** `hf generate wait <id>`.
 6. **Deliver.** URL + one-line summary (mode, duration).
+
+### Click-to-Ad shortcut (URL-driven)
+
+When the user gives a product URL and wants a marketing video in one go:
+
+```bash
+# 1. Trigger fetch (returns the product id and starts background scrape)
+hf marketing-studio products fetch --url https://shop.example.com/sneakers --wait
+
+# 2. Generate the marketing video against the same URL — backend reuses the entity
+hf generate create marketing_studio_video \
+  --url https://shop.example.com/sneakers \
+  --mode ugc \
+  --duration 15 \
+  --aspect_ratio 9:16
+```
+
+Backend dedupes by URL, so repeated runs reuse the existing entity instead of re-fetching.
 
 ### Workflow — marketing image
 

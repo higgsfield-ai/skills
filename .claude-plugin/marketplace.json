@@ -9,7 +9,7 @@
       "name": "higgsfield",
       "source": "./",
       "description": "Image and video generation, Soul Character training, and Marketing Studio via the Higgsfield CLI.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "skills": [
         {
           "name": "generate",
@@ -20,6 +20,11 @@
           "name": "soul",
           "path": "higgsfield-soul",
           "invoke": "/higgsfield:soul"
+        },
+        {
+          "name": "product-photoshoot",
+          "path": "higgsfield-product-photoshoot",
+          "invoke": "/higgsfield:product-photoshoot"
         }
       ]
     }

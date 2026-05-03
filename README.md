@@ -1,27 +1,50 @@
 # Higgsfield AI Skills
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Version](https://img.shields.io/badge/version-0.3.0-green.svg)](./VERSION)
+[![Skills](https://img.shields.io/badge/skills-3-blueviolet.svg)](#skills)
+[![Higgsfield](https://img.shields.io/badge/api-higgsfield.ai-black.svg)](https://higgsfield.ai)
+
 AI agent skills for image and video generation via [Higgsfield AI](https://higgsfield.ai).
 
 Works with Claude Code, Cursor, Codex, and other AI coding agents that load Markdown-based skills.
 
-```
+```text
 "Generate a cinematic shot of a fox in a snowy forest, golden hour."
 → picks a photorealistic image model
 → submits via the hf CLI
 → delivers the result URL
+
+"Train my Soul on these 10 photos, then make a 9:16 UGC ad of me holding the product."
+→ trains Soul Character (face-faithful identity)
+→ chains into Marketing Studio with custom avatar + imported product
+→ delivers the share link
 ```
 
 ## Skills
 
-- **`higgsfield-generate`** — image and video gen across 35+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2, …) plus Marketing Studio for branded ads (avatars, products, UGC modes)
-- **`higgsfield-soul`** — train a Soul Character (reusable face identity)
-- **`higgsfield-product-photoshoot`** — brand-quality product imagery with mode-specific prompt enhancement (10 modes: studio, lifestyle, Pinterest, hero banner, ad packs, virtual try-on, …)
+| Skill | Invoke | Description |
+|---|---|---|
+| [`higgsfield-generate`](./higgsfield-generate) | `/higgsfield:generate` | Image and video generation across 35+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2, …) plus Marketing Studio for branded ads with avatars and imported products. |
+| [`higgsfield-soul`](./higgsfield-soul) | `/higgsfield:soul` | Train a Soul Character — a reusable, face-faithful identity model. Returns a `reference_id` consumable by Soul-aware generation. |
+| [`higgsfield-product-photoshoot`](./higgsfield-product-photoshoot) | `/higgsfield:product-photoshoot` | Brand-quality product imagery with mode-specific prompt enhancement. 10 modes (studio, lifestyle, Pinterest, hero banner, ad packs, virtual try-on, …) backed by `gpt_image_2`. |
 
-They chain: train Soul → use it in generate (including Marketing Studio jobs). Product photoshoot enhances brand-aware prompts before submitting to GPT Image 2.
+The skills chain: train Soul → use the reference id in `generate` (including Marketing Studio jobs). `product-photoshoot` is self-contained — backend enhances the prompt before submitting to `gpt_image_2`.
+
+## Quick Reference
+
+| What you want | Skill | Note |
+|---|---|---|
+| Generate any image / video from a prompt | `higgsfield-generate` | Picks model from intent (`flux`, `kling3_0`, `veo3_1`, …) |
+| Image with my own face | `higgsfield-soul` then `higgsfield-generate` | One-time training, then `--custom_reference_id` |
+| Branded product photo (studio / lifestyle / Pinterest / hero / ad pack) | `higgsfield-product-photoshoot` | Mode-specific prompt enhancer + `gpt_image_2` |
+| Branded ad video / UGC / unboxing / TV spot | `higgsfield-generate` | Marketing Studio mode with avatars + products |
+| Train a custom face identity | `higgsfield-soul` | 5–20 photos, returns `reference_id` |
+| Image-to-video animation | `higgsfield-generate` | `kling3_0` or `seedance_2_0` with `--start-image` |
 
 ## Install
 
-See [INSTALL.md](./INSTALL.md).
+See [INSTALL.md](./INSTALL.md) for human-facing options. For AI-agent-driven installs, see [INSTALL_FOR_AGENTS.md](./INSTALL_FOR_AGENTS.md).
 
 Quick path (Claude Code):
 
@@ -35,6 +58,41 @@ git clone https://github.com/higgsfield-ai/skills.git ~/.claude/skills/higgsfiel
 
 The skills are pure Markdown instructions. They drive the [`hf` CLI](https://github.com/higgsfield-ai/cli) to call Higgsfield API endpoints. No MCP server, no extra runtime — just one binary.
 
+Each skill is self-contained: its own `references/` directory bundles deep-dive docs (model catalog, prompt engineering, troubleshooting) loaded on-demand by the agent rather than every turn.
+
+## Repository structure
+
+```
+skills/
+├── README.md                          # this file
+├── INSTALL.md                         # human-facing install (5 options)
+├── INSTALL_FOR_AGENTS.md              # agent-driven install runbook
+├── CONTRIBUTING.md                    # PR workflow + checklist
+├── VERSION                            # 0.3.0
+├── LICENSE                            # MIT
+├── .claude-plugin/marketplace.json    # Claude Code marketplace
+├── .claude-plugin/plugin.json
+├── .cursor-plugin/plugin.json
+├── .codex-plugin/plugin.json
+├── higgsfield-generate/
+│   ├── SKILL.md
+│   └── references/
+│       ├── model-catalog.md
+│       ├── prompt-engineering.md
+│       ├── media-inputs.md
+│       ├── marketing-{avatars,products,modes}.md
+│       └── troubleshooting.md
+├── higgsfield-soul/
+│   ├── SKILL.md
+│   └── references/{photo-guide,troubleshooting}.md
+└── higgsfield-product-photoshoot/
+    └── SKILL.md
+```
+
+## Contributing
+
+Issues and PRs welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for workflow, branch naming, commit style, and the PR checklist.
+
 ## License
 
-MIT
+MIT — see [LICENSE](./LICENSE).
