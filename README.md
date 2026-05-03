@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Version](https://img.shields.io/badge/version-0.3.0-green.svg)](./VERSION)
 [![Skills](https://img.shields.io/badge/skills-3-blueviolet.svg)](#skills)
-[![Discord](https://img.shields.io/discord/1173418785630330921?logo=discord&label=discord)](https://discord.com/invite/higgsfield)
+[![Discord](https://img.shields.io/badge/discord-join-5865F2?logo=discord&logoColor=white)](https://discord.com/invite/higgsfield)
 
 AI agent skills for image and video generation via [Higgsfield AI](https://higgsfield.ai).
 
