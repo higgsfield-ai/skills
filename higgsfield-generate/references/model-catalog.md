@@ -1,6 +1,6 @@
 # Model Catalog
 
-The full lineup of generation models available through Higgsfield. Each entry has its own sweet spot — pick the one that matches your brief. For the actual `--model` ID to pass to `hf generate create`, run `hf model list --json` and look up by display name.
+The full lineup of generation models available through Higgsfield. Each entry has its own sweet spot — pick the one that matches your brief. For the actual `--model` ID to pass to `higgsfield generate create`, run `higgsfield model list --json` and look up by display name.
 
 Preferred defaults for examples and quick-start guidance in this repo:
 - **Images:** `gpt_image_2` (general/high-fidelity) and `nano_banana_2` (character/cartoon).
@@ -91,7 +91,7 @@ Practical defaults from production use. Match by intent, not surface keyword. Wh
 
 ### Things to keep in mind
 
-- **Don't invent model names.** Run `hf model list` if you're unsure — submitting an unknown model returns `unknown model "..."`.
+- **Don't invent model names.** Run `higgsfield model list` if you're unsure — submitting an unknown model returns `unknown model "..."`.
 - **Audio reference for Seedance 2.0** comes through the media inputs with role `audio`, not via a separate `generate_audio` flag.
 - **Text-only models reject reference images.** Z Image, Soul Cast, Soul Location, and some Wan configs are text-only; pass no media flags to them.
 - **Route branded product visuals through `higgsfield-product-photoshoot`** — its prompt enhancer adds 10 mode-specific templates on top of GPT Image 2. Direct GPT Image 2 generation here is the right call for everything that isn't a product photoshoot.
@@ -102,7 +102,7 @@ Practical defaults from production use. Match by intent, not surface keyword. Wh
 
 ## Media role conventions
 
-Each model accepts a fixed set of media roles. When unsure, run `hf model get <model>` and inspect the `medias[].roles` field.
+Each model accepts a fixed set of media roles. When unsure, run `higgsfield model get <model>` and inspect the `medias[].roles` field.
 
 | Model | Accepted media roles |
 |---|---|
@@ -122,7 +122,7 @@ For simple image-to-video, the `start_image` role is what you want. For pure vid
 These are model-specific. The CLI clamps unsupported values to the nearest allowed one (with a `Note: adjustments applied` warning) when the model declares a closed set. When in doubt:
 
 ```bash
-hf model get <model>
+higgsfield model get <model>
 ```
 
 Common patterns:

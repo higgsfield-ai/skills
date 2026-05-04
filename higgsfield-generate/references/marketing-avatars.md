@@ -12,8 +12,8 @@
 ## Listing presets
 
 ```bash
-hf marketing-studio avatars list
-hf marketing-studio avatars list --json | jq '.[] | select(.gender=="female")'
+higgsfield marketing-studio avatars list
+higgsfield marketing-studio avatars list --json | jq '.[] | select(.gender=="female")'
 ```
 
 Filter by `name`, `gender`, etc. on the JSON output.
@@ -21,9 +21,9 @@ Filter by `name`, `gender`, etc. on the JSON output.
 ## Creating a custom avatar
 
 ```bash
-ID=$(hf upload create founder.png)
-URL=$(hf upload create founder.png --json | jq -r .url)   # if you need cloudfront URL
-hf marketing-studio avatars create --name "Founder" --image $ID --image-url $URL
+ID=$(higgsfield upload create founder.png)
+URL=$(higgsfield upload create founder.png --json | jq -r .url)   # if you need cloudfront URL
+higgsfield marketing-studio avatars create --name "Founder" --image $ID --image-url $URL
 ```
 
 `--image-url` is the cloudfront URL from the upload. Required by the API.
@@ -31,7 +31,7 @@ hf marketing-studio avatars create --name "Founder" --image $ID --image-url $URL
 ## Passing to video
 
 ```bash
-hf generate create marketing_studio_video \
+higgsfield generate create marketing_studio_video \
   --avatars '[{"id":"<avatar_id>","type":"preset"}]' \
   ...
 ```

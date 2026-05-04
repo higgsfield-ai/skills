@@ -2,11 +2,11 @@
 
 ## What this is
 
-Three skills that drive the [`hf` CLI](https://github.com/higgsfield-ai/cli) to call Higgsfield API endpoints — image and video generation, Soul Character training, branded product photography.
+Three skills that drive the [`higgsfield` CLI](https://github.com/higgsfield-ai/cli) to call Higgsfield API endpoints — image and video generation, Soul Character training, branded product photography.
 
 ```
 higgsfield-soul     →  trains identity, returns reference_id
-higgsfield-generate →  consumes reference_id, plus 35+ models, plus Marketing Studio
+higgsfield-generate →  consumes reference_id, plus 30+ models, plus Marketing Studio
 higgsfield-product-photoshoot  →  self-contained, brand visuals via gpt_image_2
 ```
 
@@ -58,13 +58,13 @@ skills/
 
 ## API conventions
 
-All skills route through one binary: the [`hf` CLI](https://github.com/higgsfield-ai/cli). **Do not call `api.higgsfield.ai` directly with curl.** The CLI handles auth, retries, polling, schema validation, and auto-uploads. Skipping it bypasses critical behavior.
+All skills route through one binary: the [`higgsfield` CLI](https://github.com/higgsfield-ai/cli). **Do not call `api.higgsfield.ai` directly with curl.** The CLI handles auth, retries, polling, schema validation, and auto-uploads. Skipping it bypasses critical behavior.
 
-- Auth: `HEYGEN_API_KEY` env var OR `hf auth login` (persists to `~/.higgsfield/credentials`).
-- Pattern: `hf <noun> <verb>` — e.g. `hf generate create`, `hf soul create`, `hf product-photoshoot create`, `hf marketing-studio products fetch`.
-- Polling: `hf <noun> wait <id>` blocks until terminal status, prints result URL on stdout.
+- Auth: `HEYGEN_API_KEY` env var OR `higgsfield auth login` (persists to `~/.higgsfield/credentials`).
+- Pattern: `higgsfield <noun> <verb>` — e.g. `higgsfield generate create`, `higgsfield soul-id create`, `higgsfield product-photoshoot create`, `higgsfield marketing-studio products fetch`.
+- Polling: `higgsfield <noun> wait <id>` blocks until terminal status, prints result URL on stdout.
 - Media inputs: every `--image`, `--start-image`, `--video`, etc. flag accepts a local path (auto-uploaded) OR a UUID (upload id or previous job id).
-- Source of truth: never invent model names. Run `hf model list` for the live catalog. Reference catalogs in `references/model-catalog.md` are mappings (intent → model), not the model database.
+- Source of truth: never invent model names. Run `higgsfield model list` for the live catalog. Reference catalogs in `references/model-catalog.md` are mappings (intent → model), not the model database.
 
 ## The 300-line rule
 
@@ -82,7 +82,7 @@ Each `SKILL.md` should aim for under 300 lines. Skill files are loaded into the 
 
 **What moves to references/:**
 
-- `hf` command examples and full flag tables.
+- `higgsfield` command examples and full flag tables.
 - Asset classification tables and routing matrices.
 - Prompt galleries and style preset libraries.
 - Error handling patterns and troubleshooting trees.
@@ -114,7 +114,7 @@ CI fails if any drift. Don't bump versions by hand on feature branches — let r
 Skills communicate through return values, not implicit state.
 
 - `higgsfield-soul` returns a `reference_id` (Soul Character).
-- `higgsfield-generate` consumes it via `--custom_reference_id` for Soul-aware models (`text2image_soul_v2`, `soul_cinema_studio`) or as `custom` avatar in Marketing Studio.
+- `higgsfield-generate` consumes it via `--soul-id` for Soul-aware models (`text2image_soul_v2`, `soul_cinema_studio`) or as `custom` avatar in Marketing Studio.
 - `higgsfield-product-photoshoot` does not chain — it owns its own pipeline.
 
 When the user asks for both identity AND output in one request ("train Soul on these photos AND make a video of me"), run `higgsfield-soul` first, then `higgsfield-generate`. Don't batch-ask questions across skills — finish Soul, then start the video conversation.
@@ -135,5 +135,5 @@ Until then, treat any major default (model selection, mode selection, prompt enh
 
 ## Related projects
 
-- [`hf` CLI](https://github.com/higgsfield-ai/cli) — the binary every skill drives.
+- [`higgsfield` CLI](https://github.com/higgsfield-ai/cli) — the binary every skill drives.
 - [Agent Skills spec](https://agentskills.io/specification.md) — frontmatter format and validation.

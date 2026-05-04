@@ -5,7 +5,7 @@ Two ways to register a product: URL fetch (auto-imports title, description, imag
 ## URL fetch (default)
 
 ```bash
-ID=$(hf marketing-studio products fetch --url https://shop.example.com/sneakers --wait --json | jq -r .id)
+ID=$(higgsfield marketing-studio products fetch --url https://shop.example.com/sneakers --wait --json | jq -r .id)
 ```
 
 `--wait` polls until `status` is `completed` or `failed`. Default timeout 90s.
@@ -15,7 +15,7 @@ If `failed`, check `fail_reason` — usually invalid URL or scrape blocked.
 App Store URLs auto-route to `webproducts` (different endpoint). Use:
 
 ```bash
-hf marketing-studio webproducts fetch --url https://apps.apple.com/... --wait
+higgsfield marketing-studio webproducts fetch --url https://apps.apple.com/... --wait
 ```
 
 ## Manual
@@ -23,9 +23,9 @@ hf marketing-studio webproducts fetch --url https://apps.apple.com/... --wait
 When the user has product photos and details:
 
 ```bash
-A=$(hf upload create shoe1.png)
-B=$(hf upload create shoe2.png)
-hf marketing-studio products create \
+A=$(higgsfield upload create shoe1.png)
+B=$(higgsfield upload create shoe2.png)
+higgsfield marketing-studio products create \
   --title "AeroRun Pro" \
   --description "Lightweight running shoe" \
   --image $A --image $B
@@ -38,7 +38,7 @@ Returns the product entity directly (no polling needed).
 For App Store / web pages without URL fetch:
 
 ```bash
-hf marketing-studio webproducts create \
+higgsfield marketing-studio webproducts create \
   --url "https://example.com" \
   --title "MyApp" \
   --subtitle "Productivity for teams" \
@@ -51,6 +51,6 @@ hf marketing-studio webproducts create \
 ## Listing
 
 ```bash
-hf marketing-studio products list
-hf marketing-studio webproducts list
+higgsfield marketing-studio products list
+higgsfield marketing-studio webproducts list
 ```

@@ -53,7 +53,7 @@ Before merging, confirm:
 4. **No orphan reference files.** Every file inside `<skill>/references/` is mentioned at least once in that skill's `SKILL.md`. If it isn't reachable, delete it or link it.
 5. **`marketplace.json` is up to date.** If you added or renamed a skill folder, update the `skills` array in `.claude-plugin/marketplace.json`.
 6. **UX rules unchanged or stricter.** Don't loosen rules like "no raw IDs in chat", "polling is silent", "detect language and respond in it" without an explicit reason in the PR description.
-7. **CLI commands are real.** Every `hf …` example in your SKILL.md or references must be a real, current command. Run it locally before merging.
+7. **CLI commands are real.** Every `higgsfield …` example in your SKILL.md or references must be a real, current command. Run it locally before merging.
 8. **Behavior change → docs change.** If you changed defaults, mode-selection logic, or chain semantics, the affected `SKILL.md` reflects it. An agent reading only `SKILL.md` should be able to execute the skill correctly.
 
 ## Adding a new skill

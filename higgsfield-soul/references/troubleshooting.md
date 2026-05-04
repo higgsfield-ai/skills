@@ -17,8 +17,8 @@ Action: ask user to swap in better photos, retrain.
 
 ## `Session expired`
 
-`hf auth login`.
+`higgsfield auth login`.
 
 ## Slow training
 
-Default timeout is 30m. If still in progress: `hf soul wait <id> --timeout 60m`.
+Default timeout is 30m. If still in progress: `higgsfield soul-id wait <id> --timeout 60m`.

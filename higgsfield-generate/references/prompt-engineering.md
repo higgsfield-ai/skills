@@ -37,7 +37,7 @@ Most models don't expose a `negative_prompt`. Phrase positively:
 - `16:9` — landscape, cinematic
 - `9:16` — vertical, social
 - `1:1` — square, profile / icon
-- `4:3`, `3:4`, `21:9` — model-dependent, check `hf model get <jst>`
+- `4:3`, `3:4`, `21:9` — model-dependent, check `higgsfield model get <jst>`
 
 ## Safety
 

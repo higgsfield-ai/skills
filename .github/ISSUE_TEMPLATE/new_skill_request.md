@@ -37,7 +37,7 @@ assignees: ""
 
 ## Backing API or CLI command
 
-<!-- e.g. `hf <noun> <verb>`. If the CLI command doesn't exist yet, link to the CLI issue/PR. -->
+<!-- e.g. `higgsfield <noun> <verb>`. If the CLI command doesn't exist yet, link to the CLI issue/PR. -->
 
 ## Sketch of the SKILL.md
 

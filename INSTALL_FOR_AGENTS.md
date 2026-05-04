@@ -2,7 +2,7 @@
 
 You are an AI coding agent. The user asked you to install Higgsfield skills. Follow this exactly.
 
-## Step 1 — Install the `hf` CLI
+## Step 1 — Install Higgsfield CLI
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
@@ -14,19 +14,19 @@ The script asks for sudo password to write to `/usr/local/bin/`. If sudo isn't a
 curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh -s -- --prefix=$HOME/.local
 ```
 
-Verify: `hf version`. Expect `hf v0.1.X (...) built ...`.
+Verify: `higgsfield version`. Expect `higgsfield v0.1.X (...) built ...`.
 
 ## Step 2 — Authenticate
 
 Ask the user to run:
 
 ```bash
-hf auth login
+higgsfield auth login
 ```
 
 This opens a browser for OAuth. Wait for them to confirm.
 
-Verify: `hf account status`. Expect `<email> — <plan> plan, <N> credits`.
+Verify: `higgsfield account status`. Expect `<email> — <plan> plan, <N> credits`.
 
 ## Step 3 — Install the skills
 
@@ -51,7 +51,7 @@ Ask the agent (yourself):
 
 > "Generate a tiny test image with Higgsfield."
 
-Run `hf generate create z_image --prompt "test"`. Capture the job id. Run `hf generate wait <id>`. Confirm a URL is returned.
+Run `higgsfield generate create z_image --prompt "test"`. Capture the job id. Run `higgsfield generate wait <id>`. Confirm a URL is returned.
 
 If anything fails:
 - 401 / `Session expired` → repeat Step 2

@@ -31,7 +31,7 @@ assignees: ""
 
 ## What actually happened
 
-<!-- Paste relevant agent output or `hf` CLI output. Redact API keys. -->
+<!-- Paste relevant agent output or `higgsfield` CLI output. Redact API keys. -->
 
 ```
 ```
@@ -39,7 +39,7 @@ assignees: ""
 ## Environment
 
 - Agent: <!-- Claude Code / Cursor / Codex / other -->
-- `hf --version`:
+- `higgsfield version`:
 - OS:
 - Skills version (`cat VERSION`):
 

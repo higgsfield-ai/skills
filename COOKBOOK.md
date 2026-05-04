@@ -23,7 +23,7 @@ Train my Soul on this headshot, then make 5 lifestyle photos of my product
 1. **Soul training** (`higgsfield-soul`):
 
    ```bash
-   hf soul create --name "founder" --soul-2 \
+   higgsfield soul-id create --name "founder" --soul-2 \
      --image headshot1.png --image headshot2.png ... \
      --max-train-steps 1000
    ```
@@ -33,7 +33,7 @@ Train my Soul on this headshot, then make 5 lifestyle photos of my product
 2. **Lifestyle photos** (`higgsfield-product-photoshoot`):
 
    ```bash
-   hf product-photoshoot create \
+   higgsfield product-photoshoot create \
      --mode lifestyle_scene \
      --prompt "founder using product in 5 distinct IG-feed scenes: morning coffee setup, desk workspace, outdoor café, gym, home office" \
      --image bottle.jpg \
@@ -46,7 +46,7 @@ Train my Soul on this headshot, then make 5 lifestyle photos of my product
 3. **Pick top 2 → animate** (`higgsfield-generate`, image-to-video):
 
    ```bash
-   hf generate create kling3_0 \
+   higgsfield generate create kling3_0 \
      --prompt "subtle product reveal, camera slowly pulls back, ambient motion" \
      --start-image ./campaign/photos/lifestyle-01.jpg \
      --duration 5 \
@@ -81,7 +81,7 @@ angles: organic UGC, unboxing reveal, presenter review, and a TV-spot version.
 1. **Product fetch:**
 
    ```bash
-   hf marketing-studio products fetch \
+   higgsfield marketing-studio products fetch \
      --url https://shop.example.com/sneakers \
      --wait
    ```
@@ -91,7 +91,7 @@ angles: organic UGC, unboxing reveal, presenter review, and a TV-spot version.
 2. **Pick preset avatar:**
 
    ```bash
-   hf marketing-studio avatars list --json | jq '.[] | select(.tags | contains(["sporty"]))'
+   higgsfield marketing-studio avatars list --json | jq '.[] | select(.tags | contains(["sporty"]))'
    ```
 
    Picks one matching the brand voice. No user input needed for the typical case.
@@ -100,7 +100,7 @@ angles: organic UGC, unboxing reveal, presenter review, and a TV-spot version.
 
    ```bash
    for mode in ugc ugc_unboxing product_review tv_spot; do
-     hf generate create marketing_studio_video \
+     higgsfield generate create marketing_studio_video \
        --prompt "<short hook tied to the mode>" \
        --avatars '[{"id":"<avatar_id>","type":"preset"}]' \
        --product_ids '[<product_id>]' \
@@ -149,7 +149,7 @@ Landscape, neutral background, conversational tone.
 **What the agent does (one-time setup):**
 
 ```bash
-hf soul create --name "founder" --soul-2 \
+higgsfield soul-id create --name "founder" --soul-2 \
   --image photo01.png --image photo02.png ... \
   --output-dir ./identity
 ```
@@ -162,13 +162,13 @@ Option A — Marketing Studio with custom avatar (recommended for branded look):
 
 ```bash
 # One-time: register the Soul as a custom avatar
-hf marketing-studio avatars create \
+higgsfield marketing-studio avatars create \
   --name "Founder" \
   --image <upload_id> \
   --image-url <cloudfront_url>
 # Returns avatar_id
 
-hf generate create marketing_studio_video \
+higgsfield generate create marketing_studio_video \
   --prompt "<full script with scene labels>" \
   --avatars '[{"id":"<avatar_id>","type":"custom"}]' \
   --mode ugc \
@@ -179,9 +179,9 @@ hf generate create marketing_studio_video \
 Option B — direct Soul model (more direct, less branded staging):
 
 ```bash
-hf generate create soul_cinema_studio \
+higgsfield generate create soul_cinema_studio \
   --prompt "<full script>" \
-  --custom_reference_id <reference_id> \
+  --soul-id <reference_id> \
   --duration 60 \
   --aspect_ratio 16:9
 ```

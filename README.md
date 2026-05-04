@@ -17,14 +17,14 @@ Quick path (Claude Code):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
-hf auth login
+higgsfield auth login
 git clone https://github.com/higgsfield-ai/skills.git ~/.claude/skills/higgsfield
 ```
 
 ```text
 "Generate a cinematic shot of a fox in a snowy forest, golden hour."
 → picks a photorealistic image model
-→ submits via the hf CLI
+→ submits via the higgsfield CLI
 → delivers the result URL
 
 "Train my Soul on these 10 photos, then make a 9:16 UGC ad of me holding the product."
@@ -37,7 +37,7 @@ git clone https://github.com/higgsfield-ai/skills.git ~/.claude/skills/higgsfiel
 
 | Skill | Invoke | Description |
 |---|---|---|
-| [`higgsfield-generate`](./higgsfield-generate) | `/higgsfield:generate` | Image and video generation across 35+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2, …) plus Marketing Studio for branded ads with avatars and imported products. |
+| [`higgsfield-generate`](./higgsfield-generate) | `/higgsfield:generate` | Image and video generation across 30+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2, …) plus Marketing Studio for branded ads with avatars and imported products. |
 | [`higgsfield-soul`](./higgsfield-soul) | `/higgsfield:soul` | Train a Soul Character — a reusable, face-faithful identity model. Returns a `reference_id` consumable by Soul-aware generation. |
 | [`higgsfield-product-photoshoot`](./higgsfield-product-photoshoot) | `/higgsfield:product-photoshoot` | Brand-quality product imagery with mode-specific prompt enhancement. 10 modes (studio, lifestyle, Pinterest, hero banner, ad packs, virtual try-on, …) backed by `gpt_image_2`. |
 
@@ -79,7 +79,7 @@ The skills chain: train Soul → use the reference id in `generate` (including M
 | What you want | Skill | Note |
 |---|---|---|
 | Generate any image / video from a prompt | `higgsfield-generate` | Prefers `gpt_image_2` / `nano_banana_2` for images and `seedance_2_0` for video by default |
-| Image with my own face | `higgsfield-soul` then `higgsfield-generate` | One-time training, then `--custom_reference_id` |
+| Image with my own face | `higgsfield-soul` then `higgsfield-generate` | One-time training, then `--soul-id` |
 | Branded product photo (studio / lifestyle / Pinterest / hero / ad pack) | `higgsfield-product-photoshoot` | Mode-specific prompt enhancer + `gpt_image_2` |
 | Branded ad video / UGC / unboxing / TV spot | `higgsfield-generate` | Marketing Studio mode with avatars + products |
 | Train a custom face identity | `higgsfield-soul` | 5–20 photos, returns `reference_id` |
@@ -87,7 +87,7 @@ The skills chain: train Soul → use the reference id in `generate` (including M
 
 ## How it works
 
-The skills are pure Markdown instructions. They drive the [`hf` CLI](https://github.com/higgsfield-ai/cli) to call Higgsfield API endpoints. No MCP server, no extra runtime — just one binary.
+The skills are pure Markdown instructions. They drive the [`higgsfield` CLI](https://github.com/higgsfield-ai/cli) to call Higgsfield API endpoints. No MCP server, no extra runtime — just one binary.
 
 Each skill is self-contained: its own `references/` directory bundles deep-dive docs (model catalog, prompt engineering, troubleshooting) loaded on-demand by the agent rather than every turn.
 

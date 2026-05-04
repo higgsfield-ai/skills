@@ -30,11 +30,11 @@ Canonical mode values for `marketing_studio_video` `--mode`. Mirrored from the M
 For `marketing_studio_video`, the API accepts:
 
 - `aspect_ratio`: `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16` (default `16:9`).
-- `duration`: integer ≥ 4 seconds. No fixed cap; check `hf model get marketing_studio_video` for the current upper bound.
+- `duration`: integer ≥ 4 seconds. No fixed cap; check `higgsfield model get marketing_studio_video` for the current upper bound.
 - `resolution`: `480p` or `720p` (default `720p`).
 - `generate_audio`: boolean (default `false`). Generates audio for the video.
 - `avatars`: array of `{id, type}` where `type` is `preset` or `custom`. See `marketing-avatars.md`.
-- `product_ids`: array of product UUIDs (from `hf marketing-studio products fetch` or `create`). See `marketing-products.md`.
+- `product_ids`: array of product UUIDs (from `higgsfield marketing-studio products fetch` or `create`). See `marketing-products.md`.
 - `medias`: optional reference images with role `image`, `start_image`, or `end_image`.
 - `feature: "click_to_ad"`: when generating from a single landing-page URL (Click-to-Ad flow).
 - `product: { id?, url? }`: alternative single-product reference; the URL flow auto-fetches.
@@ -43,7 +43,7 @@ For `marketing_studio_video`, the API accepts:
 
 For `marketing_studio_video` driven by a product URL (no manual product create / fetch), the MCP-side flow is:
 
-1. Call `hf marketing-studio products fetch --url <url> --wait` (or use `show_marketing_studio` widget action `fetch`).
-2. Call `hf generate create marketing_studio_video --url <same url>` — the backend looks up / reuses the entity and submits.
+1. Call `higgsfield marketing-studio products fetch --url <url> --wait` (or use `show_marketing_studio` widget action `fetch`).
+2. Call `higgsfield generate create marketing_studio_video --url <same url>` — the backend looks up / reuses the entity and submits.
 
 Repeated fetches for the same URL dedupe — the backend reuses any existing non-failed entity.

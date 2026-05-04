@@ -2,7 +2,7 @@
 
 Three skills ship in this repo:
 
-- **`higgsfield-generate`** — image and video generation, 35+ models, plus Marketing Studio (branded ads with avatars and imported products)
+- **`higgsfield-generate`** — image and video generation, 30+ models, plus Marketing Studio (branded ads with avatars and imported products)
 - **`higgsfield-soul`** — train a face-faithful Soul Character
 - **`higgsfield-product-photoshoot`** — brand-quality product imagery with mode-specific prompt enhancement
 
@@ -10,11 +10,11 @@ They chain: `higgsfield-soul` returns a reference id consumable by `higgsfield-g
 
 ## Prerequisites
 
-Install the `hf` CLI:
+Install Higgsfield CLI:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
-hf auth login
+higgsfield auth login
 ```
 
 ## Option 1 — Claude Code
@@ -63,7 +63,7 @@ In your agent, ask:
 
 > "Generate a minimal test image with Higgsfield."
 
-The agent should invoke `higgsfield-generate`, run `hf generate create z_image --prompt "test"`, and deliver a URL.
+The agent should invoke `higgsfield-generate`, run `higgsfield generate create z_image --prompt "test"`, and deliver a URL.
 
 ## Updating
 

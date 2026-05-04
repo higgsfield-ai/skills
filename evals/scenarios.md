@@ -17,7 +17,7 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 - Picks `nano_banana_2`, `flux_2`, or another photorealistic-default model.
 - Does NOT pick a Soul model (no face mentioned).
 - Does NOT pick `gpt_image_2` (overkill for "quick").
-- Submits via `hf generate create <model> --prompt "..."`.
+- Submits via `higgsfield generate create <model> --prompt "..."`.
 - Polls silently (no "checking status..." spam).
 - Delivers ONE URL with a short summary.
 
@@ -62,9 +62,9 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 **Expected behavior:**
 
 - Picks `--soul-2` (default).
-- Submits `hf soul create --name founder --soul-2 --image ... --image ...`.
+- Submits `higgsfield soul-id create --name founder --soul-2 --image ... --image ...`.
 - Polls silently. Soul training takes 15–45 min.
-- Delivers: "Soul `founder` ready. Use in generate with `--custom_reference_id <id>`."
+- Delivers: "Soul `founder` ready. Use in generate with `--soul-id <id>`."
 - Does NOT print the raw `reference_id` in chat (UX rule).
 
 **Score:**
@@ -85,7 +85,7 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 - Looks up the existing Soul reference (asks user for the id, OR detects from a workspace state file if one exists).
 - Picks `text2image_soul_v2` or `soul_cinema_studio` (the cinematic variant fits the "cinematic" word).
-- Passes `--custom_reference_id <id>`.
+- Passes `--soul-id <id>`.
 - Does NOT re-train Soul.
 - Delivers ONE URL.
 
@@ -107,8 +107,8 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 - Picks `--mode pinterest_pin`.
 - NOT `lifestyle_scene` or `product_shot`.
-- Calls `hf product-photoshoot create --mode pinterest_pin --image candle.jpg --prompt "..."`.
-- Does NOT call `hf generate create gpt_image_2 ...` directly (must go through the prompt enhancer).
+- Calls `higgsfield product-photoshoot create --mode pinterest_pin --image candle.jpg --prompt "..."`.
+- Does NOT call `higgsfield generate create gpt_image_2 ...` directly (must go through the prompt enhancer).
 - Asks ≤4 short questions (count, mood, anything to emphasize). Mode is obvious from the request.
 - Delivers ONE URL or a short bulleted list if `--count > 1`.
 
@@ -148,9 +148,9 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 **Expected behavior:**
 
-- Calls `hf marketing-studio products fetch --url ... --wait` first.
-- Then lists/picks an avatar (`hf marketing-studio avatars list`).
-- Then `hf generate create marketing_studio_video` with `--mode ugc`, `--duration 15`, `--aspect_ratio 9:16`.
+- Calls `higgsfield marketing-studio products fetch --url ... --wait` first.
+- Then lists/picks an avatar (`higgsfield marketing-studio avatars list`).
+- Then `higgsfield generate create marketing_studio_video` with `--mode ugc`, `--duration 15`, `--aspect_ratio 9:16`.
 - Asks one question at a time. Does NOT batch-ask (avatar + product + mode + duration upfront).
 
 **Score:**
@@ -211,7 +211,7 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 **Expected behavior:**
 
 - Notices the model name is unfamiliar.
-- Runs `hf model list` to verify.
+- Runs `higgsfield model list` to verify.
 - Reports back: "supernova_v9 isn't in the catalog. Suggested alternatives: …".
 - Does NOT submit with a fabricated model name.
 

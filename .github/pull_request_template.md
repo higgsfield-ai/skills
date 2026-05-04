@@ -21,7 +21,7 @@
 
 ## Testing
 
-<!-- How you verified this works. Paste relevant agent output, hf CLI output, or test scenarios. -->
+<!-- How you verified this works. Paste relevant agent output, higgsfield CLI output, or test scenarios. -->
 
 - [ ]
 - [ ]
@@ -33,7 +33,7 @@
 - [ ] All `references/X.md` links in `SKILL.md` resolve; no orphan reference files; no `../` parent-dir references.
 - [ ] If a skill folder was added or renamed, `marketplace.json` reflects it.
 - [ ] If user-facing behavior changed, `SKILL.md` and `README.md` reflect it.
-- [ ] Every `hf …` example in the docs is a real, current command.
+- [ ] Every `higgsfield …` example in the docs is a real, current command.
 
 ## Breaking changes
 

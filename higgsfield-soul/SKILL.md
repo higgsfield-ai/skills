@@ -8,7 +8,7 @@ description: |
   "build me an avatar", "learn my appearance", "create a character of me",
   "set up identity for video", "I want my face in generated images".
   Chain: train Soul (one-time, returns reference_id) → use in
-  higgsfield-generate via `--custom_reference_id <id>` with models like
+  higgsfield-generate via `--soul-id <id>` with models like
   `text2image_soul_v2` or `soul_cinema_studio`.
   NOT for: one-shot face swaps (use higgsfield-generate with --image),
   named-character / non-photo avatars (use higgsfield-generate with prompt).
@@ -22,8 +22,8 @@ Train a face-faithful identity model. Reusable across all Soul-powered generatio
 
 ## Prerequisites
 
-- `hf` CLI: `curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh`
-- Authenticated: `hf auth login`
+- `higgsfield` CLI: `curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh`
+- Authenticated: `higgsfield auth login`
 - Paid plan (Basic+) — Soul training requires it.
 
 ## UX Rules
@@ -43,34 +43,34 @@ Train a face-faithful identity model. Reusable across all Soul-powered generatio
    Choose based on user's stated downstream use. Default to `--soul-2`.
 4. **Submit.**
    ```bash
-   hf soul create --name "<name>" --soul-2 --image ./photo1.png --image ./photo2.png ...
-   hf soul create --name "<name>" --soul-2 --image <upload_id> --image <upload_id> ...
+   higgsfield soul-id create --name "<name>" --soul-2 --image ./photo1.png --image ./photo2.png ...
+   higgsfield soul-id create --name "<name>" --soul-2 --image <upload_id> --image <upload_id> ...
    ```
    CLI auto-uploads paths. Captures returned reference id.
-5. **Wait.** `hf soul wait <id>`. Silent. Default timeout 30m.
-6. **Deliver.** "Soul `<name>` ready. Use in generate with `--custom_reference_id <id>`."
+5. **Wait.** `higgsfield soul-id wait <id>`. Silent. Default timeout 30m.
+6. **Deliver.** "Soul `<name>` ready. Use in generate with `--soul-id <id>`."
 
 ## Use the Soul
 
 Once trained, pass to `higgsfield-generate`:
 
 ```bash
-hf generate create text2image_soul_v2 --prompt "..." --custom_reference_id <ref_id>
-hf generate create soul_cinema_studio --prompt "..." --custom_reference_id <ref_id>
+higgsfield generate create text2image_soul_v2 --prompt "..." --soul-id <ref_id>
+higgsfield generate create soul_cinema_studio --prompt "..." --soul-id <ref_id>
 ```
 
 ## Listing existing Souls
 
 ```bash
-hf soul list                   # all references
-hf soul get <id>               # one by id
+higgsfield soul-id list                   # all references
+higgsfield soul-id get <id>               # one by id
 ```
 
 ## Errors
 
 - `Minimum Basic plan required` — user is on free plan; tell them.
 - `Training failed` — check photos quality (5+ unique faces, well-lit).
-- `Session expired` → `hf auth login`.
+- `Session expired` → `higgsfield auth login`.
 
 ## Reference docs
 
