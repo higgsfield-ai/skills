@@ -1,0 +1,198 @@
+#!/usr/bin/env bash
+# higgsfield-skills setup — first-time installation for Claude Code, Cursor, Codex, etc.
+# Idempotent: safe to run multiple times.
+set -euo pipefail
+
+# ─── Colors (degrade gracefully) ─────────────────────────────
+if [ -t 1 ] && command -v tput &>/dev/null && [ "$(tput colors 2>/dev/null || echo 0)" -ge 8 ]; then
+  GREEN=$(tput setaf 2) YELLOW=$(tput setaf 3) RED=$(tput setaf 1) BOLD=$(tput bold) RESET=$(tput sgr0)
+else
+  GREEN="" YELLOW="" RED="" BOLD="" RESET=""
+fi
+
+ok()   { echo "${GREEN}✓${RESET} $1"; }
+warn() { echo "${YELLOW}!${RESET} $1"; }
+err()  { echo "${RED}✗${RESET} $1"; }
+info() { echo "${BOLD}→${RESET} $1"; }
+
+# ─── Locate repo root ────────────────────────────────────────
+SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [ ! -f "$SKILL_DIR/VERSION" ] || [ ! -d "$SKILL_DIR/higgsfield-generate" ]; then
+  err "Cannot find VERSION or higgsfield-generate/ — run this script from the higgsfield-ai/skills repo root."
+  exit 1
+fi
+
+VERSION="$(cat "$SKILL_DIR/VERSION" | tr -d '[:space:]')"
+echo
+echo "${BOLD}Higgsfield Skills setup — v$VERSION${RESET}"
+echo
+
+# ─── Parse flags ────────────────────────────────────────────
+HOST_OVERRIDE=""
+SKIP_CLI=0
+SKIP_AUTH=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --host)
+      shift
+      [ $# -eq 0 ] && { err "--host requires a value: claude | cursor | codex"; exit 1; }
+      HOST_OVERRIDE="$1"
+      shift
+      ;;
+    --host=*)
+      HOST_OVERRIDE="${1#--host=}"
+      shift
+      ;;
+    --skip-cli)    SKIP_CLI=1; shift ;;
+    --skip-auth)   SKIP_AUTH=1; shift ;;
+    --help|-h)
+      cat <<EOF
+Usage: ./setup [options]
+
+Options:
+  --host <agent>   Force install path for: claude, cursor, codex
+                   (auto-detected if omitted)
+  --skip-cli       Skip 'higgsfield' CLI install (assumes it's already on PATH)
+  --skip-auth      Skip 'higgsfield auth login' check
+  --help           Show this message
+
+Idempotent: safe to run multiple times.
+EOF
+      exit 0
+      ;;
+    *)
+      warn "Unknown flag: $1"
+      shift
+      ;;
+  esac
+done
+
+# ─── Detect agent host ──────────────────────────────────────
+detect_host() {
+  if [ -n "$HOST_OVERRIDE" ]; then
+    echo "$HOST_OVERRIDE"
+    return
+  fi
+  if [ -d "$HOME/.claude" ];  then echo "claude"; return; fi
+  if [ -d "$HOME/.cursor" ];  then echo "cursor"; return; fi
+  if [ -d "$HOME/.codex" ];   then echo "codex";  return; fi
+  echo "unknown"
+}
+
+HOST="$(detect_host)"
+case "$HOST" in
+  claude)  TARGET_DIR="$HOME/.claude/skills" ;;
+  cursor)  TARGET_DIR="$HOME/.cursor/plugins" ;;
+  codex)   TARGET_DIR="$HOME/.codex/plugins" ;;
+  unknown)
+    warn "Could not auto-detect agent host."
+    info "Re-run with --host <claude|cursor|codex>, or clone the repo manually into your agent's skills directory."
+    exit 1
+    ;;
+  *)
+    err "Unknown host: $HOST"
+    exit 1
+    ;;
+esac
+
+SKILLS=(higgsfield-generate higgsfield-soul-id higgsfield-product-photoshoot)
+
+ok "Detected host: $HOST"
+ok "Target install path: $TARGET_DIR/<skill-name>"
+echo
+
+# ─── Step 1: higgsfield CLI ─────────────────────────────────
+if [ "$SKIP_CLI" -eq 0 ]; then
+  if command -v higgsfield &>/dev/null; then
+    HF_VERSION="$(higgsfield version 2>&1 | head -1 || echo unknown)"
+    ok "higgsfield CLI already installed: $HF_VERSION"
+  else
+    info "Installing higgsfield CLI…"
+    if curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh; then
+      ok "higgsfield CLI installed"
+    else
+      err "higgsfield CLI install failed. Try manually: curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh"
+      exit 1
+    fi
+  fi
+else
+  warn "Skipping higgsfield CLI install (--skip-cli)"
+fi
+echo
+
+# ─── Step 2: Auth ───────────────────────────────────────────
+if [ "$SKIP_AUTH" -eq 0 ]; then
+  if higgsfield account status &>/dev/null; then
+    STATUS="$(higgsfield account status 2>&1 | head -1)"
+    ok "Authenticated: $STATUS"
+  else
+    warn "Not authenticated."
+    info "Run: higgsfield auth login"
+    info "Then re-run this script (or pass --skip-auth)."
+    exit 1
+  fi
+else
+  warn "Skipping auth check (--skip-auth)"
+fi
+echo
+
+# ─── Step 3: Install skills ─────────────────────────────────
+mkdir -p "$TARGET_DIR"
+for skill in "${SKILLS[@]}"; do
+  src="$SKILL_DIR/$skill"
+  dst="$TARGET_DIR/$skill"
+  if [ ! -d "$src" ]; then
+    err "Source missing: $src"
+    continue
+  fi
+  if [ -L "$dst" ]; then
+    if [ "$(readlink "$dst")" = "$src" ]; then
+      ok "$skill already symlinked"
+    else
+      info "$skill: replacing stale symlink"
+      rm "$dst"
+      ln -s "$src" "$dst"
+      ok "$skill symlinked"
+    fi
+  elif [ -e "$dst" ]; then
+    warn "$dst exists but is not a symlink to $src — leaving alone."
+  else
+    ln -s "$src" "$dst"
+    ok "$skill symlinked"
+  fi
+done
+echo
+
+# ─── Step 4: Verify ─────────────────────────────────────────
+info "Verifying install…"
+fail=0
+for skill in "${SKILLS[@]}"; do
+  if [ -f "$TARGET_DIR/$skill/SKILL.md" ]; then
+    ok "$skill present"
+  else
+    err "$skill missing at $TARGET_DIR/$skill/SKILL.md"
+    fail=1
+  fi
+done
+echo
+
+if [ "$fail" -eq 0 ]; then
+  cat <<EOF
+${GREEN}${BOLD}Done.${RESET}
+
+Try one of these in your agent:
+
+  "Generate a cinematic shot of a fox in a snowy forest at golden hour."
+  "Train my Soul on these photos: [photo1.jpg, photo2.jpg, ...]"
+  "Make a Pinterest pin of my product [bottle.jpg]"
+
+Documentation:
+  README.md             — overview and skills table
+  COOKBOOK.md           — end-to-end recipes
+  CONTRIBUTING.md       — how to add or change a skill
+
+EOF
+else
+  err "Setup completed with errors. Review the messages above."
+  exit 1
+fi

@@ -1,0 +1,20 @@
+{
+  "name": "higgsfield",
+  "version": "0.3.0",
+  "description": "Image and video generation, Soul Character training, and branded Marketing Studio via Higgsfield AI.",
+  "author": {
+    "name": "Higgsfield AI",
+    "email": "support@higgsfield.ai",
+    "url": "https://higgsfield.ai"
+  },
+  "homepage": "https://higgsfield.ai",
+  "repository": "https://github.com/higgsfield-ai/skills",
+  "license": "MIT",
+  "keywords": [
+    "higgsfield",
+    "image-generation",
+    "video-generation",
+    "soul-character",
+    "marketing-studio"
+  ]
+}

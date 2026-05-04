@@ -1,0 +1,32 @@
+{
+  "name": "higgsfield",
+  "owner": {
+    "name": "Higgsfield AI",
+    "url": "https://higgsfield.ai"
+  },
+  "plugins": [
+    {
+      "name": "higgsfield",
+      "source": "./",
+      "description": "Image and video generation, Soul Character training, and Marketing Studio via the Higgsfield CLI.",
+      "version": "0.3.0",
+      "skills": [
+        {
+          "name": "generate",
+          "path": "higgsfield-generate",
+          "invoke": "/higgsfield:generate"
+        },
+        {
+          "name": "soul-id",
+          "path": "higgsfield-soul-id",
+          "invoke": "/higgsfield:soul-id"
+        },
+        {
+          "name": "product-photoshoot",
+          "path": "higgsfield-product-photoshoot",
+          "invoke": "/higgsfield:product-photoshoot"
+        }
+      ]
+    }
+  ]
+}
