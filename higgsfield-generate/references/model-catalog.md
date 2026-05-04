@@ -2,6 +2,10 @@
 
 The full lineup of generation models available through Higgsfield. Each entry has its own sweet spot — pick the one that matches your brief. For the actual `--model` ID to pass to `hf generate create`, run `hf model list --json` and look up by display name.
 
+Preferred defaults for examples and quick-start guidance in this repo:
+- **Images:** `gpt_image_2` (general/high-fidelity) and `nano_banana_2` (character/cartoon).
+- **Video:** `seedance_2_0` (all-purpose serious video).
+
 ---
 
 ## Image models

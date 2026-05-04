@@ -78,12 +78,12 @@ The skills chain: train Soul → use the reference id in `generate` (including M
 
 | What you want | Skill | Note |
 |---|---|---|
-| Generate any image / video from a prompt | `higgsfield-generate` | Picks model from intent (`flux`, `kling3_0`, `veo3_1`, …) |
+| Generate any image / video from a prompt | `higgsfield-generate` | Prefers `gpt_image_2` / `nano_banana_2` for images and `seedance_2_0` for video by default |
 | Image with my own face | `higgsfield-soul` then `higgsfield-generate` | One-time training, then `--custom_reference_id` |
 | Branded product photo (studio / lifestyle / Pinterest / hero / ad pack) | `higgsfield-product-photoshoot` | Mode-specific prompt enhancer + `gpt_image_2` |
 | Branded ad video / UGC / unboxing / TV spot | `higgsfield-generate` | Marketing Studio mode with avatars + products |
 | Train a custom face identity | `higgsfield-soul` | 5–20 photos, returns `reference_id` |
-| Image-to-video animation | `higgsfield-generate` | `kling3_0` or `seedance_2_0` with `--start-image` |
+| Image-to-video animation | `higgsfield-generate` | Prefer `seedance_2_0` with `--start-image`; use `kling3_0` as lower-cost fallback |
 
 ## How it works
 

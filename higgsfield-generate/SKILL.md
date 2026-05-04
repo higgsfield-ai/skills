@@ -94,8 +94,9 @@ Each flag accepts either a local file path (auto-uploaded) or a UUID (upload id 
 Flags pass through to model schema. Use `hf model get <jst>` to discover.
 
 ```bash
-hf generate create flux_2 --prompt "neon city at dusk" --aspect_ratio 16:9 --resolution 2k
-hf generate create kling3_0 --prompt "camera dollies in" --start-image ./first.png --duration 8
+hf generate create gpt_image_2 --prompt "neon city at dusk" --aspect_ratio 16:9 --resolution 2k
+hf generate create nano_banana_2 --prompt "anime character concept, expressive pose" --image ./ref.png
+hf generate create seedance_2_0 --prompt "camera dollies in" --start-image ./first.png --duration 8
 hf generate create text2image_soul_v2 --prompt "..." --custom_reference_id <soul_ref_id>
 ```
 

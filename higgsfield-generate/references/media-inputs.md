@@ -14,7 +14,7 @@ hf generate create nano_banana_2 --prompt "stylize in watercolor" --image ./phot
 hf generate create nano_banana_2 --prompt "..." --image <upload_id>
 
 # Job id from a previous generation
-hf generate create kling3_0 --prompt "anim" --start-image <previous_job_id>
+hf generate create seedance_2_0 --prompt "anim" --start-image <previous_job_id>
 ```
 
 Type auto-detected from extension:
