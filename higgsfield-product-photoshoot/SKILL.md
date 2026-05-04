@@ -188,6 +188,10 @@ For `social_carousel` and `ad_creative_pack`, count = number of slides / variant
 
 Backend picks a sensible default per mode. Override with `--aspect_ratio` only if the user explicitly asks for a different one. Allowed values: `1:1`, `4:5`, `5:4`, `3:4`, `4:3`, `2:3`, `3:2`, `9:16`, `16:9`.
 
+## Resolution
+
+Use `2k` for every product-photoshoot job.
+
 ## Delivering results
 
 Print the image URLs as a short bulleted list. No JSON, no IDs, no internal model names, no enhanced prompt text. If a job failed, mention it briefly with the failure status.
