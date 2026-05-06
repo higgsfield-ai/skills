@@ -2,25 +2,22 @@
 version: 0.3.0
 name: higgsfield-generate
 description: |
-  Generate images and videos via Higgsfield AI through 30+ models including
-  Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2,
-  plus Marketing Studio for branded ad video/image with curated avatars and
-  imported products.
+  Generate images/videos via Higgsfield AI. Models: GPT Image 2, Nano Banana
+  2/Pro, Soul V2/Cinema/Cast/Location, Seedance 2.0, Veo 3.1, Kling 3.0, Flux
+  2, Z Image, Minimax Hailuo; plus Marketing Studio for branded ads with
+  avatars/products.
   Use when: "generate an image", "make a picture", "create artwork",
-  "make a video", "animate this photo", "image-to-video", "img2vid",
-  "edit this image with AI", "stylize a photo", "remix this image",
-  "produce a clip", "render a scene", "create an ad", "make a UGC video",
-  "generate marketing video", "make a product demo", "create unboxing",
-  "TV spot", "virtual try-on", "product showcase", "brand video",
-  "presenter video for product", "import product from URL",
+  "make a video", "animate this photo", "image-to-video",
+  "edit/stylize/remix this image", "produce a clip", "render a scene",
+  "create an ad", "make a UGC video", "product demo", "unboxing", "TV spot",
+  "brand video", "presenter video", "import product from URL",
   "create avatar for ad".
   Supports text-to-image, image-to-image, image-to-video, reference-based
-  generation, and Marketing Studio (avatars + products + ad modes).
-  Auto-detects whether passed IDs are uploads or previous jobs.
-  Chain with higgsfield-soul-id when the user wants their face in the output.
-  NOT for: training Soul Character (use higgsfield-soul-id), professional product
-  photoshoots with mode-specific prompt enhancement (use
-  higgsfield-product-photoshoot), text-only / chat / TTS tasks.
+  generation, and Marketing Studio. Auto-detects upload IDs vs previous job IDs.
+  Chain with higgsfield-soul-id when the user wants face/identity consistency.
+  NOT for: training Soul Character (use higgsfield-soul-id), product photoshoots
+  (use higgsfield-product-photoshoot), marketplace listing cards (use
+  higgsfield-marketplace-cards), text/chat/TTS tasks.
 argument-hint: "[prompt] [--model <name>] [--image <path-or-id>]"
 allowed-tools: Bash
 ---

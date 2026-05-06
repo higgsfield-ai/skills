@@ -64,6 +64,8 @@ jobs:
           if not fm.get("description"):
               errors.append("description missing")
           desc = fm.get("description", "")
+          if len(desc) > 1024:
+              errors.append(f"description exceeds 1024 characters ({len(desc)})")
           if "Use when" not in desc:
               errors.append("description missing 'Use when' trigger phrases")
           if "NOT for" not in desc:
