@@ -4,11 +4,11 @@ name: higgsfield-generate
 description: |
   Generate images/videos via Higgsfield AI. Models: GPT Image 2, Nano Banana
   2/Pro, Soul V2/Cinema/Cast/Location, Seedance 2.0, Veo 3.1, Kling 3.0, Flux
-  2, Z Image, Minimax Hailuo; plus Marketing Studio for branded ads with
-  avatars/products.
-  Use when: "generate an image", "make a picture", "create artwork",
+  2, Z Image, Hailuo; plus Marketing Studio ads with
+  avatars/products/hooks/settings.
+  Use when: "generate an image", "make a picture",
   "make a video", "animate this photo", "image-to-video",
-  "edit/stylize/remix this image", "produce a clip", "render a scene",
+  "edit/stylize/remix this image", "produce a clip",
   "create an ad", "make a UGC video", "product demo", "unboxing", "TV spot",
   "brand video", "presenter video", "import product from URL",
   "create avatar for ad".
@@ -24,7 +24,7 @@ allowed-tools: Bash
 
 # Higgsfield Generate
 
-Submit jobs to any Higgsfield model. Wraps the `higgsfield` CLI. Covers generic image/video gen and Marketing Studio (branded ads, avatars, products).
+Submit jobs to any Higgsfield model. Wraps the `higgsfield` CLI. Covers generic image/video gen and Marketing Studio (branded ads, avatars, products, hooks, settings).
 
 ## Step 0 — Bootstrap
 
@@ -111,13 +111,28 @@ Stdin prompt: `echo "..." | higgsfield generate create z_image --wait`.
 
 ## Marketing Studio
 
-Branded image/video gen: avatars + products + ad-style modes. Use models `marketing_studio_video` and `marketing_studio_image`.
+Branded image/video gen: avatars + products + optional setup hooks/settings + ad-style modes. Use models `marketing_studio_video` and `marketing_studio_image`.
 
 ### Concepts
 
-- **Avatar** — presenter face. Curated `preset` (browse `higgsfield marketing-studio avatars list`) or `custom` (uploaded photos via `higgsfield marketing-studio avatars create`).
+- **Avatar** — presenter face. Curated `preset` (browse `higgsfield marketing-studio avatars list`) or `custom` (uploaded photos via `higgsfield marketing-studio avatars create`). For UGC modes, an avatar is optional if the brief clearly mentions a person; the backend can create a Soul Character automatically. Pass an avatar when the user wants a specific presenter.
 - **Product** — brand item with title + reference images. Imported from URL (`higgsfield marketing-studio products fetch --url ...`) or created from uploaded images (`higgsfield marketing-studio products create`).
 - **Webproduct** — App Store / web page version. Auto-routes when fetching App Store URLs.
+- **Hook** — reusable opening angle / ad hook. Browse with `higgsfield marketing-studio hooks list`. Hook text is prepended to the user's prompt; it does not replace `--prompt`.
+- **Setting** — reusable environment / scene context. Browse with `higgsfield marketing-studio settings list`.
+
+### Discovery commands
+
+Use these exact list commands when the user asks what already exists:
+
+```bash
+higgsfield marketing-studio avatars list --json
+higgsfield marketing-studio products list --json
+higgsfield marketing-studio hooks list --json
+higgsfield marketing-studio settings list --json
+```
+
+`--hook_id` and `--setting_id` are supported by `marketing_studio_video` only; do not pass them to `marketing_studio_image`.
 
 ### UX rules (additional)
 
@@ -126,27 +141,40 @@ Branded image/video gen: avatars + products + ad-style modes. Use models `market
 ### Workflow — quick ad video
 
 1. **Get product.**
+   - Existing product → `higgsfield marketing-studio products list --json`
    - URL → `higgsfield marketing-studio products fetch --url <url> --wait` (polls until import done)
    - Local images → `higgsfield upload create <photo>...` then `higgsfield marketing-studio products create --title "..." --image <id>...`
-   Capture product id.
-2. **Pick avatar.**
+   Capture product id. When using `--hook_id`, strongly prefer passing `--product_ids`; hooks are designed to pivot into a product and work poorly without product context.
+2. **Pick avatar if needed.**
    - Default: `higgsfield marketing-studio avatars list` and pick a preset matching the brand voice.
    - Custom: `higgsfield marketing-studio avatars create --name "..." --image <upload_id>`.
-3. **Pick mode.** Default `ugc`. Other slugs (canonical from MCP): `tutorial`, `ugc_unboxing`, `hyper_motion`, `product_review`, `tv_spot`, `wild_card`, `ugc_virtual_try_on`, `virtual_try_on`. See `references/marketing-modes.md`.
-4. **Generate (one-shot).**
+   For UGC modes, you may omit `--avatars` when no specific presenter is required and the brief mentions a person; the backend can synthesize a Soul Character.
+3. **Optionally pick setup items.**
+   - Hook: `higgsfield marketing-studio hooks list --json`
+   - Setting: `higgsfield marketing-studio settings list --json`
+   Pass selected IDs as `--hook_id <hook_id>` and `--setting_id <setting_id>` for `marketing_studio_video` only. Do not copy the hook's prompt into `--prompt` unless the user explicitly wants to reinforce the same wording.
+4. **Pick mode if needed.** Default is `ugc`; `--mode` is not required just because `--hook_id` is present. Other current slugs: `ugc_how_to`, `ugc_unboxing`, `product_showcase`, `product_review`, `tv_spot`, `wild_card`, `ugc_virtual_try_on`, `virtual_try_on`. See `references/marketing-modes.md`.
+5. **Generate (one-shot).**
    ```bash
+   PRODUCT_IDS_JSON=$(mktemp)
+   AVATARS_JSON=$(mktemp)
+   printf '["<product_id>"]' > "$PRODUCT_IDS_JSON"
+   printf '[{"id":"<avatar_id>","type":"preset"}]' > "$AVATARS_JSON"
+
    higgsfield generate create marketing_studio_video \
      --prompt "..." \
-     --avatars '[{"id":"<avatar_id>","type":"preset"}]' \
-     --product_ids '[<product_id>]' \
+     --avatars @"$AVATARS_JSON" \
+     --product_ids @"$PRODUCT_IDS_JSON" \
      --mode ugc \
      --duration 15 \
      --resolution 720p \
      --aspect_ratio 9:16 \
      --wait
    ```
+   Add `--hook_id <hook_id>` and/or `--setting_id <setting_id>` when a setup hook/setting was selected.
+   `product_ids` and `avatars` are JSON arrays; pass them via `@/path/to/file.json`. Do not pass a bare UUID to `--product_ids`.
    Resolution is `480p` or `720p`. Aspect ratio is one of `auto`/`21:9`/`16:9`/`4:3`/`1:1`/`3:4`/`9:16`. `--generate-audio true` is supported here (unlike `seedance_2_0`). `--wait` blocks until done; bump `--wait-timeout 30m` for longer ad runs.
-5. **Deliver.** URL + one-line summary (mode, duration).
+6. **Deliver.** URL + one-line summary (mode, duration).
 
 ### Click-to-Ad shortcut (URL-driven)
 
@@ -183,7 +211,7 @@ higgsfield generate create marketing_studio_image \
 
 - `Missing required params: prompt` → user gave no prompt; ask for it.
 - `Invalid values: aspect_ratio=99:99 (allowed: ...)` → bad enum; pick from allowed.
-- `Unknown params: foo` → schema doesn't accept that flag; check `higgsfield model get <jst>`.
+- `Unknown params: foo` → schema doesn't accept that flag; check `higgsfield model get <jst>`. If this happens for `hook_id` or `setting_id`, the selected model/job_set_type does not support Marketing Studio setup items.
 - `Session expired` → `higgsfield auth login`.
 
 See `references/troubleshooting.md` for more.
@@ -198,4 +226,5 @@ Load on demand:
 - `references/troubleshooting.md` — common errors and fixes
 - `references/marketing-avatars.md` — preset vs custom avatars
 - `references/marketing-products.md` — URL fetch vs manual product create
+- `references/marketing-setup-items.md` — hooks/settings discovery and usage
 - `references/marketing-modes.md` — every Marketing Studio mode

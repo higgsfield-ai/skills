@@ -1,13 +1,13 @@
 # Marketing Studio Modes
 
-Canonical mode values for `marketing_studio_video` `--mode`. Mirrored from the MCP server (`fnf-mcp-server/src/provider/fnf-client/generation/marketing-studio-video.ts`). All slugs below are accepted by the API.
+Current mode values for `marketing_studio_video` `--mode`. The live schema is the source of truth, so run `higgsfield model get marketing_studio_video` if validation fails.
 
 | `--mode` slug | Human-readable label | Best for |
 |---|---|---|
 | `ugc` | UGC | Default. Casual, organic-feel content from a presenter. |
-| `tutorial` | Tutorial | "Here's how to use this." Tutorial / explainer. |
+| `ugc_how_to` | Tutorial | "Here's how to use this." Tutorial / explainer. |
 | `ugc_unboxing` | Unboxing | "Just got this in the mail." Unboxing reveal. |
-| `hyper_motion` | Hyper Motion | Clean product highlight, polished. |
+| `product_showcase` | Product Showcase | Clean product highlight, polished. |
 | `product_review` | Product Review | Presenter giving an opinion on the product. |
 | `tv_spot` | TV Spot | Broadcast-style commercial. Higher production. |
 | `wild_card` | Wild Card | Experimental, model picks the vibe. |
@@ -18,9 +18,9 @@ Canonical mode values for `marketing_studio_video` `--mode`. Mirrored from the M
 
 ## Picking flow
 
-- "Looks like a real person filmed on phone" → `ugc` family (`ugc`, `ugc_unboxing`, `ugc_virtual_try_on`, `tutorial`)
+- "Looks like a real person filmed on phone" → `ugc` family (`ugc`, `ugc_unboxing`, `ugc_virtual_try_on`, `ugc_how_to`)
 - "Polished broadcast commercial" → `tv_spot`
-- "Show the product itself, less presenter" → `hyper_motion`
+- "Show the product itself, less presenter" → `product_showcase`
 - "Presenter giving an opinion" → `product_review`
 - "Try clothing on someone" → `virtual_try_on` (polished) or `ugc_virtual_try_on` (organic feel)
 - "Surprise me / something different" → `wild_card`
@@ -35,6 +35,8 @@ For `marketing_studio_video`, the API accepts:
 - `generate_audio`: boolean (default `false`). Generates audio for the video.
 - `avatars`: array of `{id, type}` where `type` is `preset` or `custom`. See `marketing-avatars.md`.
 - `product_ids`: array of product UUIDs (from `higgsfield marketing-studio products fetch` or `create`). See `marketing-products.md`.
+- `hook_id`: optional Marketing Studio setup hook UUID. See `marketing-setup-items.md`.
+- `setting_id`: optional Marketing Studio setup setting UUID. See `marketing-setup-items.md`.
 - `medias`: optional reference images with role `image`, `start_image`, or `end_image`.
 - `feature: "click_to_ad"`: when generating from a single landing-page URL (Click-to-Ad flow).
 - `product: { id?, url? }`: alternative single-product reference; the URL flow auto-fetches.

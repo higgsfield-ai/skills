@@ -50,7 +50,7 @@ More options in [INSTALL.md](./INSTALL.md). Agent-driven install (paste into you
 
 | Skill | Invoke | Description |
 |---|---|---|
-| [`higgsfield-generate`](./higgsfield-generate) | `/higgsfield:generate` | Image and video generation across 30+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2, …) plus Marketing Studio for branded ads with avatars and imported products. |
+| [`higgsfield-generate`](./higgsfield-generate) | `/higgsfield:generate` | Image and video generation across 30+ models (Nano Banana 2, Soul V2, Veo 3.1, Kling 3.0, Seedance 2.0, Flux 2, GPT Image 2, …) plus Marketing Studio for branded ads with avatars, products, hooks, and settings. |
 | [`higgsfield-soul-id`](./higgsfield-soul-id) | `/higgsfield:soul-id` | Train a Soul Character — a reusable, face-faithful identity model. Returns a `reference_id` consumable by Soul-aware generation. |
 | [`higgsfield-product-photoshoot`](./higgsfield-product-photoshoot) | `/higgsfield:product-photoshoot` | Brand-quality product imagery with mode-specific prompt enhancement. 10 modes (studio, lifestyle, Pinterest, hero banner, ad packs, virtual try-on, …) backed by `gpt_image_2`. |
 | [`higgsfield-marketplace-cards`](./higgsfield-marketplace-cards) | `/higgsfield:marketplace-cards` | Marketplace product cards: compliant main image, secondary product images, and A+ style modules via backend prompt enhancement. |
@@ -79,9 +79,9 @@ The skills chain: train Soul → use the reference id in `generate` (including M
 | Mode | What it's for |
 |---|---|
 | `ugc` | Default. Casual, organic-feel content from a presenter |
-| `tutorial` | Tutorial / explainer |
+| `ugc_how_to` | Tutorial / explainer |
 | `ugc_unboxing` | Unboxing reveal |
-| `hyper_motion` | Clean product highlight, polished |
+| `product_showcase` | Clean product highlight, polished |
 | `product_review` | Presenter giving an opinion |
 | `tv_spot` | Broadcast-style commercial |
 | `wild_card` | Experimental, model picks the vibe |
@@ -96,7 +96,7 @@ The skills chain: train Soul → use the reference id in `generate` (including M
 | Image with my own face | `higgsfield-soul-id` then `higgsfield-generate` | One-time training, then `--soul-id` |
 | Branded product photo (studio / lifestyle / Pinterest / hero / ad pack) | `higgsfield-product-photoshoot` | Mode-specific prompt enhancer + `gpt_image_2` |
 | Marketplace product cards / A+ style content | `higgsfield-marketplace-cards` | Main image, secondary images, and A+ style modules with hidden marketplace prompt templates |
-| Branded ad video / UGC / unboxing / TV spot | `higgsfield-generate` | Marketing Studio mode with avatars + products |
+| Branded ad video / UGC / unboxing / TV spot | `higgsfield-generate` | Marketing Studio mode with avatars + products + optional hooks/settings |
 | Train a custom face identity | `higgsfield-soul-id` | 5–20 photos, returns `reference_id` |
 | Image-to-video animation | `higgsfield-generate` | Prefer `seedance_2_0` with `--start-image`; use `kling3_0` as lower-cost fallback |
 

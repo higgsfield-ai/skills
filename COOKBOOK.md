@@ -100,11 +100,16 @@ angles: organic UGC, unboxing reveal, presenter review, and a TV-spot version.
 3. **Generate 4 modes in parallel:**
 
    ```bash
+   PRODUCT_IDS_JSON=$(mktemp)
+   AVATARS_JSON=$(mktemp)
+   printf '["<product_id>"]' > "$PRODUCT_IDS_JSON"
+   printf '[{"id":"<avatar_id>","type":"preset"}]' > "$AVATARS_JSON"
+
    for mode in ugc ugc_unboxing product_review tv_spot; do
      higgsfield generate create marketing_studio_video \
        --prompt "<short hook tied to the mode>" \
-       --avatars '[{"id":"<avatar_id>","type":"preset"}]' \
-       --product_ids '[<product_id>]' \
+       --avatars @"$AVATARS_JSON" \
+       --product_ids @"$PRODUCT_IDS_JSON" \
        --mode $mode \
        --duration 15 \
        --resolution 720p \
@@ -120,7 +125,7 @@ angles: organic UGC, unboxing reveal, presenter review, and a TV-spot version.
 **Tips:**
 
 - Modes are not interchangeable. `ugc` reads as phone-shot organic content; `tv_spot` reads as broadcast-quality. Don't mix them in the same campaign without intent.
-- For a brand where the founder should appear instead of a preset avatar, run `higgsfield-soul-id` first for the founder, then pass `--avatars '[{"id":"<soul_ref_id>","type":"custom"}]'` to Marketing Studio.
+- For a brand where the founder should appear instead of a preset avatar, run `higgsfield-soul-id` first for the founder, write `[{"id":"<soul_ref_id>","type":"custom"}]` to a JSON file, then pass `--avatars @/path/to/avatars.json` to Marketing Studio.
 - Hooks (the prompt on `--prompt`) matter more than mode for performance. Test 4 hooks × 1 mode before testing 1 hook × 4 modes.
 
 ---
@@ -170,9 +175,12 @@ higgsfield marketing-studio avatars create \
   --image-url <cloudfront_url>
 # Returns avatar_id
 
+AVATARS_JSON=$(mktemp)
+printf '[{"id":"<avatar_id>","type":"custom"}]' > "$AVATARS_JSON"
+
 higgsfield generate create marketing_studio_video \
   --prompt "<full script with scene labels>" \
-  --avatars '[{"id":"<avatar_id>","type":"custom"}]' \
+  --avatars @"$AVATARS_JSON" \
   --mode ugc \
   --duration 60 \
   --aspect_ratio 16:9 \

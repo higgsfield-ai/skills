@@ -31,10 +31,16 @@ higgsfield marketing-studio avatars create --name "Founder" --image $ID --image-
 ## Passing to video
 
 ```bash
+AVATARS_JSON=$(mktemp)
+printf '[{"id":"<avatar_id>","type":"preset"}]' > "$AVATARS_JSON"
+
 higgsfield generate create marketing_studio_video \
-  --avatars '[{"id":"<avatar_id>","type":"preset"}]' \
+  --avatars @"$AVATARS_JSON" \
   ... \
   --wait
 ```
 
 `type` is `preset` for curated, `custom` for user-created.
+`--avatars` expects a JSON array, so pass it via `@/path/to/file.json`.
+
+For UGC modes, an avatar is optional if the brief clearly mentions a person and no specific presenter was requested; the backend can synthesize a Soul Character automatically.

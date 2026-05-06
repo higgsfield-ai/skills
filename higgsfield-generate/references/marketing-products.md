@@ -52,5 +52,6 @@ higgsfield marketing-studio webproducts create \
 
 ```bash
 higgsfield marketing-studio products list
+higgsfield marketing-studio products list --json
 higgsfield marketing-studio webproducts list
 ```
