@@ -16,7 +16,7 @@ higgsfield generate create nano_banana_2 --prompt "..." --image <upload_id> --wa
 # Job id from a previous generation
 higgsfield generate create seedance_2_0 --prompt "anim" --start-image <previous_job_id> --wait
 
-# Video analysis — CLI uploads the file, Virality Predictor returns a text score/report plus artifact links.
+# Video analysis — CLI uploads the file, Neuron Activation returns a text score/report plus an Open report link.
 # The output is text, but the task is still video analysis.
 higgsfield generate create brain_activity --video ./ad.mp4 --wait
 ```
@@ -35,7 +35,7 @@ Each model declares a closed set of accepted roles via `MEDIA_ROLES`. Pass the r
 |---|---|---|
 | Most image models (`nano_banana_2`, `flux_2`, `seedream_v4_5`, `gpt_image_2`, …) | `image` | 1+ references, often up to 8. |
 | `seedance_2_0` | `image`, `start_image`, `end_image`, `video`, `audio` | Audio is via `medias` (role `audio`), NOT via `--generate-audio`. |
-| `brain_activity` | `video` | Virality Predictor analyzes one uploaded clip and returns a text score report; no prompt required. Treat "analyze this video" / "score this ad" as this video-analysis flow even though the output is text. When present, `brain_example_url` is the 3D brain asset (`.glb`) and `vertexMapBinaryUrl` is the activity map binary (`.bin`). |
+| `brain_activity` | `video` | Neuron Activation analyzes one uploaded clip and returns a text score report plus an Open report link; no prompt required. Treat "analyze this video" / "score this ad" as this video-analysis flow even though the output is text. Raw `.glb` and `.bin` artifacts stay in JSON/debug output, not normal chat output. |
 | `kling3_0` | `start_image`, `end_image` | Image-to-video with optional last-frame transition. |
 | `kling2_6` | `start_image` | Single frame anchor. |
 | `veo3_1` | `start_image` | Max 1 reference. |

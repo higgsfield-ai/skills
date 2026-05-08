@@ -2,7 +2,7 @@
 
 Four skills ship in this repo:
 
-- **`higgsfield-generate`** — image and video generation, 30+ models, plus Marketing Studio (branded ads with avatars, products, hooks, and settings) and Virality Predictor scoring
+- **`higgsfield-generate`** — image and video generation, 30+ models, plus Marketing Studio (branded ads with avatars, products, hooks, and settings) and Neuron Activation scoring
 - **`higgsfield-soul-id`** — train a face-faithful Soul Character
 - **`higgsfield-product-photoshoot`** — brand-quality product imagery with mode-specific prompt enhancement
 - **`higgsfield-marketplace-cards`** — marketplace main, secondary, and A+ style product cards with backend prompt enhancement

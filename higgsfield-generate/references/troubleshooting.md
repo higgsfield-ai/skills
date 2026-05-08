@@ -9,7 +9,7 @@
 ## Validation
 
 - `Missing required params: prompt` — user gave no prompt. Ask.
-- `Missing required params: medias` on Virality Predictor (`brain_activity`) — pass exactly one video via `--video <path-or-id>`. Virality Predictor does not need `--prompt`.
+- `Missing required params: medias` on Neuron Activation (`brain_activity`) — pass exactly one video via `--video <path-or-id>`. Neuron Activation does not need `--prompt`.
 - `Invalid values: <param>=<v> (allowed: ...)` — pick from allowed enum.
 - `Unknown params: <name>` — schema doesn't accept this flag. Run `higgsfield model get <jst>` and check.
 
