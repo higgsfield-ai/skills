@@ -3,8 +3,10 @@
 The full lineup of generation models available through Higgsfield. Each entry has its own sweet spot — pick the one that matches your brief. For the actual `--model` ID to pass to `higgsfield generate create`, run `higgsfield model list --json` and look up by display name.
 
 Preferred defaults for examples and quick-start guidance in this repo:
-- **Images:** `gpt_image_2` (general/high-fidelity) and `nano_banana_2` (character/cartoon).
-- **Video:** `seedance_2_0` (all-purpose serious video).
+- **Images/design/text:** `gpt_image_2`.
+- **Video:** `seedance_2_0`.
+- **Character/stylized/reference image work:** `nano_banana_2`, then `nano_banana_pro` for harder briefs.
+- **Ads/UGC/product demos:** `marketing_studio_video` or `marketing_studio_image`.
 
 ---
 
@@ -58,28 +60,33 @@ Preferred defaults for examples and quick-start guidance in this repo:
 
 Practical defaults from production use. Match by intent, not surface keyword. When two could apply, the higher entry wins.
 
+Core focus first: GPT Image 2 for images/design/text, Seedance 2.0 for video,
+Nano Banana 2/Pro for character or reference-driven image work, and Marketing
+Studio for ads and brand/product content.
+
 ### Image — pick this default
 
 1. **Brand product visual (Pinterest pin, lifestyle, hero banner, ad pack, virtual try-on, restyle)** → use `higgsfield-product-photoshoot` instead. NOT this skill.
-2. **Branded ad image with presenter avatar + product (Marketing Studio shape with RAG over user assets)** → Marketing Studio Image.
-3. **Aesthetic UGC / fashion editorial / lifestyle character** → Soul 2.0.
-4. **Cinematic still frame** → Soul Cinema.
-5. **Highly characterful, creative character (text-only, distinctive persona, no reference photo)** → Soul Cast.
-6. **Locations / environments / no-people scenes** → Soul Location. Best in class — nothing else matches.
-7. **Vector illustrations OR face edit + complex scene swap (more than outfit change, no heavy filters)** → Seedream 4.5. Seedream 5.0 Lite for the same niche but faster.
-8. **Soul Character (reference id from `higgsfield-soul-id`)** → Soul 2.0 for stills; Soul Cinema for cinematic vibe.
-9. **Anime / stylized / non-default look where defaults feel flat** → Flux Kontext Max or Grok Imagine. Worth trying.
-10. **Character or cartoon-style work** → Nano Banana 2; step up to Nano Banana Pro on hard cases.
-11. **Fast and cheap iteration / drafts / LoRA work** → Z Image.
-12. **Default for everything else** → GPT Image 2. High-fidelity general generation, graphic design, UI, banners, anything with on-image text.
-13. **Intent-only request, no preference, want auto-routing** → Auto.
+2. **Generated product concept / packaging / can / bottle with brand name or label text** → GPT Image 2.
+3. **Branded ad image with presenter avatar + product (Marketing Studio shape with RAG over user assets)** → Marketing Studio Image.
+4. **Aesthetic UGC / fashion editorial / lifestyle character** → Soul 2.0.
+5. **Cinematic still frame** → Soul Cinema.
+6. **Highly characterful, creative character (text-only, distinctive persona, no reference photo)** → Soul Cast.
+7. **Locations / environments / no-people scenes** → Soul Location. Best in class — nothing else matches.
+8. **Vector illustrations OR face edit + complex scene swap (more than outfit change, no heavy filters)** → Seedream 4.5. Seedream 5.0 Lite for the same niche but faster.
+9. **Soul Character (reference id from `higgsfield-soul-id`)** → Soul 2.0 for stills; Soul Cinema for cinematic vibe.
+10. **Anime / stylized / non-default look where defaults feel flat** → Flux Kontext Max or Grok Imagine. Worth trying.
+11. **Character or cartoon-style work** → Nano Banana 2; step up to Nano Banana Pro on hard cases.
+12. **Fast and cheap iteration / drafts / LoRA work** → Z Image.
+13. **Default for everything else** → GPT Image 2. High-fidelity general generation, graphic design, UI, banners, anything with on-image text.
+14. **Intent-only request, no preference, want auto-routing** → Auto.
 
 ### Video — pick this default
 
 1. **All advertising / commercial video (UGC, unboxing, TV spot, product showcase, branded ad)** → Marketing Studio. See `marketing-modes.md`.
-2. **Default all-purpose serious video (multi-shot, consistent identity, motion-heavy, production work)** → Seedance 2.0. SOTA.
+2. **Default all-purpose serious video (multi-shot, consistent identity, motion-heavy, production work, image-to-video, 4–15s requests)** → Seedance 2.0. SOTA. Validate this first before falling back.
 3. **Single-plane scene without strong dynamics, cheaper** → Kling 3.0. Substitute for Seedance 2.0 when motion isn't critical.
-4. **Cheap clean shot without cuts** → Seedance 1.5 Pro.
+4. **Cheap clean shot without cuts, only when the user asks for budget output** → Seedance 1.5 Pro. Do not pick it over Seedance 2.0 just because duration validation looks simpler.
 5. **Image-to-video with explicit first frame** → Kling 3.0 with a start frame, or Seedance 2.0 with a start frame for higher motion.
 6. **Cinema-grade execution (highest fidelity, film look)** → Cinema Studio Video 3.0.
 7. **Cheap with strong physics, audio not needed** → Minimax Hailuo.
@@ -92,6 +99,7 @@ Practical defaults from production use. Match by intent, not surface keyword. Wh
 ### Things to keep in mind
 
 - **Don't invent model names.** Run `higgsfield model list` if you're unsure — submitting an unknown model returns `unknown model "..."`.
+- **Don't downgrade for schema convenience.** If Seedance 2.0 fits the intent, validate or submit it first; do not choose Seedance 1.5 only because it lists a requested duration more explicitly.
 - **Audio reference for Seedance 2.0** comes through the media inputs with role `audio`, not via a separate `generate_audio` flag.
 - **Text-only models reject reference images.** Z Image, Soul Cast, Soul Location, and some Wan configs are text-only; pass no media flags to them.
 - **Route branded product visuals through `higgsfield-product-photoshoot`** — its prompt enhancer adds 10 mode-specific templates on top of GPT Image 2. Direct GPT Image 2 generation here is the right call for everything that isn't a product photoshoot.

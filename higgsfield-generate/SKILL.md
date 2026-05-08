@@ -2,18 +2,19 @@
 version: 0.3.0
 name: higgsfield-generate
 description: |
-  Generate images/videos via Higgsfield AI. Models: GPT Image 2, Nano Banana
-  2/Pro, Soul V2/Cinema/Cast/Location, Seedance 2.0, Veo 3.1, Kling 3.0, Flux
-  2, Z Image, Hailuo; plus Marketing Studio ads with
-  avatars/products/hooks/settings.
+  Generate images/videos via Higgsfield AI. Default focus: GPT Image 2 for
+  images/design/text, Seedance 2.0 for video, Nano Banana 2/Pro for character
+  and reference-driven image work, and Marketing Studio for ads with
+  avatars/products/hooks/settings. Also supports specialist Soul
+  V2/Cinema/Cast/Location and Kling 3.0.
   Use when: "generate an image", "make a picture",
   "make a video", "animate this photo", "image-to-video",
   "edit/stylize/remix this image", "produce a clip",
   "create an ad", "make a UGC video", "product demo", "unboxing", "TV spot",
   "brand video", "presenter video", "import product from URL",
   "create avatar for ad".
-  Supports text-to-image, image-to-image, image-to-video, reference-based
-  generation, and Marketing Studio. Auto-detects upload IDs vs previous job IDs.
+  Supports text-to-image, image-to-image, image-to-video, references, and
+  Marketing Studio.
   Chain with higgsfield-soul-id when the user wants face/identity consistency.
   NOT for: training Soul Character (use higgsfield-soul-id), product photoshoots
   (use higgsfield-product-photoshoot), marketplace listing cards (use
@@ -44,15 +45,21 @@ Skip both checks if `higgsfield account status` already prints account info.
 2. No internal jargon. Don't narrate "calling higgsfield cost", "polling job".
 3. Detect the user's language from the first message and reply in it. Technical args (`--aspect_ratio 16:9`) stay English.
 4. Don't batch-ask. Pick a sane default model and ask one thing at a time only if genuinely missing.
-5. Don't pre-estimate cost. Just submit unless the user asks.
+5. Don't pre-estimate cost or optimize for cheaper models unless the user asks. Prefer the quality default first.
 6. Pass `--wait` to `generate create` so the command blocks until done and prints the result URL itself. Avoid the two-step `create` → `wait` pattern.
 
 ## Workflow — generic generation
 
-1. **Pick a model.** Practical defaults from production use:
+1. **Pick a model.** Start with the core defaults unless the brief clearly needs a specialist:
+
+   - **GPT Image 2** → default image model for high-fidelity general generation, graphic design, UI, banners, typography, and on-image text.
+   - **Seedance 2.0** → default video model for serious motion, cinematic clips, multi-shot work, image-to-video, and 4–15s production-quality output. 12s is valid.
+   - **Nano Banana 2/Pro** → default for character, cartoon, stylized, and reference-driven image work; use Pro for harder briefs.
+   - **Marketing Studio** → default for ads, UGC, product demos, unboxing, TV spots, presenter videos, and brand/product workflows.
 
    **Image:**
    - Brand product visual (Pinterest pin, lifestyle, hero banner, ad pack, virtual try-on) → use `higgsfield-product-photoshoot` instead. NOT this skill.
+   - Generated product concept / packaging / can / bottle with brand name or label text → GPT Image 2.
    - Branded ad image with avatar + product (Marketing Studio shape) → Marketing Studio Image (see Marketing Studio below)
    - Aesthetic UGC / fashion editorial / lifestyle character → Soul 2.0
    - Cinematic still frame → Soul Cinema
@@ -60,15 +67,15 @@ Skip both checks if `higgsfield account status` already prints account info.
    - Locations / environments / no-people scenes → Soul Location (best in class)
    - Vector illustrations OR face edit + complex scene swap → Seedream 4.5
    - Soul Character (reference id from `higgsfield-soul-id`) → Soul 2.0 for stills, Soul Cinema for cinematic
-   - Fast and cheap iteration → Z Image
    - Character or cartoon-style work → Nano Banana 2; step up to Nano Banana Pro on hard cases
+   - Fast and cheap iteration → Z Image
    - **Default for everything else → GPT Image 2.** Graphic design, UI, banners, typography, and high-fidelity general generation.
 
    **Video:**
    - All advertising / commercial / branded ad video → Marketing Studio (see Marketing Studio below)
-   - **Default all-purpose serious video (multi-shot, consistent identity, motion-heavy) → Seedance 2.0.** SOTA.
+   - **Default all-purpose serious video (multi-shot, consistent identity, motion-heavy, image-to-video, 4–15s requests) → Seedance 2.0.** SOTA. Do not downgrade to Seedance 1.5 just because its duration enum is easier to read; validate Seedance 2.0 first.
    - Single-plane scene without strong dynamics, cheaper than Seedance 2.0 → Kling 3.0
-   - Cheap clean shot without cuts → Seedance 1.5 Pro
+   - Cheap clean shot without cuts, only when the user asks for cheaper/budget output → Seedance 1.5 Pro
    - Cinema-grade highest fidelity → Cinema Studio Video 3.0
    - Cheap with strong physics, no audio needed → Minimax Hailuo
    - Fast batch / volume → Veo 3.1 Lite
@@ -76,7 +83,7 @@ Skip both checks if `higgsfield account status` already prints account info.
    For the actual `--model` ID to pass to `higgsfield generate create`, run `higgsfield model list --json | jq` to map display names to IDs. See `references/model-catalog.md` for the full table.
 
 2. **Pass media inputs straight to flags.** Media flags accept a local file path **or** a UUID. CLI auto-uploads paths and auto-detects job vs upload for UUIDs. No need to pre-upload. Each model declares accepted roles (`image`, `start_image`, `end_image`, `video`, `audio`) — see `references/media-inputs.md`.
-3. **Validate quickly.** If unsure of params, run `higgsfield model get <jst> --json` once and pass only what's needed. Use schema defaults otherwise. The server returns `adjustments` for non-fatal coercions (e.g. `aspect_ratio=99:99` → closest match) and a structured error for invalid declared-param values.
+3. **Validate quickly.** If unsure of params, run `higgsfield model get <jst> --json` once and pass only what's needed. Validate the preferred model before falling back to an older one. Use schema defaults otherwise. The server returns `adjustments` for non-fatal coercions (e.g. `aspect_ratio=99:99` → closest match) and a structured error for invalid declared-param values.
 4. **Submit and wait in one shot.** `higgsfield generate create <jst> --prompt "..." [media flags] [param flags] --wait`. Blocks until terminal status and prints the result URL on stdout. Tunables: `--wait-timeout 20m` (default 10m), `--wait-interval 5s` (default 3s).
 5. **Deliver.** Send the URL plus a one-line summary (model, duration if video).
 
@@ -101,7 +108,7 @@ Flags pass through to model schema. Use `higgsfield model get <jst>` to discover
 ```bash
 higgsfield generate create gpt_image_2 --prompt "neon city at dusk" --aspect_ratio 16:9 --resolution 2k --wait
 higgsfield generate create nano_banana_2 --prompt "anime character concept, expressive pose" --image ./ref.png --wait
-higgsfield generate create seedance_2_0 --prompt "camera dollies in" --start-image ./first.png --duration 8 --wait
+higgsfield generate create seedance_2_0 --prompt "camera dollies in" --start-image ./first.png --duration 12 --wait
 higgsfield generate create text2image_soul_v2 --prompt "..." --soul-id <soul_ref_id> --quality 2k --wait
 ```
 
