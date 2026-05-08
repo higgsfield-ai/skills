@@ -5,7 +5,7 @@ The full lineup of generation models available through Higgsfield. Each entry ha
 Preferred defaults for examples and quick-start guidance in this repo:
 - **Images:** `gpt_image_2` (general/high-fidelity) and `nano_banana_2` (character/cartoon).
 - **Video:** `seedance_2_0` (all-purpose serious video).
-- **Video analysis:** Virality Predictor (`brain_activity`) for engagement, attention, hook, and virality scoring.
+- **Video analysis:** Virality Predictor (`brain_activity`) for engagement, attention, hook, and virality scoring. It may appear under text/analysis because the output is a report, but the input and intent are video analysis.
 
 ---
 
@@ -105,6 +105,7 @@ Practical defaults from production use. Match by intent, not surface keyword. Wh
 ### Things to keep in mind
 
 - **Don't invent model names.** Run `higgsfield model list` if you're unsure — submitting an unknown model returns `unknown model "..."`.
+- **Do not misroute video analysis because the output is text.** A request like "analyze this video" or "score this ad" maps to Virality Predictor (`brain_activity`) when the user provides or references a finished video.
 - **Audio reference for Seedance 2.0** comes through the media inputs with role `audio`, not via a separate `generate_audio` flag.
 - **Prompt-only models reject reference media.** Z Image, Soul Cast, Soul Location, and some Wan configs are prompt-only; pass no media flags to them. Virality Predictor is different: it returns text but requires a video input.
 - **Route branded product visuals through `higgsfield-product-photoshoot`** — its prompt enhancer adds 10 mode-specific templates on top of GPT Image 2. Direct GPT Image 2 generation here is the right call for everything that isn't a product photoshoot.

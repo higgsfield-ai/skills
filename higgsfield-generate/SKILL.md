@@ -45,6 +45,20 @@ Skip both checks if `$HF_BIN account status` already prints account info.
 5. Don't pre-estimate cost. Just submit unless the user asks.
 6. Pass `--wait` to `generate create` so the command blocks until done and prints the result URL itself. Avoid the two-step `create` → `wait` pattern.
 
+## Discovery guardrail
+
+When looking for a Higgsfield feature/model, do not rely only on semantic search or CLI `--help`. First run an unfiltered model list, then inspect likely `job_set_type` names. If the user says a model exists but search returns no results, trust that signal and verify with the full model list before answering.
+
+Virality Predictor is exposed as:
+
+- Customer-facing name: Virality Predictor
+- Technical `job_set_type`: `brain_activity`
+- Category/output: text report. This is video-in/text-out analysis, not a text/chat generation model.
+- Input: uploaded video
+- Purpose: finished-video engagement, hook, attention, and virality analysis
+
+If the user says "analyze this video", "score this ad", "evaluate the hook", or similar, route to `brain_activity` even though it appears under text/analysis models. Classify by task intent and required input, not by output category alone.
+
 ## Workflow — generic generation
 
 1. **Pick a model.** Practical defaults from production use:
@@ -72,7 +86,7 @@ Skip both checks if `$HF_BIN account status` already prints account info.
    - Fast batch / volume → Veo 3.1 Lite
 
    **Video analysis:**
-   - Rate a finished video's hook, virality potential, attention, engagement, retention, or distraction risk → Virality Predictor (`brain_activity`). This returns a text score/report, not a generated media asset.
+   - Rate a finished video's hook, virality potential, attention, engagement, retention, or distraction risk → Virality Predictor (`brain_activity`). This is a video analysis model that returns a text score/report, not a generated media asset.
 
    For the actual `--model` ID to pass to `higgsfield generate create`, run `higgsfield model list --json | jq` to map display names to IDs. See `references/model-catalog.md` for the full table.
 
