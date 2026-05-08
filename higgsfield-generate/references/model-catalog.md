@@ -5,7 +5,7 @@ The full lineup of generation models available through Higgsfield. Each entry ha
 Preferred defaults for examples and quick-start guidance in this repo:
 - **Images/design/text:** `gpt_image_2`, `nano_banana_2`.
 - **Video:** `seedance_2_0`.
-- **Character/stylized image work:** `soul_v2`
+- **Character/stylized image work:** `text2image_soul_v2`
 - **Ads/UGC/product demos:** `marketing_studio_video` or `marketing_studio_image`.
 
 ---
