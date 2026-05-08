@@ -13,30 +13,32 @@ description: |
   NOT for: training Soul Character (use higgsfield-soul-id), product photoshoots
   (use higgsfield-product-photoshoot), marketplace listing cards (use
   higgsfield-marketplace-cards), general text/chat/TTS tasks.
-  Also supports Brain Activity for finished-video engagement analysis.
+  Also supports Virality Predictor for finished-video engagement analysis.
 argument-hint: "[prompt-or-analysis-request] [--model <name>] [--image|--video <path-or-id>]"
 allowed-tools: Bash
 ---
 
 # Higgsfield Generate
 
-Submit jobs to any Higgsfield model. Wraps the `higgsfield` CLI. Covers generic image/video gen, Marketing Studio (branded ads, avatars, products, hooks, settings), and, secondarily, Brain Activity video engagement scoring.
+Submit jobs to any Higgsfield model. Wraps the `higgsfield` CLI. Covers generic image/video gen, Marketing Studio (branded ads, avatars, products, hooks, settings), and, secondarily, Virality Predictor video scoring.
 
 ## Step 0 — Bootstrap
 
 Before any other command, make sure the CLI is installed and authenticated:
 
-1. If `higgsfield` is not on `$PATH`, install it:
+1. Use the local dev binary:
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
+   HF_BIN="/Users/arss/cli-global/cli-src/hf"
    ```
-2. If `higgsfield account status` fails with `Session expired` / `Not authenticated`, ask the user to run `higgsfield auth login` (interactive, opens a browser) and wait for them to confirm before continuing.
+   Use `$HF_BIN` for execution even when examples show `higgsfield` for readability. Do not fall back to a globally installed `higgsfield` binary for this skill.
+2. If `$HF_BIN` does not exist or is not executable, stop and tell the user the local CLI build is missing.
+3. If `$HF_BIN account status` fails with `Session expired` / `Not authenticated`, ask the user to run `$HF_BIN auth login` (interactive, opens a browser) and wait for them to confirm before continuing.
 
-Skip both checks if `higgsfield account status` already prints account info.
+Skip both checks if `$HF_BIN account status` already prints account info.
 
 ## UX Rules
 
-1. Be concise. No raw IDs, no JSON dumps in chat. Print the media URL for generated assets, or the text summary for Brain Activity.
+1. Be concise. No raw IDs, no JSON dumps in chat. Print the media URL for generated assets, or the text summary for Virality Predictor.
 2. No internal jargon. Don't narrate "calling higgsfield cost", "polling job".
 3. Detect the user's language from the first message and reply in it. Technical args (`--aspect_ratio 16:9`) stay English.
 4. Don't batch-ask. Pick a sane default model and ask one thing at a time only if genuinely missing.
@@ -70,14 +72,14 @@ Skip both checks if `higgsfield account status` already prints account info.
    - Fast batch / volume → Veo 3.1 Lite
 
    **Video analysis:**
-   - Rate a finished video's hook, virality potential, attention, engagement, retention, or distraction risk → Brain Activity (`brain_activity`). This returns a text score/report, not a generated media asset.
+   - Rate a finished video's hook, virality potential, attention, engagement, retention, or distraction risk → Virality Predictor (`brain_activity`). This returns a text score/report, not a generated media asset.
 
    For the actual `--model` ID to pass to `higgsfield generate create`, run `higgsfield model list --json | jq` to map display names to IDs. See `references/model-catalog.md` for the full table.
 
 2. **Pass media inputs straight to flags.** Media flags accept a local file path **or** a UUID. CLI auto-uploads paths and auto-detects job vs upload for UUIDs. No need to pre-upload. Each model declares accepted roles (`image`, `start_image`, `end_image`, `video`, `audio`) — see `references/media-inputs.md`.
 3. **Validate quickly.** If unsure of params, run `higgsfield model get <jst> --json` once and pass only what's needed. Use schema defaults otherwise. The server returns `adjustments` for non-fatal coercions (e.g. `aspect_ratio=99:99` → closest match) and a structured error for invalid declared-param values.
-4. **Submit and wait in one shot.** `higgsfield generate create <jst> [--prompt "..."] [media flags] [param flags] --wait`. Blocks until terminal status and prints the result on stdout. Tunables: `--wait-timeout 20m` (default 10m), `--wait-interval 5s` (default 3s). Brain Activity does not need a prompt; pass `--video`.
-5. **Deliver.** For generated media, send the URL plus a one-line summary (model, duration if video). For Brain Activity, deliver the text scores and business interpretation.
+4. **Submit and wait in one shot.** `higgsfield generate create <jst> [--prompt "..."] [media flags] [param flags] --wait`. Blocks until terminal status and prints the result on stdout. Tunables: `--wait-timeout 20m` (default 10m), `--wait-interval 5s` (default 3s). Virality Predictor does not need a prompt; pass `--video`.
+5. **Deliver.** For generated media, send the URL plus a one-line summary (model, duration if video). For Virality Predictor, deliver the scores, business interpretation, and artifact links: the 3D brain asset (`brain_example_url`, `.glb`) and the activity map binary (`vertexMapBinaryUrl`, `.bin`) when present.
 
 To inspect or rerun later, `higgsfield generate list --json` and `higgsfield generate get <id> --json` work for retrospection. `higgsfield generate wait <id>` is still available if you ever need to rejoin a job started without `--wait`.
 
@@ -105,7 +107,7 @@ higgsfield generate create text2image_soul_v2 --prompt "..." --soul-id <soul_ref
 higgsfield generate create brain_activity --video ./ad.mp4 --wait
 ```
 
-For machine-readable output (chained pipelines, agent context), add `--json`. With `--wait --json` you get the final job object array. Without `--wait`, you get the job IDs. Brain Activity stores its analysis in the job params and prints a text summary by default.
+For machine-readable output (chained pipelines, agent context), add `--json`. With `--wait --json` you get the final job object array. Without `--wait`, you get the job IDs. Virality Predictor stores its analysis and artifact links in the job params and prints a text summary by default.
 
 Stdin prompt: `echo "..." | higgsfield generate create z_image --wait`.
 
@@ -213,9 +215,9 @@ higgsfield generate create marketing_studio_image \
   --wait
 ```
 
-## Brain Activity video scoring
+## Virality Predictor video scoring
 
-Use `brain_activity` when the user wants to evaluate a finished video as a business creative: hook strength, virality potential, attention, engagement, retention, or how well the content/product holds focus and minimizes distraction.
+Use Virality Predictor (`brain_activity`) when the user wants to evaluate a finished video as a business creative: hook strength, virality potential, attention, engagement, retention, or how well the content/product holds focus and minimizes distraction. Treat "Virality Predictor" as the customer-facing feature name; `brain_activity` is only the CLI/job_set_type.
 
 ```bash
 higgsfield generate create brain_activity --video ./creative.mp4 --wait
@@ -223,10 +225,29 @@ higgsfield generate create brain_activity --video ./creative.mp4 --wait
 
 The result is text, not a generated image/video. Report the overall engagement score, peak hook second, sustain score, strongest/weakest regions, and report URL if present. Interpret it as an objective engagement proxy for creative testing: higher Visual/Auditory/Language/Attention scores suggest stronger stimulus and focus; lower Default Mode is better because it suggests less mind-wandering.
 
+When artifact URLs are present, present them with user-facing labels:
+
+- `brain_example_url` (`.glb`) -> **3D brain asset**. Link it as a 3D model asset; do not claim it is a generated video or inline-rendered image.
+- `vertexMapBinaryUrl` (`.bin`) -> **activity map binary**. This is the machine-readable activation overlay for the 3D brain asset.
+- `vertexMapUrl` (`.json`) -> optional debug/reference map. Mention it only when the user asks for raw data or implementation details.
+
+Good final shape:
+
+```text
+Overall engagement: 44/100
+Peak hook: 49% at 1s
+Sustain: 89%
+Strongest region: Visual Cortex
+Risk: Default Mode is high, which can indicate mind-wandering.
+
+3D brain asset: <brain_example_url>
+Activity map binary: <vertexMapBinaryUrl>
+```
+
 ## Errors
 
 - `Missing required params: prompt` → user gave no prompt; ask for it.
-- `Missing required params: medias` on `brain_activity` → pass exactly one video via `--video <path-or-id>`.
+- `Missing required params: medias` on `brain_activity` / Virality Predictor → pass exactly one video via `--video <path-or-id>`.
 - `Invalid values: aspect_ratio=99:99 (allowed: ...)` → bad enum; pick from allowed.
 - `Unknown params: foo` → schema doesn't accept that flag; check `higgsfield model get <jst>`. If this happens for `hook_id` or `setting_id`, the selected model/job_set_type does not support Marketing Studio setup items.
 - `Session expired` → `higgsfield auth login`.
@@ -239,7 +260,7 @@ Load on demand:
 
 - `references/model-catalog.md` — picking the right model for the task
 - `references/prompt-engineering.md` — writing prompts that work
-- `references/media-inputs.md` — image/video/audio reference flows and Brain Activity video analysis
+- `references/media-inputs.md` — image/video/audio reference flows and Virality Predictor video analysis
 - `references/troubleshooting.md` — common errors and fixes
 - `references/marketing-avatars.md` — preset vs custom avatars
 - `references/marketing-products.md` — URL fetch vs manual product create

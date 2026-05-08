@@ -5,7 +5,7 @@ The full lineup of generation models available through Higgsfield. Each entry ha
 Preferred defaults for examples and quick-start guidance in this repo:
 - **Images:** `gpt_image_2` (general/high-fidelity) and `nano_banana_2` (character/cartoon).
 - **Video:** `seedance_2_0` (all-purpose serious video).
-- **Video analysis:** `brain_activity` (engagement, attention, hook/virality scoring).
+- **Video analysis:** Virality Predictor (`brain_activity`) for engagement, attention, hook, and virality scoring.
 
 ---
 
@@ -59,7 +59,7 @@ Preferred defaults for examples and quick-start guidance in this repo:
 
 | Model | Provider | What it's for |
 |---|---|---|
-| Brain Activity | Higgsfield | **Objective engagement proxy for video creative testing.** Scores how effectively a clip captures and sustains attention, useful for hook validation, virality potential, ad review, and product/content focus. Takes a video input and returns a text report with overall score, peak second, sustain, region averages, report URL, and vertex map. |
+| Virality Predictor (`brain_activity`) | Higgsfield | **Objective engagement proxy for video creative testing.** Scores how effectively a clip captures and sustains attention, useful for hook validation, virality potential, ad review, and product/content focus. Takes a video input and returns a text report with overall score, peak second, sustain, region averages, a 3D brain asset (`brain_example_url`, `.glb`), and an activity map binary (`vertexMapBinaryUrl`, `.bin`). |
 
 ---
 
@@ -100,13 +100,13 @@ Practical defaults from production use. Match by intent, not surface keyword. Wh
 
 ### Video analysis — pick this default
 
-1. **Evaluate a finished clip's hook, virality potential, attention, engagement, retention, or distraction risk** → Brain Activity (`brain_activity`). It takes `--video`, needs no prompt, and returns a text score/report rather than generated media.
+1. **Evaluate a finished clip's hook, virality potential, attention, engagement, retention, or distraction risk** → Virality Predictor (`brain_activity`). It takes `--video`, needs no prompt, and returns a text score/report plus artifact links rather than generated media. Present `brain_example_url` as the 3D brain asset and `vertexMapBinaryUrl` as the activity map binary.
 
 ### Things to keep in mind
 
 - **Don't invent model names.** Run `higgsfield model list` if you're unsure — submitting an unknown model returns `unknown model "..."`.
 - **Audio reference for Seedance 2.0** comes through the media inputs with role `audio`, not via a separate `generate_audio` flag.
-- **Prompt-only models reject reference media.** Z Image, Soul Cast, Soul Location, and some Wan configs are prompt-only; pass no media flags to them. Brain Activity is different: it returns text but requires a video input.
+- **Prompt-only models reject reference media.** Z Image, Soul Cast, Soul Location, and some Wan configs are prompt-only; pass no media flags to them. Virality Predictor is different: it returns text but requires a video input.
 - **Route branded product visuals through `higgsfield-product-photoshoot`** — its prompt enhancer adds 10 mode-specific templates on top of GPT Image 2. Direct GPT Image 2 generation here is the right call for everything that isn't a product photoshoot.
 - **For cinema video, prefer Cinema Studio Video 3.0** as the modern default; reach for the earlier Cinema Studio Video variants only when the user names them.
 - **When the user names a specific model, use it.** The defaults above cover the common intents — the rest of the catalog exists for users who know what they want.
@@ -125,7 +125,7 @@ Each model accepts a fixed set of media roles. When unsure, run `higgsfield mode
 | Veo 3.1 | `start_image` (max 1) |
 | Veo 3 | `image` (max 1) |
 | Marketing Studio (video) | `image`, `start_image`, `end_image` |
-| Brain Activity | `video` |
+| Virality Predictor (`brain_activity`) | `video` |
 | Most image models | `image` (1+) |
 | Z Image, Soul Cast, Soul Location | (no media — prompt-only) |
 

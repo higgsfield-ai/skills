@@ -223,7 +223,7 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 ---
 
-## Scenario 11 — Brain Activity video scoring
+## Scenario 11 — Virality Predictor video scoring
 
 **User request:**
 
@@ -232,15 +232,16 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 **Expected behavior:**
 
-- Picks `brain_activity`.
+- Picks Virality Predictor (`brain_activity`).
 - Uses `--video ad.mp4`.
 - Does NOT ask for a prompt; the video is the input.
 - Treats the result as a text engagement report, not a generated video/image.
 - Delivers overall score, peak hook second, sustain score, region highlights, and a business interpretation of attention/virality potential.
+- If present, links `brain_example_url` as the 3D brain asset and `vertexMapBinaryUrl` as the activity map binary.
 
 **Score:**
 
-- Pass: correct model, `--video` used, text metrics summarized with business interpretation.
+- Pass: correct model, `--video` used, text metrics summarized with business interpretation, and Virality Predictor artifacts labeled clearly when present.
 - Partial: correct model but treats the result URL as the only output.
 - Fail: uses a video generation model, asks for a generation prompt, or ignores the uploaded clip.
 

@@ -2,7 +2,7 @@
 
 ## What this is
 
-Four skills that drive the [`higgsfield` CLI](https://github.com/higgsfield-ai/cli) to call Higgsfield API endpoints — image/video generation, Marketing Studio, Brain Activity video engagement analysis, Soul Character training, branded product photography, and marketplace product cards.
+Four skills that drive the [`higgsfield` CLI](https://github.com/higgsfield-ai/cli) to call Higgsfield API endpoints — image/video generation, Marketing Studio, Virality Predictor video scoring, Soul Character training, branded product photography, and marketplace product cards.
 
 ```
 higgsfield-soul-id     →  trains identity, returns reference_id
@@ -65,7 +65,7 @@ All skills route through one binary: the [`higgsfield` CLI](https://github.com/h
 
 - Auth: `higgsfield auth login` (device-flow, persists to `~/.config/higgsfield/credentials.json`).
 - Pattern: `higgsfield <noun> <verb>` — e.g. `higgsfield generate create`, `higgsfield soul-id create`, `higgsfield product-photoshoot create`, `higgsfield marketing-studio products fetch`.
-- One-shot create+wait: `higgsfield generate create <model> ... --wait` blocks until terminal and prints the result itself (media URL or text summary for Brain Activity). Prefer this over the legacy two-step `create` → `wait`. Tunables: `--wait-timeout`, `--wait-interval`. `product-photoshoot create` waits internally — no `--wait` needed.
+- One-shot create+wait: `higgsfield generate create <model> ... --wait` blocks until terminal and prints the result itself (media URL or Virality Predictor text summary). Prefer this over the legacy two-step `create` → `wait`. Tunables: `--wait-timeout`, `--wait-interval`. `product-photoshoot create` waits internally — no `--wait` needed.
 - Machine output: add `--json` to any command for parseable output.
 - Media inputs: every `--image`, `--start-image`, `--video`, etc. flag accepts a local path (auto-uploaded) OR a UUID (upload id or previous job id).
 - Source of truth: never invent model names. Run `higgsfield model list` for the live catalog. Reference catalogs in `references/model-catalog.md` are mappings (intent → model), not the model database.
