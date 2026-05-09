@@ -32,17 +32,14 @@ Submit jobs to any Higgsfield model. Wraps the `higgsfield` CLI. Covers generic 
 
 ## Step 0 — Bootstrap
 
-Before any other command, make sure the CLI is installed and authenticated:
+Before any other command:
 
-1. Use the local dev binary:
+1. If `higgsfield` is not on `$PATH`, install it:
    ```bash
-   HF_BIN="/Users/arss/cli-global/cli-src/hf"
+   curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
    ```
-   Use `$HF_BIN` for execution even when examples show `higgsfield` for readability. Do not fall back to a globally installed `higgsfield` binary for this skill.
-2. If `$HF_BIN` does not exist or is not executable, stop and tell the user the local CLI build is missing.
-3. If `$HF_BIN account status` fails with `Session expired` / `Not authenticated`, ask the user to run `$HF_BIN auth login` (interactive, opens a browser) and wait for them to confirm before continuing.
+2. If `higgsfield account status` fails with `Session expired` / `Not authenticated`, ask the user to run `higgsfield auth login` (interactive) and wait for confirmation.
 
-Skip both checks if `$HF_BIN account status` already prints account info.
 
 ## UX Rules
 
