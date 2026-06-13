@@ -153,6 +153,8 @@ Branded image/video gen: avatars + products + optional setup hooks/settings + ad
 - **Hook** — reusable opening angle / ad hook. Browse with `higgsfield marketing-studio hooks list`. Hook text is prepended to the user's prompt; it does not replace `--prompt`.
 - **Setting** — reusable environment / scene context. Browse with `higgsfield marketing-studio settings list`.
 - **Ad reference** — reusable inspiration video that can be bound to an avatar and/or product. Created from an uploaded video (`--video-input <upload_id>`) or a previous generation job (`--job <job_id>`). Browse with `higgsfield marketing-studio ad-references list`. See `references/marketing-ad-references.md`.
+- **Brand kit** — captures a brand's identity (name, logo, hero images, colours, fonts, tone) for reuse across image generations. Created by handing in a website URL (`higgsfield marketing-studio brand-kits fetch --url https://… --wait`). See `references/marketing-brand-kits.md`.
+- **Ad format** — presets that drives the visual structure of a generated image (`headline`, `bullet-points`, etc.). Read-only, browse with `higgsfield marketing-studio ad-formats list`. Required input for `dtc-ads generate`.
 
 ### Discovery commands
 
@@ -164,6 +166,8 @@ higgsfield marketing-studio products list --json
 higgsfield marketing-studio hooks list --json
 higgsfield marketing-studio settings list --json
 higgsfield marketing-studio ad-references list --json
+higgsfield marketing-studio brand-kits list --json
+higgsfield marketing-studio ad-formats list --json
 ```
 
 `--hook_id` and `--setting_id` are supported by `marketing_studio_video` only; do not pass them to `marketing_studio_image`.
@@ -173,6 +177,8 @@ higgsfield marketing-studio ad-references list --json
 - One question per phase. Don't ask product+avatar+mode upfront.
 - **Two ad approaches are mutually exclusive.** Either the user gives an ad reference video (reference-driven) **or** picks hook/setting blocks (composed-from-blocks) — never both. If the user has an ad reference selected, do not offer hook/setting; if hook/setting are picked, do not offer to attach an ad reference.
 - **Ad reference source.** The only valid inputs are a local video file (uploaded via `higgsfield upload create ... --video`) or a prior video job. If the user provides anything else, ask for a local file.
+- **`dtc-ads` ad format is mandatory.** Always ask the user to pick from `ad-formats list`. There is no auto-default — both the CLI and server reject calls without `--format-id`.
+- **`dtc-ads` optional inputs.** Suggest avatars, products, and reference media when the brief calls for them; only attach what the user picks.
 
 ### Workflow — quick ad video
 
@@ -217,7 +223,7 @@ higgsfield marketing-studio ad-references list --json
 When the user gives a product URL and wants a marketing video in one go:
 
 ```bash
-# 1. Trigger fetch (returns the product id and starts background scrape)
+# 1. Trigger fetch (returns the product id, import runs in the background)
 higgsfield marketing-studio products fetch --url https://shop.example.com/sneakers --wait
 
 # 2. Generate the marketing video against the same URL — backend reuses the entity
@@ -290,4 +296,6 @@ Load on demand:
 - `references/marketing-products.md` — URL fetch vs manual product create
 - `references/marketing-setup-items.md` — hooks/settings discovery and usage
 - `references/marketing-ad-references.md` — ad reference videos (create/list/get)
+- `references/marketing-brand-kits.md` — brand kits (fetch from URL, list, get)
+- `references/marketing-dtc-ads.md` — DTC Ads Engine (`dtc-ads generate`)
 - `references/marketing-modes.md` — every Marketing Studio mode
