@@ -188,7 +188,7 @@ higgsfield model get <model>
 
 Common patterns:
 
-- **Seedance 2.0** image: `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16`. Duration 4–15s.
+- **Seedance 2.0** image: `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16`. Duration 4–15s. Optional `--bitrate_mode standard|high`, default `standard`.
 - **Kling 3.0**: `16:9`, `9:16`, `1:1`. Duration 3–15s. Modes `pro`/`std`. Sound `on`/`off`.
 - **Soul 2.0**: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `3:2`, `2:3`. Quality `1.5k` or `2k` maps to backend `720p`/`1080p`.
 - **Soul Cinema**: same as Soul 2.0 plus `21:9`. Quality `1.5k` or `2k`.
