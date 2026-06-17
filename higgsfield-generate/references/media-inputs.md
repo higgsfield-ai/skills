@@ -38,6 +38,7 @@ Each model declares a closed set of accepted roles via `MEDIA_ROLES`. Pass the r
 | `brain_activity` | `video` | Virality Predictor analyzes one uploaded clip and returns a text score report plus an Open report link; no prompt required. Treat "analyze this video" / "score this ad" as this video-analysis flow even though the output is text. Raw `.glb` and `.bin` artifacts stay in JSON/debug output, not normal chat output. |
 | `grok_video_v15` | `start_image` | Required single start frame. CLI also accepts `--image` and maps it to `start_image`. |
 | `kling3_0` | `start_image`, `end_image` | Image-to-video with optional last-frame transition. |
+| `kling3_0_turbo` | `start_image` | Fast text-to-video or single start-frame animation. Max 1 reference; CLI also accepts `--image` and maps it to `start_image`. |
 | `kling2_6` | `start_image` | Single frame anchor. |
 | `veo3_1` | `start_image` | Max 1 reference. |
 | `veo3` | `image` | Single image-to-video. |
@@ -63,7 +64,7 @@ higgsfield generate create nano_banana_2 --prompt "..." \
   --wait
 ```
 
-Single-reference video models (`grok_video_v15`, `veo3`, `veo3_1`, `kling2_6`) reject extra images — the CLI errors locally before submission with `Model accepts only one image reference`.
+Single-reference video models (`grok_video_v15`, `veo3`, `veo3_1`, `kling3_0_turbo`, `kling2_6`) reject extra images — the CLI errors locally before submission with `Model accepts only one image reference`.
 
 3D asset generation with `multi_image_to_3d` accepts 1–4 images. Repeat `--image` for front/side/back/detail views:
 

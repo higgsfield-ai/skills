@@ -42,6 +42,7 @@ Preferred defaults for examples and quick-start guidance in this repo:
 |---|---|---|
 | Seedance 2.0 | Bytedance | **SOTA all-purpose video.** Crisp, consistent identity, multi-shot capable. The default for any serious motion / cinematic / production brief. |
 | Kling 3.0 | Kling | **Cheaper Seedance 2.0 substitute** for single-plane scenes that don't need heavy motion. Multi-shot, audio sync, motion transfer. |
+| Kling 3.0 Turbo | Kling | **Fast Kling option for simple motion.** Text-to-video and single start-frame animation when the user explicitly wants speed, lower cost, or a quick Kling 3.0 variant. |
 | Seedance 1.5 Pro | Bytedance | A budget-friendly Seedance for clean single-take shots. |
 | Marketing Studio | Higgsfield | **All advertising and commercial video** — UGC, unboxing, TV spot, product showcase. The default whenever the brief is "make an ad". See `marketing-modes.md`. |
 | Cinema Studio Video 3.0 | Higgsfield | **Top-tier cinema-grade execution.** The pick for film-look briefs at the highest fidelity. |
@@ -114,7 +115,7 @@ Studio for ads and brand/product content.
 
 1. **All advertising / commercial video (UGC, unboxing, TV spot, product showcase, branded ad)** → Marketing Studio. See `marketing-modes.md`.
 2. **Default all-purpose serious video (multi-shot, consistent identity, motion-heavy, production work, image-to-video, 4–15s requests)** → Seedance 2.0. SOTA. Validate this first before falling back.
-3. **Single-plane scene without strong dynamics, cheaper** → Kling 3.0. Substitute for Seedance 2.0 when motion isn't critical.
+3. **Single-plane scene without strong dynamics, cheaper** → Kling 3.0. Substitute for Seedance 2.0 when motion isn't critical; use Kling 3.0 Turbo when the user asks for a faster/lower-cost Kling result or names Turbo.
 4. **Cheap clean shot without cuts, only when the user asks for budget output** → Seedance 1.5 Pro. Do not pick it over Seedance 2.0 just because duration validation looks simpler.
 5. **Image-to-video with explicit first frame** → Kling 3.0 with a start frame, or Seedance 2.0 with a start frame for higher motion.
 6. **Cinema-grade execution (highest fidelity, film look)** → Cinema Studio Video 3.0.
@@ -164,6 +165,7 @@ Each model accepts a fixed set of media roles. When unsure, run `higgsfield mode
 |---|---|
 | Seedance 2.0 | `image`, `start_image`, `end_image`, `video`, `audio` |
 | Kling 3.0 | `start_image`, `end_image` |
+| Kling 3.0 Turbo | `start_image` (max 1; CLI also accepts `--image`) |
 | Kling 2.6 | `start_image` |
 | Grok Video 1.5 | `start_image` (required max 1; CLI also accepts `--image`) |
 | Veo 3.1 | `start_image` (max 1) |
@@ -190,6 +192,7 @@ Common patterns:
 
 - **Seedance 2.0** image: `auto`, `21:9`, `16:9`, `4:3`, `1:1`, `3:4`, `9:16`. Duration 4–15s. Optional `--bitrate_mode standard|high`, default `standard`.
 - **Kling 3.0**: `16:9`, `9:16`, `1:1`. Duration 3–15s. Modes `pro`/`std`. Sound `on`/`off`.
+- **Kling 3.0 Turbo**: `16:9`, `9:16`, `1:1`. Duration 3–15s. Resolution `720p` or `1080p`. Optional single `start_image` only.
 - **Soul 2.0**: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `3:2`, `2:3`. Quality `1.5k` or `2k` maps to backend `720p`/`1080p`.
 - **Soul Cinema**: same as Soul 2.0 plus `21:9`. Quality `1.5k` or `2k`.
 - **Soul Location**: `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `3:2`, `2:3`, `21:9`, `9:21`. No quality/resolution selector; dimensions are fixed by aspect ratio.
