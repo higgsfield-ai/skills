@@ -29,11 +29,13 @@ Type auto-detected from extension:
 
 ## Roles by model family
 
-Each model declares a closed set of accepted roles via `MEDIA_ROLES`. Pass the right role; the CLI rejects unknown ones locally before submission.
+Each model declares a closed set of accepted roles or `*_references` params. Pass the right flag; the CLI rejects unknown media locally before submission.
 
 | Model | Accepted roles | Notes |
 |---|---|---|
 | Most image models (`nano_banana_2`, `flux_2`, `seedream_v4_5`, `gpt_image_2`, …) | `image` | 1+ references, often up to 8. |
+| `nano_banana_2_lite` | `image_references` | Up to 14 image references. Use repeated `--image-references` or short alias `--image`; `aspect_ratio=auto` requires at least one reference. |
+| `gemini_omni` | `image_references`, `video_references` | Fast reference-to-video. Use repeated `--image-references`/`--video-references` or aliases `--image`/`--video`. Max 1 video reference; max 7 image references, or max 5 when a video reference is included. |
 | `seedance_2_0` | `image`, `start_image`, `end_image`, `video`, `audio` | Audio is via `medias` (role `audio`), NOT via `--generate-audio`. |
 | `brain_activity` | `video` | Virality Predictor analyzes one uploaded clip and returns a text score report plus an Open report link; no prompt required. Treat "analyze this video" / "score this ad" as this video-analysis flow even though the output is text. Raw `.glb` and `.bin` artifacts stay in JSON/debug output, not normal chat output. |
 | `grok_video_v15` | `start_image` | Required single start frame. CLI also accepts `--image` and maps it to `start_image`. |
@@ -124,7 +126,7 @@ The CLI returns specific error messages for known shape mismatches:
 
 - `Model accepts only --image (no roles)` — the model uses the legacy `input_images` shape, not `medias` with roles. Drop role-prefixed flags and use plain `--image`.
 - `Model does not accept media inputs` — the model is prompt-only or non-media (`z_image`, `recraft_v4_1`, `mirelo_text_to_audio`, `sonilo_music`, `soul_location`, `soul_cast`, `wan2_6` for some configs). Drop all media flags.
-- `Unknown media role "<role>"` — the role isn't in this model's `MEDIA_ROLES`. Run `higgsfield model get <model>` and check `medias[].roles`.
+- `Unknown media role "<role>"` — the role isn't in this model's media schema. Run `higgsfield model get <model>` and check accepted media roles or `*_references` params.
 - `Missing required params: medias` for `brain_activity` — pass exactly one clip with `--video <path-or-id>`.
 
 ## Seeing what a model accepts

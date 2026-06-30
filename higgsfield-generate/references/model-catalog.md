@@ -17,6 +17,7 @@ Preferred defaults for examples and quick-start guidance in this repo:
 | Model | Provider | What it's for |
 |---|---|---|
 | Nano Banana 2 | Google | **Fast everyday default for character work.** Edits, general generation, character / cartoon / animated-style outputs. The reach-for-this model when the brief calls for character or cartoon-style image generation. |
+| Nano Banana 2 Lite | Google | **Lightweight Nano Banana 2.** Fast reference-driven image generation and edits when the brief is simple or cost/speed matters more than Pro-level fidelity. Supports up to 14 image references. |
 | Nano Banana Pro | Google | **Top-tier Nano Banana.** Same canvas as Nano Banana 2 with extra fidelity and accuracy on harder briefs. Pick when 2 isn't getting there. |
 | Nano Banana | Google | Reliable, budget-friendly entry in the Nano Banana family — picks up the same realistic look at a lighter price point. |
 | Higgsfield Soul 2.0 | Higgsfield | **Aesthetic UGC, fashion editorial, character generation.** When the brief leans editorial, lifestyle, or "looks like a magazine cover". Soul-aware (accepts a Soul Character reference). |
@@ -41,6 +42,7 @@ Preferred defaults for examples and quick-start guidance in this repo:
 
 | Model | Provider | What it's for |
 |---|---|---|
+| Gemini Omni Flash | Google | **Fast multimodal reference-to-video.** Use for prompt-guided video generation from image references and optionally one video reference, especially when the brief benefits from Google's Gemini/Veo-style understanding without making it the default over Seedance 2.0. |
 | Seedance 2.0 | Bytedance | **SOTA all-purpose video up to 4K.** Crisp, consistent identity, multi-shot capable. The default for any serious motion / cinematic / production brief. |
 | Kling 3.0 | Kling | **Cheaper Seedance 2.0 substitute** for single-plane scenes that don't need heavy motion. Multi-shot, audio sync, motion transfer. |
 | Kling 3.0 Turbo | Kling | **Fast Kling option for simple motion.** Text-to-video and single start-frame animation when the user explicitly wants speed, lower cost, or a quick Kling 3.0 variant. |
@@ -92,8 +94,8 @@ Preferred defaults for examples and quick-start guidance in this repo:
 Practical defaults from production use. Match by intent, not surface keyword. When two could apply, the higher entry wins.
 
 Core focus first: GPT Image 2 for images/design/text, Seedance 2.0 for video,
-Nano Banana 2/Pro for character or reference-driven image work, and Marketing
-Studio for ads and brand/product content. Use Seed Audio 1.0 for audio.
+Nano Banana 2/Lite/Pro for character or reference-driven image work, and
+Marketing Studio for ads and brand/product content. Use Seed Audio 1.0 for audio.
 
 ### Image — pick this default
 
@@ -109,9 +111,10 @@ Studio for ads and brand/product content. Use Seed Audio 1.0 for audio.
 10. **Soul Character (reference id from `higgsfield-soul-id`)** → Soul 2.0 for stills; Soul Cinema for cinematic vibe.
 11. **Anime / stylized / non-default look where defaults feel flat** → Flux Kontext Max or Grok Imagine. Worth trying.
 12. **Character or cartoon-style work** → Nano Banana 2; step up to Nano Banana Pro on hard cases.
-13. **Fast and cheap iteration / drafts / LoRA work** → Z Image.
-14. **Default for everything else** → GPT Image 2. High-fidelity general generation, graphic design, UI, banners, anything with on-image text.
-15. **Intent-only request, no preference, want auto-routing** → Auto.
+13. **Fast Nano Banana reference edit where speed/cost matters** → Nano Banana 2 Lite (`nano_banana_2_lite`).
+14. **Fast and cheap iteration / drafts / LoRA work** → Z Image.
+15. **Default for everything else** → GPT Image 2. High-fidelity general generation, graphic design, UI, banners, anything with on-image text.
+16. **Intent-only request, no preference, want auto-routing** → Auto.
 
 ### Video — pick this default
 
@@ -126,8 +129,9 @@ Studio for ads and brand/product content. Use Seed Audio 1.0 for audio.
 9. **Veo-format-bound work (specific aspect / duration set Veo accepts)** → Veo 3.1; Veo 3 is slightly behind.
 10. **Stylized / animation-style edit-driven work** → Wan 2.7.
 11. **Stylized cheap experimental** → Wan 2.6.
-12. **Anime / bold-style image-to-video with a start frame** → Grok Video 1.5 (`grok_video_v15`). Requires one `--start-image` or `--image`, duration 2–15s, resolution `480p` or `720p`.
-13. **Anime / bold-style text-to-video or older Grok-style outputs where defaults feel flat** → Grok Imagine (video). Worth trying.
+12. **Multimodal Google reference-to-video from up to 7 images or one video reference** → Gemini Omni Flash (`gemini_omni`). Do not make it the default over Seedance 2.0 for general video.
+13. **Anime / bold-style image-to-video with a start frame** → Grok Video 1.5 (`grok_video_v15`). Requires one `--start-image` or `--image`, duration 2–15s, resolution `480p` or `720p`.
+14. **Anime / bold-style text-to-video or older Grok-style outputs where defaults feel flat** → Grok Imagine (video). Worth trying.
 
 ### Video analysis — pick this default
 
@@ -162,10 +166,12 @@ Studio for ads and brand/product content. Use Seed Audio 1.0 for audio.
 
 ## Media role conventions
 
-Each model accepts a fixed set of media roles. When unsure, run `higgsfield model get <model>` and inspect the `medias[].roles` field.
+Each model accepts a fixed set of media roles or `*_references` params. When unsure, run `higgsfield model get <model>` and inspect the schema.
 
 | Model | Accepted media roles |
 |---|---|
+| Gemini Omni Flash | `image_references` (0–7) and `video_references` (0–1); with a video reference, max 5 image references |
+| Nano Banana 2 Lite | `image_references` (0–14); `aspect_ratio=auto` requires at least one image reference |
 | Seedance 2.0 | `image`, `start_image`, `end_image`, `video`, `audio` |
 | Kling 3.0 | `start_image`, `end_image` |
 | Kling 3.0 Turbo | `start_image` (max 1; CLI also accepts `--image`) |
