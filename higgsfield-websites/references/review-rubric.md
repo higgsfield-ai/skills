@@ -57,12 +57,15 @@ before deploying.
    mount. Video elements need a `poster` (or a rendered first frame) so
    headless shots never show a black box. A full-page headless screenshot
    must show every section.
-9c. **No Higgsfield branding, any build (Quanta disabled)** —
+9c. **No Higgsfield branding on `type: "website"` builds** —
    `grep -rin "higgsfield\|quanta" app/src/` returns no user-visible strings,
    no Quanta imports, no q-prefixed tokens, no "Powered by / Built on" badge,
-   no Higgsfield marks in page chrome. For SDK apps, fnf/auth strings in
-   server/service code are fine — that's the functional contract, not
-   branding.
+   no Higgsfield marks in page chrome. fnf/auth strings in server/service
+   code are fine — that's the functional contract, not branding. On
+   `type: "app"` builds this check inverts for the design system: Quanta
+   imports and q- tokens are REQUIRED there and "Sign in with Higgsfield" is
+   part of the product — only gratuitous "Powered by / Built on Higgsfield"
+   marketing badges remain forbidden.
 9d. **Anti-convergence ledger honored** — the brief lists the previous
    build's six identity axes (palette family, type pairing, hero
    architecture, Tier-1 technique, CTA garments, corner language) and this

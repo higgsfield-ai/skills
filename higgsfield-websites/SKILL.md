@@ -486,8 +486,9 @@ Template-owned infrastructure lives in `app/src/module/**`. The Design mode
 child bridge lives in `app/src/module/design-inspector`, not in a package and
 not in fnf-web.
 
-Every surface uses custom Tailwind/CSS per the pipeline (Quanta disabled).
-fnf API calls stay server-side.
+`type: "website"` surfaces use custom Tailwind/CSS per the pipeline;
+`type: "app"` surfaces use Quanta (`references/quanta-design.md` +
+`references/app-layouts.md`). fnf API calls stay server-side.
 
 ### 0b. Supercomputer Design mode inspector
 
