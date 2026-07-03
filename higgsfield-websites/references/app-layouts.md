@@ -2,10 +2,14 @@
 
 A `type: "app"` product must look and feel like a Higgsfield product. Instead of
 inventing app chrome from scratch, START from one of the four standard layouts
-below — they mirror how Higgsfield's own tools (fnf-web) are laid out. Pick the
-closest one for the product; **if the user asks for a different layout, build
-what they ask for** — the standard layouts are the default, not a cage (a custom
-layout is still built with Quanta components + `q-` tokens).
+below — they mirror how Higgsfield's own tools (fnf-web) are laid out, and each
+one ships as a READY SCAFFOLD in the template under **`app/src/layouts/`** (read
+`app/src/layouts/AGENTS.md`). Copy the closest scaffold into your route and
+adapt it: the scaffolds are prop-driven (data, handlers, and slot nodes all
+arrive via props) and each file's header comment carries its exact fnf-react
+wiring recipe. **If the user asks for a different layout, build what they ask
+for** — the standard layouts are the default, not a cage (a custom layout is
+still built with Quanta components + `q-` tokens).
 
 Every layout is composed from Quanta (`references/quanta-design.md`,
 `app/packages/quanta/ai/AGENTS.md` for the canonical API) and must be a real
@@ -16,13 +20,13 @@ with `higgsfield-generation-card.tsx`, and the app's own product state in D1
 
 ## Choosing a layout
 
-| Product shape | Layout |
-|---|---|
-| Multi-asset creative workspace: prompt → many generations, browse/organize output | **Marketing studio** |
-| Guided flow with a fixed sequence of choices ending in one result | **Stepper** |
-| One transform, minimal inputs (e.g. swap a face, restyle one photo) | **Simple app** |
-| Enhance/convert ONE uploaded asset with a couple of options | **Upscaler** |
-| Anything else the user describes | Custom — compose it from Quanta, keep the anatomy rules below |
+| Product shape | Layout | Scaffold file |
+|---|---|---|
+| Multi-asset creative workspace: prompt → many generations, browse/organize output | **Marketing studio** | `app/src/layouts/marketing-studio-layout.tsx` |
+| Guided flow with a fixed sequence of choices ending in one result | **Stepper** | `app/src/layouts/stepper-layout.tsx` |
+| One transform, minimal inputs (e.g. swap a face, restyle one photo) | **Simple app** | `app/src/layouts/simple-app-layout.tsx` |
+| Enhance/convert ONE uploaded asset with a couple of options | **Upscaler** | `app/src/layouts/upscaler-layout.tsx` |
+| Anything else the user describes | Custom — compose it from Quanta, keep the anatomy rules below | — |
 
 ## 1. Marketing studio — the workspace
 
@@ -34,10 +38,15 @@ The full creative-tool layout (fnf-web's Marketing Studio is the reference).
 - **Main canvas** — a responsive grid of generation results (media cards built
   on `higgsfield-generation-card.tsx`; empty state via `not-found`/empty
   patterns; skeleton `loader` while polling).
-- **Prompt/settings panel** — bottom-docked or right-docked: a `Textarea` for
-  the prompt, `Dropdown`/`Select` for model + options, the cost preview, and a
-  primary `Button` to submit. (A dedicated Quanta PromptBox component is
-  planned — until it ships, compose this panel from the primitives.)
+- **Prompt/settings panel** — bottom-docked: **`PromptBox`**
+  (`@higgsfield/quanta/prompt-box`), the standard generation prompt surface.
+  `PromptBox.Root` owns value/maxLength/disabled/submitting/onSubmit;
+  `PromptBox.Input` auto-grows and submits on Enter (Shift+Enter = newline);
+  drop the model/options `Dropdown`/`Select` controls into
+  `PromptBox.Toolbar`; the cost preview + `PromptBox.Counter` +
+  `PromptBox.Submit` (Loader while submitting) go in `PromptBox.Actions`;
+  reference/upload chips go in `PromptBox.Attachments`. Use PromptBox for the
+  prompt surface in EVERY layout that takes a prompt — never hand-roll it.
 - Product state in D1: every generation the user keeps, plus
   collections/projects.
 

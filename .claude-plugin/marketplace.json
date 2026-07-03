@@ -9,7 +9,7 @@
       "name": "higgsfield",
       "source": "./",
       "description": "Image/video generation, Marketing Studio, video engagement analysis, and Soul Character training via the Higgsfield CLI.",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "skills": [
         {
           "name": "generate",
