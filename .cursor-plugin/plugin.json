@@ -2,7 +2,7 @@
   "$schema": "https://cursor.com/schemas/cursor-plugin/plugin.json",
   "name": "higgsfield",
   "displayName": "Higgsfield AI",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Image/video generation, branded Marketing Studio, video engagement analysis, and Soul Character training via Higgsfield AI.",
   "author": {
     "name": "Higgsfield AI",

@@ -1,5 +1,5 @@
 ---
-version: 0.3.0
+version: 0.4.0
 name: higgsfield-product-photoshoot
 description: |
   Generate brand-quality product images through Higgsfield product-photoshoot
