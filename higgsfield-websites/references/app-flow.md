@@ -25,9 +25,10 @@ there.
   `app/src/layouts/AGENTS.md`) — simple-app / preset-app / complex-app /
   studio-app, each a SCREENSHOT of a real Higgsfield app hosted at
   `https://static.higgsfield.ai/website-builder/layout-references/<name>.png`.
-  There are no prebuilt scaffolds: pick the closest, VIEW its image, and build
-  the whole screen (chrome, composer, feed, result cards) from Quanta
-  primitives. A custom layout is fine when the user asks.
+  There are no prebuilt scaffolds. You MUST pick the closest of the four and
+  you MUST open its reference image before building — the image is the only
+  description of the layout. Build the whole screen (chrome, composer, feed,
+  result cards) from Quanta primitives off what the image shows.
 - **Astryx fallback** (`references/astryx-fallback.md`) — `@astryxdesign/core`
   (Meta's open-source React + StyleX DS, MIT) is preinstalled and themed to the
   brand for components Quanta lacks (date picker, calendar, data table, …).
@@ -96,9 +97,10 @@ go silent for a long stretch of the build.
    them.
 2. **Create** — `higgsfield website create --type app`.
 3. **Plan the screens** — pick the closest of the four reference layouts in
-   `references/app-layouts.md` and VIEW its image (open the URL) to read the
-   real composition; list the screens/states (including first-run/empty state)
-   and the app's own product state for D1.
+   `references/app-layouts.md` (you MUST pick one) and OPEN its image (fetch the
+   URL) to read the real composition — the image is the only description of the
+   layout, so this step is not skippable; list the screens/states (including
+   first-run/empty state) and the app's own product state for D1.
 4. **Build with Quanta** — build the layout from the reference image using
    Quanta components per `references/quanta-design.md`. NEVER customize a
    Quanta component; when one doesn't exist or doesn't fit as-is, fall back

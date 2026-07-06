@@ -1,29 +1,38 @@
 # app-layouts — the standard Higgsfield app layouts (`type: "app"` builds ONLY)
 
-A `type: "app"` product must look and feel like a Higgsfield product. Instead of
-inventing app chrome from scratch, START from one of the four reference layouts
-below — each is a screenshot of a real Higgsfield app. There are NO prebuilt
-layout scaffolds: you compose the screen yourself from Quanta components (Astryx
-only for gaps). Pick the closest layout, then **actually VIEW its reference
-image** (open the URL / fetch it) and read the real composition — spacing, where
-the form/canvas/feed/composer sit, what the controls are — before you build it.
-**If the user asks for a different shape, build what they ask for** — these four
-are the defaults, not a cage (a custom layout is still Quanta + `q-` tokens; a
-guided multi-step flow, for instance, has no reference image — build it custom).
+A `type: "app"` product must look and feel like a Higgsfield product, so you do
+NOT invent app chrome. Every `type: "app"` build starts from ONE of the four
+reference layouts below — each is a screenshot of a real Higgsfield app.
+
+Two hard rules, no exceptions:
+
+1. **You MUST pick one of the four layouts.** Match the app to the CLOSEST one;
+   an unusual request still maps to the nearest layout — adapt within it, never
+   invent a different app shell.
+2. **You MUST open the picked layout's reference image and build from it.** The
+   image is the ONLY description of the layout — there is deliberately no text
+   breakdown of where the form / canvas / feed / composer sit, so you CANNOT
+   build the screen without viewing it. Open the URL (fetch / view the image),
+   read the real composition — spacing, structure, the controls — then reproduce
+   it with Quanta components (Astryx only for gaps). Building from the layout's
+   name alone, without opening the image, is wrong.
+
+There are NO prebuilt layout scaffolds — you compose the screen yourself.
 
 ## The four reference layouts
 
-View the image for the one you pick — the description only tells you which to
-open, the image tells you how to build it.
+The table only tells you WHICH image to open — the "when to pick" column is a
+selector, not a build spec. The image is what you build from; open it before
+writing any layout code.
 
-| Layout | Reference image (VIEW it) | Shape / when to use |
+| Layout | Reference image — OPEN IT before building | When to pick |
 |---|---|---|
-| **Simple app** | `https://static.higgsfield.ai/website-builder/layout-references/simple-app.png` | One-shot tool (Face Swap). Two-column hero: a form card LEFT (big uppercase headline + subtitle, one–three labelled upload/input cards, an optional Image/Video mode toggle, ONE full-width lime Generate CTA with the credit cost + a "N free generations left" helper line) and a large result/preview panel RIGHT (before/after where it fits). Optional "how it works in 3 steps" explainer row below the fold. Use for a single transform with a few inputs and one action. |
-| **Preset app** | `https://static.higgsfield.ai/website-builder/layout-references/preset-app.png` | Pick-a-style-then-generate (Shorts Studio). A persistent LEFT creation rail (app title, the selected-preset card with a Change action, a source upload/dropzone with constraints, an output-ratio toggle, a big lime Generate CTA) beside a large responsive GRID of preset/template tiles (preview thumbnail + name label; selected tile has a lime border; a leading "Create a preset" tile), with top tabs (Presets / History / How it works) + a search box. Use when browsing a gallery of styles/templates is the main surface. |
-| **Complex app** | `https://static.higgsfield.ai/website-builder/layout-references/complex-app.png` | Single-asset editor with many controls (Relight). A dominant work canvas CENTER (empty state = a titled upload card in a big dark stage; then the asset/result) beside a dense RIGHT controls sidebar (quick-select button grid, a drag pad / sliders / toggles / color field, and the costed lime Generate pinned at the bottom). Use for enhance/edit tools with rich parameters on one asset. |
-| **Studio app** | `https://static.higgsfield.ai/website-builder/layout-references/studio-app.png` | Full creative workspace (Cinema Studio). A projects-first LEFT nav sidebar (product switcher + nav rows with colored icon tiles + a Projects section with New project and a project list) and a MAIN area with a hero/home state, a prompt composer (Image/Video mode toggle, prompt input, a settings-chips row — model / aspect / resolution / duration / batch / audio — and a lime GENERATE button with the credit cost), and a generations/projects feed below. The richest layout, for multi-project generation tools. |
+| **Simple app** | `https://static.higgsfield.ai/website-builder/layout-references/simple-app.png` | A one-shot transform: a few inputs and a single action (e.g. Face Swap). |
+| **Preset app** | `https://static.higgsfield.ai/website-builder/layout-references/preset-app.png` | Browsing a gallery of styles/templates is the main surface (e.g. Shorts Studio). |
+| **Complex app** | `https://static.higgsfield.ai/website-builder/layout-references/complex-app.png` | Editing ONE asset with many controls/parameters (e.g. Relight). |
+| **Studio app** | `https://static.higgsfield.ai/website-builder/layout-references/studio-app.png` | A full multi-project creative workspace (e.g. Cinema Studio). |
 
-## Invariants (every layout, incl. custom)
+## Invariants (every layout)
 
 - **No app header/top bar** — apps render INSIDE Higgsfield, whose chrome
   provides the global header, credits/balance, and account controls. Never add

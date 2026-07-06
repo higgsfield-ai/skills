@@ -1,5 +1,5 @@
 ---
-version: 0.10.0
+version: 0.11.0
 name: higgsfield-websites
 description: |
   Build, edit, and deploy full-stack websites via the Higgsfield CLI
