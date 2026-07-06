@@ -142,7 +142,9 @@ own products.
 
 1. **NEVER customize Quanta styles.** No className overrides that change a
    component's look, no color/size/font overrides on quanta components, no
-   re-theming. Compose, don't restyle.
+   re-theming. Compose, don't restyle. If a Quanta component doesn't fit
+   without customization (a variant/behavior it doesn't offer), do NOT bend
+   it — use the Astryx fallback instead (rule 5).
 2. **NO app header.** Apps render inside Higgsfield, whose chrome already
    provides the global header, credits/balance, and account controls — never
    add a top header/app bar, brand/logo row, or nav bar inside the app, and
@@ -157,13 +159,13 @@ own products.
    Higgsfield product. Never add a theme toggle or a light mode, never use
    `dark:`-conditional styling (there is no light state), and never wire
    quanta's bootstrapScript/ThemeController theme switching.
-5. **Astryx is the fallback for components Quanta lacks** (date picker,
-   calendar, sortable data table, multiselect autocomplete, color picker, …).
+5. **Astryx is the fallback for components Quanta lacks — or that Quanta only
+   offers in a shape you'd have to customize** (date picker, calendar,
+   sortable data table, multiselect autocomplete, color picker, …).
    `@astryxdesign/core` (Meta's open-source React + StyleX DS) is preinstalled
    and themed to the brand — see `references/astryx-fallback.md` for the exact
-   recipe. Never use Astryx
-   where a Quanta component exists, and never restyle it beyond the
-   Higgsfield Astryx theme.
+   recipe. Never use Astryx where a Quanta component fits as-is, and never
+   restyle it beyond the Higgsfield Astryx theme.
 
 ## Template Wiring
 

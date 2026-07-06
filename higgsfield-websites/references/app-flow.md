@@ -93,8 +93,10 @@ These come from `references/quanta-design.md` — read it before building:
    real composition; list the screens/states (including first-run/empty state)
    and the app's own product state for D1.
 4. **Build with Quanta** — build the layout from the reference image using
-   Quanta components per `references/quanta-design.md`; Astryx only for gaps.
-   Real copy in every state (empty, busy, error) — no placeholders.
+   Quanta components per `references/quanta-design.md`. NEVER customize a
+   Quanta component; when one doesn't exist or doesn't fit as-is, fall back
+   to Astryx (`references/astryx-fallback.md`). Real copy in every state
+   (empty, busy, error) — no placeholders.
 5. **Wire fnf end-to-end** — auth first (`references/auth.md`), then
    generation/media through server functions per `references/fnf-sdk.md` +
    `references/fnf-react.md`, product state in D1 (rules 3/3a below). Poll
