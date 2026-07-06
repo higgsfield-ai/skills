@@ -101,12 +101,13 @@ These come from `references/quanta-design.md` — read it before building:
    jobs, render real results.
 6. **Gate** — `bun run typecheck` and `bun run qa:fill -- --strict` must pass;
    fix every item.
-7. **Deploy the preview** (`higgsfield website deploy <website_id> --env
-   preview`); if you can screenshot the preview (a browser or screenshot tool
-   is available), capture desktop ~1440px and mobile ~390px and run the
-   brand-review self-check (`references/brand-review.md`) against the
-   screenshots — fix confident flags, redeploy once; if you cannot, say the
-   visual review was skipped. Report the preview URL.
+7. **Deploy** (`higgsfield website deploy <website_id>` — this ships the live
+   public site immediately); if you can screenshot the live site (a browser or
+   screenshot tool is available), capture desktop ~1440px and mobile ~390px
+   and run the brand-review self-check (`references/brand-review.md`) against
+   the screenshots — fix confident flags, redeploy once; if you cannot, say
+   the visual review was skipped. Report the live URL (from
+   `higgsfield website status`).
 8. **Cover + metadata — ALWAYS, as part of building (not just at publish).**
    Every app ships with a launch cover and filled feed-card metadata. Generate
    them per `references/app-cover.md`: the branded 3:2 cover + stadium-capsule
@@ -149,8 +150,8 @@ asks to patch a package snapshot. Template-owned infrastructure lives in
 
 ### 0b. Supercomputer Design mode inspector
 
-Generated apps support a Higgsfield design inspector bridge for editable
-Supercomputer previews. The split is strict:
+Generated apps support a Higgsfield design inspector bridge for editing in
+Supercomputer Design mode. The split is strict:
 
 - The Higgsfield editor (parent window) owns the iframe UI, hover overlay,
   edit popover, origin/session checks, and edit prompt submission.
@@ -159,11 +160,14 @@ Supercomputer previews. The split is strict:
 - Agents never manually implement inspector code, refs, source markers, or
   `data-hf-*` attributes.
 
-Required scripts: `bun run build` (production-clean), `bun run build:design`
-(editable preview, `HF_DESIGN_INSPECTOR=1`), `bun run dev:design`. Deploy the
-editable **preview** only (`higgsfield website deploy <website_id> --env
-preview`); never rewrite the normal `build` to include the inspector, and never
-ship inspector metadata in production.
+Local scripts: `bun run build` (inspector-free), `bun run build:design`
+(inspector-enabled, `HF_DESIGN_INSPECTOR=1`), `bun run dev:design` — for LOCAL
+work only. The platform CI sets `HF_DESIGN_INSPECTOR=1` on every deploy build,
+so the live deployed site always carries the inspector and IS the surface
+Supercomputer Design mode opens. There is ONE deploy
+(`higgsfield website deploy <website_id>`) and it ships the live public site
+immediately; never rename `build:design` into `build` or hand-edit the build
+scripts to toggle the inspector.
 
 ### 1. SSR-safe rendering
 Every route renders on the server per request. NEVER touch browser-only
@@ -194,13 +198,13 @@ SDK operation. Do not invent your own login UI, email/password form, or token
 handling, and do not build anonymous generation flows unless the user
 EXPLICITLY asks for an offline/mock demo.
 
-**Preview sign-in is platform-owned — do NOT improvise a cause if it fails.**
-`/__auth/login` is a platform-injected route that hands off to Higgsfield's
-auth service, then redirects back to `return` so `/api/user` succeeds. If a
-user reports sign-in failing on a PREVIEW, FIRST confirm the app side is
-correct (links to `/__auth/login?return=<path>`, proxies `/api/user`
-unchanged); if it is, the failure is on the platform/auth side — say so
-plainly instead of inventing an app-code cause.
+**Sign-in on the deployed site is platform-owned — do NOT improvise a cause if
+it fails.** `/__auth/login` is a platform-injected route that hands off to
+Higgsfield's auth service, then redirects back to `return` so `/api/user`
+succeeds. If a user reports sign-in failing on a DEPLOYED SITE, FIRST confirm
+the app side is correct (links to `/__auth/login?return=<path>`, proxies
+`/api/user` unchanged); if it is, the failure is on the platform/auth side —
+say so plainly instead of inventing an app-code cause.
 
 If the app also needs its own user accounts (e.g. team members of the app's
 customers), keep that separate — never replace Higgsfield auth with app-local
@@ -264,13 +268,14 @@ declared in `app/app.manifest.json`, so the typed accessors are optional —
 guard before use. Do not thread `env` through React props or read it at
 module top level.
 
-### 5. Opted-in storage is SHARED — preview data == prod data
-If you opt into D1, R2, or KV, each is a SINGLE instance **shared by the
-preview and prod deploys**. Only the CODE is split (`vars.HF_ENV`). The DATA
-is not. `env.HF_ENV` tells you which env it is; it CANNOT switch the
-database/bucket. A destructive migration you run "just to test on preview"
-hits **production data**. Prefer additive migrations
-(`CREATE TABLE IF NOT EXISTS`, `ADD COLUMN`).
+### 5. Opted-in storage is LIVE — one deploy, one database
+If you opt into D1, R2, or KV, each is a SINGLE instance backing the ONE live
+deploy. There is no staging copy: every migration and data change hits **live
+production data** directly. `env.HF_ENV` is always `"production"` on deployed
+builds; there is no separate database/bucket to test against. A destructive
+migration you run "just to test" destroys **production data**. Prefer additive
+migrations (`CREATE TABLE IF NOT EXISTS`, `ADD COLUMN`), and get explicit user
+approval before any destructive change.
 
 ### 6. `app/app.manifest.json` declares infra — NOTHING is provisioned by default
 A new app gets **no D1, no R2, no KV, no Durable Object**. Opt in only when
@@ -304,20 +309,21 @@ Durable Object for strong consistency.
 
 ## Verify + deploy
 
-The trusted platform CI builds the app on **every deploy** (preview →
-`bun run build:design`, production → `bun run build`), so a deploy already
-gives you the authoritative build result. The sandbox cannot deploy/migrate;
-the trusted platform CI does that.
+The trusted platform CI builds the app on **every deploy** (always with
+`HF_DESIGN_INSPECTOR=1` and `HF_ENV="production"` — the live site carries the
+design inspector), so a deploy already gives you the authoritative build
+result. The sandbox cannot deploy/migrate; the trusted platform CI does that.
 
 **Default: build, pass the gates (`bun run typecheck`,
-`bun run qa:fill -- --strict`), deploy the preview**
-(`higgsfield website deploy <website_id> --env preview`), then the brand-review
-screenshot self-check. Never deploy production unless the user explicitly asked
-to publish.
+`bun run qa:fill -- --strict`), deploy**
+(`higgsfield website deploy <website_id>` — this ships the live site
+immediately), then the brand-review screenshot self-check against the live
+site. Never publish/list on the community feed unless the user explicitly
+asked to publish.
 
 **Publishing ("show in feed").** When the user asks to publish / share / put
 the app on the feed, run `higgsfield website publish <website_id>` — it deploys
-the pushed `main` to PRODUCTION and lists the app on the Higgsfield community feed.
+the pushed `main` and lists the app on the Higgsfield community feed.
 
 **HARD GATE — the cover is NOT optional. Running `higgsfield website publish` while
 `og_image_url` or `marketplace_cover_url` is empty is a BROKEN publish** (the
@@ -349,25 +355,25 @@ real values (never placeholders); (d) commit + push; (e) only then run
 (1–5 are generated without asking — they are part of the publish, not a
 separate credit decision; only the cover VIDEO (6) needs permission.)
 
-`higgsfield website deploy <website_id> --env production` remains the way to ship
-to production WITHOUT a feed listing.
+`higgsfield website deploy <website_id>` remains the way to ship the live site
+WITHOUT a feed listing.
 
 **Run the local checks only when you actually need them** — from `app/`:
 ```bash
 cd app
 bun install          # only when you changed dependencies / package.json
 bun run typecheck    # tsc --noEmit
-bun run build        # production-clean build
-bun run build:design # editable Supercomputer preview build
+bun run build        # local build without the inspector
+bun run build:design # local inspector-enabled build
 ```
 
 **Small edits to an existing app** (copy tweak, one component, styling fix):
-make the edit, run `bun run qa:fill -- --strict`, deploy the preview. Re-run
+make the edit, run `bun run qa:fill -- --strict`, deploy. Re-run
 the brand-review screenshot check only when the edit changed layout/visual
 structure — not for a typo fix.
 
 **Before claiming a build done / deploying, no placeholders may remain.** Run
-`bun run qa:fill -- --strict` (add `--url <preview>` to also scan the rendered
+`bun run qa:fill -- --strict` (add `--url <live-url>` to also scan the rendered
 page). It fails if any template placeholder survives — a `<...>`-style token,
 `lorem ipsum`, or the scaffold blank-page marker (`REMOVE_THIS` /
 `blank-app-v1`). It is a completion gate, not a CI build step.

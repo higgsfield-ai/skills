@@ -17,7 +17,7 @@ description: |
   NOT for: single image/video/audio generation (higgsfield-generate), product
   photos (higgsfield-product-photoshoot), marketplace cards
   (higgsfield-marketplace-cards).
-argument-hint: "[what to build or edit] [--type website|app] [--env preview|production]"
+argument-hint: "[what to build or edit] [--type website|app]"
 allowed-tools: Bash
 ---
 
@@ -100,21 +100,21 @@ with Higgsfield models, credits, or generation history" → app.
 | `--type app` | **`references/app-flow.md`** — the Quanta + Astryx toolkit, the four reference layouts, fnf SDK + auth + D1 contract, launch cover + metadata, brand-review self-check, publish gate |
 
 Both flows share the same platform mechanics (SSR Worker, `app.manifest.json`
-infra, preview-first deploys via `higgsfield website deploy … --env preview`,
+infra, a single live deploy via `higgsfield website deploy <website_id>`,
 the publish gate with the branded cover per `references/app-cover.md`) — each
 flow restates what it needs, so you never have to read the other one.
 
 ## UX rules
 
 1. Be concise. No raw website IDs, tokens, or JSON dumps in chat. After a
-   deploy, return the preview URL (from `higgsfield website status`) and a
+   deploy, return the live URL (from `higgsfield website status`) and a
    one-line summary.
 2. Never echo the scoped git token back to the user, and never commit it.
 3. Detect the user's language from the first message and reply in it. CLI flags
    and code stay English.
-4. **Preview is the default and the only environment you deploy on your own.**
-   Deploy `--env production` ONLY when the user explicitly asks to publish / go
-   live / ship.
+4. **Every deploy ships the live public site immediately** — there is no
+   preview stage. Publishing/listing on the community feed is separate and
+   happens ONLY when the user explicitly asks to publish / list it.
 
 Do NOT search the skill library for other design guidance — everything is
 under this skill.

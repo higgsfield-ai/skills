@@ -197,14 +197,14 @@ const createNote = createServerFn({ method: 'POST' })
   });
 ```
 
-#### 3. Cross-Tenant Data Leak (Shared D1)
+#### 3. Test Data Contamination (Live D1)
 
-**Attack:** Preview and production deployments may share the same D1 database. Test data created during preview could leak into production, or production data could be modified via preview.
+**Attack:** There is one deploy and one D1 database — the live one. Test data created while building or debugging lands in production data, and destructive "test" queries modify real user data.
 
 **Mitigation:**
-- Never use real user data in preview/testing
-- If isolation is critical, use `env.HF_ENV` to scope queries: `WHERE env = ?`
-- Prefer separate D1 databases for preview and production when the platform supports it
+- Never use real user data for testing
+- If you must seed test rows, tag them explicitly (e.g. an `is_test` column or a reserved prefix) and clean them up
+- Get explicit user approval before destructive migrations, `UPDATE`s, or backfills
 
 #### 4. Privilege Escalation via Client State
 
@@ -281,7 +281,7 @@ Severity scale: Critical > High > Medium > Low. Base severity on worst-case impa
 
 1. **Don't threat-model brochure sites.** A static landing page with no auth, no database, and no user input has no meaningful attack surface beyond XSS (covered by web-audit). Skip threat modeling for these.
 
-2. **Don't assume D1 is multi-tenant by default.** Each website gets its own D1 database. Cross-tenant risk exists only between preview/production of the same website sharing a database, not between different websites.
+2. **Don't assume D1 is multi-tenant by default.** Each website gets its own D1 database backing its single live deploy. Cross-tenant risk exists only between the website's own users sharing that one database, not between different websites.
 
 3. **Don't model attacks against Cloudflare infrastructure.** V8 isolate escapes, edge network compromises, and Cloudflare-internal attacks are outside the website's threat model. The platform is the trust boundary.
 
@@ -449,10 +449,10 @@ The canonical helper is the drop-in `app/src/lib/security-headers.server.ts`:
 ```ts
 export function applySecurityHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
-  // Framing: the Supercomputer Design-mode inspector + preview render this app
+  // Framing: the Supercomputer Design-mode inspector renders the live app
   // inside an iframe from a higgsfield.app origin (cross-origin to the app's own
   // subdomain). `X-Frame-Options` has no cross-origin allowlist, so SAMEORIGIN/
-  // DENY would blank the preview. We deliberately DO NOT set X-Frame-Options and
+  // DENY would blank Design mode. We deliberately DO NOT set X-Frame-Options and
   // control framing via the CSP `frame-ancestors` allowlist below. Reviewer:
   // confirm/tighten the editor origin for your deployment.
   headers.set(
@@ -484,8 +484,8 @@ export function applySecurityHeaders(response: Response): Response {
 Adjust CSP directives per website needs (e.g., add specific CDN origins), but keep
 `X-Content-Type-Options` and keep `frame-ancestors` as the editor allowlist.
 **Never set `X-Frame-Options`** — it has no cross-origin allowlist, so
-`DENY`/`SAMEORIGIN` would blank the Supercomputer Design-mode/preview iframe,
-which loads the website from a cross-origin `higgsfield.app` host. Framing is
+`DENY`/`SAMEORIGIN` would blank the Supercomputer Design-mode iframe,
+which loads the live website from a cross-origin `higgsfield.app` host. Framing is
 controlled exclusively by the CSP `frame-ancestors` allowlist: it permits the
 Supercomputer hosts while still blocking arbitrary third parties. Keep that
 allowlist — never narrow it to `'none'` and never remove it.

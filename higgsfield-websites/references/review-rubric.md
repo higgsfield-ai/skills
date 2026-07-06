@@ -1,9 +1,9 @@
 # review-rubric — Phase 5 mechanical gate + Phase 6 adversarial review
 
 Two checklists. §A runs BEFORE the first deploy (grep/read the code — every item
-is mechanically checkable). §B runs AFTER the preview deploy, against real
-screenshots, in the voice of a skeptical outside reviewer whose default verdict
-is NEEDS_WORK. Both are completion gates, not suggestions.
+is mechanically checkable). §B runs AFTER the deploy, against real screenshots
+of the live site, in the voice of a skeptical outside reviewer whose default
+verdict is NEEDS_WORK. Both are completion gates, not suggestions.
 
 ## §A. Mechanical gate (pre-deploy, code-level)
 
@@ -82,7 +82,7 @@ before deploying.
 
 ## §B. Visual rubric (post-deploy, screenshot-level)
 
-Screenshot the deployed preview: full-page at ~1440px wide AND ~390px wide. Grade
+Screenshot the deployed live site: full-page at ~1440px wide AND ~390px wide. Grade
 each item PASS / FAIL with one sentence of evidence. Be adversarial — you are
 hunting for reasons the page reads as AI-template output. Collect every FAIL into
 one batch fix list, apply, redeploy once.

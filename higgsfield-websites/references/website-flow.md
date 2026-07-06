@@ -20,7 +20,7 @@ tool, site, or web product, BUILD IT with the website builder — it is the defa
 for any web target. Never ask the user to confirm the platform, never downgrade to
 a "demo"/mockup as the safe option, and don't stall on scope questions beyond the
 single intake round defined below. Take the fullest reasonable interpretation
-and ship a working preview.
+and ship a working site.
 
 **Repo layout.** The website project lives in **`app/`** — its own `package.json`,
 `src/`, `packages/`, `migrations/`, build config, and the deploy inputs
@@ -162,10 +162,11 @@ classes** (bespoke-chrome violation); **opacity-0 + whileInView** combinations;
 section plan honored; copy self-audit. This is a completion gate — do not
 deploy with a failing item.
 
-### Phase 6 — Deploy preview + adversarial review (default verdict: NEEDS_WORK)
+### Phase 6 — Deploy + adversarial review (default verdict: NEEDS_WORK)
 
-1. `higgsfield website deploy <website_id> --env preview`.
-2. If you can screenshot the deployed preview (e.g. a browser or screenshot
+1. `higgsfield website deploy <website_id>` — this ships the live public site
+   immediately; there is no preview stage.
+2. If you can screenshot the deployed live site (e.g. a browser or screenshot
    tool is available), capture it: full-page desktop ~1440px AND mobile ~390px.
    If you cannot, state plainly in your report that the visual review was
    skipped — do not silently drop it.
@@ -177,11 +178,13 @@ deploy with a failing item.
    failure.
 4. Grade the FULL rubric before touching any code — do not fix finding #1
    before finding #4 exists. Then collect ALL findings into ONE batch fix,
-   apply, redeploy the preview once. A second loop only for broken layout,
+   apply, redeploy once. A second loop only for broken layout,
    not taste nits.
-5. Report: preview URL + one-line concept statement + anything honestly skipped.
+5. Report: live URL (from `higgsfield website status`) + one-line concept
+   statement + anything honestly skipped.
 
-Do NOT deploy production unless the user explicitly asks to publish/go live.
+Do NOT publish/list on the community feed unless the user explicitly asks to
+publish/go live on the feed.
 
 ---
 
@@ -248,8 +251,8 @@ them. Template-owned infrastructure lives in `app/src/module/**`.
 
 ### 0b. Supercomputer Design mode inspector
 
-Generated websites support a Higgsfield design inspector bridge for editable
-Supercomputer previews. The split is strict:
+Generated websites support a Higgsfield design inspector bridge for editing in
+Supercomputer Design mode. The split is strict:
 
 - The Higgsfield editor (parent window) owns the iframe UI, hover overlay,
   edit popover, origin/session checks, and edit prompt submission.
@@ -258,29 +261,29 @@ Supercomputer previews. The split is strict:
 - Agents never manually implement inspector code, refs, source markers, or
   `data-hf-*` attributes.
 
-Required scripts:
+Required scripts (LOCAL work only — the deploy build is owned by CI):
 
-- `bun run build` is the clean production build: no inspector runtime and no
-  source metadata.
-- `bun run build:design` is the editable preview build:
+- `bun run build` is the local build without the inspector: no inspector
+  runtime and no source metadata.
+- `bun run build:design` is the local inspector-enabled build:
   `HF_DESIGN_INSPECTOR=1 vite build --mode design`.
 - `bun run dev:design` is local dev with the inspector enabled.
-- `bun run build:prod` is an alias for the production-clean build.
+- `bun run build:prod` is an alias for the inspector-free build.
 
-The platform must deploy editable previews with `build:design` and public
-production websites with `build`. Exact source metadata is attached with
-preview-only callback refs and a `WeakMap`, not DOM attributes. Keep the guarded
+The platform CI sets `HF_DESIGN_INSPECTOR=1` on every deploy build, so the live
+deployed site always carries the inspector and IS the surface Supercomputer
+Design mode opens. Exact source metadata is attached with inspector-only
+callback refs and a `WeakMap`, not DOM attributes. Keep the guarded
 dynamic install in `app/src/routes/__root.tsx` and the Vite integration in
 `app/vite.config.ts` wired to `app/src/module/design-inspector/vite`.
 
-For every Supercomputer website-builder task, deploy the editable **preview** only —
-`higgsfield website deploy <website_id> --env preview` (which uses
-`bun run build:design`). Preview is the default and the ONLY environment you
-deploy on your own. Do NOT deploy `--env production` unless the user explicitly
-asks to publish, go live, or ship to production. Never rewrite the normal
-`build` script to include
-`HF_DESIGN_INSPECTOR=1`, never rename `build:design` into `build`, and never ship
-inspector metadata in production.
+For every Supercomputer website-builder task there is ONE deploy —
+`higgsfield website deploy <website_id>` — and it ships the live public site
+immediately; there is no preview stage or environment choice. Publishing/listing on
+the community feed is separate: do NOT run `higgsfield website publish` unless
+the user explicitly asks to publish, list, or share the site. Never rename
+`build:design` into `build` and never hand-edit the build scripts to toggle
+`HF_DESIGN_INSPECTOR` — the script split exists for local work only.
 ### 1. SSR-safe rendering
 Every route renders on the server per request. NEVER touch browser-only globals
 (`window`, `document`, `localStorage`, `navigator`) at module top level or during
@@ -309,12 +312,15 @@ Each binding is present ONLY if declared in `app/app.manifest.json`, so the type
 accessors are optional — guard before use. Do not thread `env` through React
 props or read it at module top level.
 
-### 5. Opted-in storage is SHARED — preview data == prod data
-If you opt into D1, R2, or KV, each is a SINGLE instance **shared by the preview
-and prod deploys**. Only the CODE is split (`vars.HF_ENV`). The DATA is not.
-- `env.HF_ENV` tells you which env it is; it CANNOT switch the database/bucket.
-- A destructive migration you run "just to test on preview" hits **production
-  data**. Prefer additive migrations (`CREATE TABLE IF NOT EXISTS`, `ADD COLUMN`).
+### 5. Opted-in storage is LIVE — one deploy, one database
+If you opt into D1, R2, or KV, each is a SINGLE instance backing the ONE live
+deploy. There is no staging copy: every migration and data change hits **live
+production data** directly.
+- `env.HF_ENV` is always `"production"` on deployed builds; there is no
+  separate database/bucket to test against.
+- A destructive migration you run "just to test" destroys **production data**.
+  Prefer additive migrations (`CREATE TABLE IF NOT EXISTS`, `ADD COLUMN`), and
+  get explicit user approval before any destructive change.
 
 ### 6. `app/app.manifest.json` declares infra — NOTHING is provisioned by default
 A new website gets **no D1, no R2, no KV, no Durable Object**. Opt in only when
@@ -364,21 +370,23 @@ pattern, fnf via container token). Containers are **off by default**.
 
 ## Verify + deploy
 
-The trusted platform CI builds the website on **every deploy** (preview →
-`bun run build:design`, production → `bun run build`), so a deploy already gives
-you the authoritative type + build result. Do NOT reflexively `bun install` +
+The trusted platform CI builds the website on **every deploy** (always with
+`HF_DESIGN_INSPECTOR=1` and `HF_ENV="production"` — the live site carries the
+design inspector), so a deploy already gives you the authoritative type +
+build result. Do NOT reflexively `bun install` +
 `bun run build` just to check your work. The sandbox cannot deploy/migrate (no
 Cloudflare token); the trusted platform CI does that.
 
-**Default: run the pipeline, pass the Phase 5 gate, deploy the preview**
-(`higgsfield website deploy <website_id> --env preview`), then run the Phase 6
-adversarial review. Never deploy production unless the user explicitly asked to
+**Default: run the pipeline, pass the Phase 5 gate, deploy**
+(`higgsfield website deploy <website_id>` — this ships the live site
+immediately), then run the Phase 6 adversarial review against the live site.
+Never publish/list on the community feed unless the user explicitly asked to
 publish.
 
 **Publishing ("show in feed").** When the user asks to publish / share / put the
 site on the feed, run `higgsfield website publish <website_id>` — it deploys the
-pushed `main` to PRODUCTION (a publish always includes the production deployment;
-no separate deploy command) and lists the website on the Higgsfield community feed.
+pushed `main` (a publish always includes a deploy; no separate deploy command
+needed) and lists the website on the Higgsfield community feed.
 
 **HARD GATE — the cover is NOT optional. Running `higgsfield website publish` while
 `og_image_url` or `marketplace_cover_url` is empty is a BROKEN publish** (the
@@ -410,28 +418,28 @@ real values (never placeholders); (d) commit + push; (e) only then run
 (1–5 are generated without asking — they are part of the publish, not a
 separate credit decision; only the cover VIDEO (6) needs permission.)
 
-`higgsfield website deploy <website_id> --env production` remains the way to ship
-to production WITHOUT a feed listing.
+`higgsfield website deploy <website_id>` remains the way to ship the live site
+WITHOUT a feed listing.
 
 **Run the local checks only when you actually need them** — from `app/`:
 ```bash
 cd app
 bun install          # only when you changed dependencies / package.json
 bun run typecheck    # tsc --noEmit
-bun run build        # production-clean build
-bun run build:design # editable Supercomputer preview build
+bun run build        # local build without the inspector
+bun run build:design # local inspector-enabled build
 ```
 Run them when: you changed dependencies or build/runtime config, you're debugging
 a build/type error, or a command genuinely needs `node_modules`.
 
 **Small edits to an existing site** (copy tweak, one component, styling fix): the
 pipeline does not restart. Make the edit, run `bun run qa:fill -- --strict`,
-deploy the preview. Run the Phase 6 screenshot loop only when the edit changed
+deploy. Run the Phase 6 screenshot loop only when the edit changed
 layout/visual structure (new section, hero change, theme change) — not for a
 typo fix.
 
 **Before claiming a build done / deploying, no placeholders may remain.** Run
-`bun run qa:fill -- --strict` (add `--url <preview>` to also scan the rendered
+`bun run qa:fill -- --strict` (add `--url <live-url>` to also scan the rendered
 page). It fails if any template placeholder survives — a `<...>`-style token,
 `lorem ipsum`, or the scaffold blank-page marker (`REMOVE_THIS` / `blank-app-v1`).
 It is a completion gate, not a CI build step.

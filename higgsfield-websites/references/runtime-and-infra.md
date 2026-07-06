@@ -37,18 +37,19 @@ read `references/auth.md`.
   bridge that runs inside the iframe.
 - Child bridge code lives in `app/src/module/design-inspector`:
   `registry.ts`, `runtime.ts`, and `vite.ts`.
-- `bun run build` is production-clean: no inspector runtime, no source metadata,
-  and no per-element debug attributes.
-- `bun run build:design` is the editable preview build and must run
-  `HF_DESIGN_INSPECTOR=1 vite build --mode design`.
-- The deploy platform must use `build:design` for editable previews and `build`
-  for public production deploys.
-- On website-builder tasks, deploy the editable preview first or alongside
-  production. The preview is the surface Supercomputer Design mode opens.
-  Production must stay production-clean.
-- Never change `build` to run `HF_DESIGN_INSPECTOR=1`, never rename
-  `build:design` into `build`, and never put inspector runtime/source metadata
-  into a public production deploy as a workaround.
+- `bun run build` is the local inspector-free build: no inspector runtime, no
+  source metadata, and no per-element debug attributes.
+- `bun run build:design` is the local inspector-enabled build and must run
+  `HF_DESIGN_INSPECTOR=1 vite build --mode design`. Both scripts exist for
+  LOCAL work only.
+- The deploy platform CI sets `HF_DESIGN_INSPECTOR=1` on every deploy build,
+  so the live deployed site always carries the inspector.
+- There is ONE deploy per website (`higgsfield website deploy <website_id>`),
+  and it ships the live public site immediately. The live site is the surface
+  Supercomputer Design mode opens.
+- Never rename `build:design` into `build` and never hand-edit the build
+  scripts to toggle `HF_DESIGN_INSPECTOR` — the deploy build is controlled by
+  CI, not by these scripts.
 - The design build attaches source metadata through callback refs and a
   `WeakMap` registry. It must not add per-element DOM attributes.
 - The design build instruments intrinsic DOM tags and ref-capable component
@@ -56,7 +57,7 @@ read `references/auth.md`.
   is automatic; agents must not add marker props by hand. Components that do not
   forward refs fall back to nearest DOM/heuristic metadata.
 - Keep the guarded dynamic import in `app/src/routes/__root.tsx`; do not make the
-  inspector a static root import. Production tree-shaking depends on the
+  inspector a static root import. Inspector-free tree-shaking depends on the
   compile-time `__HF_DESIGN_INSPECTOR__` guard.
 - Never manually write `data-hf-*` attributes, source markers, inspector refs,
   or postMessage handlers in website components. The design-inspector module and Vite config own all
@@ -173,10 +174,12 @@ a GET server function. This commonly breaks generation submit/cost/media flows.
 - `app/app.manifest.json` declares infra. `app/wrangler.jsonc` is build/dev input; the
   deploy platform overwrites authoritative bindings.
 
-## Shared Data Warning
+## Live Data Warning
 
-Preview and production share the same D1 and R2 resources. `env.HF_ENV` changes
-code behavior only; it does not switch databases or buckets.
+There is one deploy and one set of D1 and R2 resources backing it. Every
+migration or data change hits live production data directly. `env.HF_ENV` is
+always `"production"` on deployed builds; it does not give you a separate
+database or bucket to test against.
 
 - Prefer additive migrations.
 - Avoid `DROP`, destructive `UPDATE`, and destructive backfills unless the user

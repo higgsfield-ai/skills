@@ -598,7 +598,7 @@ If sign-in works but generation fails with `Method Not Allowed`:
 2. Confirm the code calls `jobs.submit(...)` or `jobs.cost(...)` through the SDK,
    not hand-written `fetch('/jobs?...')`.
 3. Confirm `createWorkflowPlatformAdapter({ baseUrl })` uses exactly
-   `https://fnf.internal`, not the preview website URL, `/api/user`, a public fnf
+   `https://fnf.internal`, not the deployed website URL, `/api/user`, a public fnf
    URL, a dev fnf URL, or a model-specific fnf route.
 4. Confirm the server handler re-checks `https://fnf.internal/user` before SDK
    calls, then creates the adapter/client inside the server handler.

@@ -117,7 +117,7 @@ website's feed/listing card on every deploy. Its keys:
 }
 ```
 
-Fill the five text/image keys with real values before any production deploy or
+Fill the five text/image keys with real values before any deploy or
 publish (URLs: absolute https, or a root-relative path to a file in
 `app/public/` — it is resolved against the site's own host).
 
@@ -178,7 +178,7 @@ export const Route = createFileRoute('/robots')({
 });
 ```
 
-The file path is `robots.txt.ts` — TanStack Start maps the `.txt` extension to serve at `/robots.txt`. Origin is derived from the request so it works in both preview and production.
+The file path is `robots.txt.ts` — TanStack Start maps the `.txt` extension to serve at `/robots.txt`. Origin is derived from the request so it works on any host the site is served from.
 
 ### sitemap.xml Server Route
 
@@ -355,7 +355,7 @@ This is a structural SEO advantage over client-rendered SPAs. Don't undermine it
 
 1. **Forgetting to update the sitemap ROUTES array.** Every new page route needs a corresponding sitemap entry. Dead sitemap URLs actively hurt crawl efficiency.
 2. **CSP blocking inline styles from the design system.** The default CSP includes `'unsafe-inline'` for styles. If you tighten it, test that Tailwind/CSS-in-JS still works.
-3. **robots.txt blocking staging assets.** The route derives origin from the request URL, so preview and production get correct sitemaps automatically. Don't hardcode URLs.
+3. **robots.txt with a hardcoded origin.** The route derives origin from the request URL, so any host the site is served from gets correct sitemaps automatically. Don't hardcode URLs.
 4. **Missing canonical on dynamic routes.** Routes with params (`/blog/$slug`) must build the canonical URL from the param value, not use a static string.
 5. **Trailing slash redirect loops.** The normalization redirect must be the FIRST check in `fetch()`, before `handler.fetch`. Placing it after can cause double-processing or loops with Cloudflare's own redirects.
 
