@@ -22,14 +22,12 @@ there.
   UX-craft rules, the Higgsfield integration rules); the canonical API
   reference is `app/packages/quanta/ai/AGENTS.md` — RELY ON IT for props/APIs;
   do NOT open or grep the component `.tsx` source to re-derive prop names.
-- **The four reference layouts** (`references/app-layouts.md` +
-  `app/src/layouts/AGENTS.md`) — simple-app / preset-app / complex-app /
-  studio-app, each a SCREENSHOT of a real Higgsfield app hosted at
-  `https://static.higgsfield.ai/website-builder/layout-references/<name>.png`.
-  There are no prebuilt scaffolds. You MUST pick the closest of the four and
-  you MUST open its reference image before building — the image is the only
-  description of the layout. Build the whole screen (chrome, composer, feed,
-  result cards) from Quanta primitives off what the image shows.
+- **The three code layouts** (`references/app-layouts.md` +
+  `app/src/layouts/AGENTS.md`) — Studio (`studio.tsx`), Preset (`preset.tsx`),
+  and App detail (`app-detail.tsx`), shipped as REAL CODE in the template (not
+  screenshots). Start from the closest one, copy it into your route, and adapt
+  it — build from the code plus the reusable pieces in `app/src/components`,
+  never from a screenshot.
 - **Custom components for gaps** — for anything Quanta lacks (date picker,
   calendar, data table, …), build a small component from Quanta primitives +
   `q-` tokens in the app's own `app/src/components/`. Never add a third-party
@@ -99,7 +97,7 @@ the common Quanta components — READ IT FIRST), `references/quanta-design.md`
 plus the in-repo `app/packages/quanta/ai/AGENTS.md` for component props/tokens,
 and `references/fnf-sdk.md` + `references/fnf-react.md` (canonical in-repo
 mirrors: `app/packages/fnf/ai/AGENTS.md` and `.../fnf-react/ai/AGENTS.md`) for
-the SDK + hooks. Those guides plus the one layout reference image are ENOUGH to
+the SDK + hooks. Those guides plus the chosen code layout are ENOUGH to
 build the whole app. **Do NOT open, `cat`, or `grep`
 `app/packages/{quanta,fnf,fnf-react}/src/**`** — every prop and method you need
 is in the guides, and reading package source is the single biggest time sink in
@@ -107,7 +105,7 @@ a build (it also bloats context and slows every later step). If a specific prop
 or field is genuinely missing from a guide, make the reasonable call and let
 `bun run typecheck` catch a mistake — do NOT dig through `src/` to pre-confirm
 it; note the doc gap in your final summary instead. Once you have read the
-guides + the layout image, you have enough — start writing.
+guides + the chosen code layout, you have enough — start writing.
 
 1. **Intake** (ONE batched round — ask the user only for what the brief doesn't
    answer): confirm `type: "app"` is what the user wants (it is the USER'S
@@ -115,12 +113,12 @@ guides + the layout image, you have enough — start writing.
    brand-critical. Never a second round — pick sensible defaults and state
    them.
 2. **Create** — `higgsfield website create --type app`.
-3. **Plan the screens** — pick the closest of the four reference layouts in
-   `references/app-layouts.md` (you MUST pick one) and OPEN its image (fetch the
-   URL) to read the real composition — the image is the only description of the
-   layout, so this step is not skippable; list the screens/states (including
-   first-run/empty state) and the app's own product state for D1.
-4. **Build with Quanta** — build the layout from the reference image using
+3. **Plan the screens** — pick the closest of the three code layouts in
+   `app/src/layouts` (studio / preset / app-detail; see
+   `references/app-layouts.md`) and read its code + `app/src/layouts/AGENTS.md`
+   for the composition; list the screens/states (including first-run/empty
+   state) and the app's own product state for D1.
+4. **Build with Quanta** — adapt the chosen code layout using
    Quanta components per `references/quanta-design.md`. NEVER customize or
    modify Quanta; when a component doesn't exist or doesn't fit as-is, build a
    small custom component from Quanta primitives in `app/src/components/`
