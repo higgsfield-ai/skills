@@ -101,7 +101,7 @@ are rejected — if that happens, try a close variant.
    ask the user to run `higgsfield auth login` (interactive) and wait for
    confirmation.
 3. `git` and `bun` are used locally once you clone the repo. The CLI itself
-   handles create / repo / deploy / publish / status / db / secrets / delete —
+   handles create / repo / deploy / publish / status / db / secrets —
    and the asset generation jobs (`higgsfield generate …`, `higgsfield model …`).
 
 ## Pick the path, then follow ONE flow end-to-end
