@@ -22,12 +22,13 @@ there.
   UX-craft rules, the Higgsfield integration rules); the canonical API
   reference is `app/packages/quanta/ai/AGENTS.md` — RELY ON IT for props/APIs;
   do NOT open or grep the component `.tsx` source to re-derive prop names.
-- **The three code layouts** (`references/app-layouts.md` +
+- **The six code layouts** (`references/app-layouts.md` +
   `app/src/layouts/AGENTS.md`) — Studio (`studio.tsx`), Preset (`preset.tsx`),
-  and App detail (`app-detail.tsx`), shipped as REAL CODE in the template (not
-  screenshots). Start from the closest one, copy it into your route, and adapt
-  it — build from the code plus the reusable pieces in `app/src/components`,
-  never from a screenshot.
+  App detail (`app-detail.tsx`), AI Stylist (`ai-stylist.tsx`), Skin Enhancer
+  (`skin-enhancer.tsx`), and Shots (`shots.tsx`), shipped as REAL CODE in the
+  template (not screenshots). Start from the closest one, copy it into your
+  route, and adapt it — build from the code plus the reusable pieces in
+  `app/src/components`, never from a screenshot.
 - **Custom components for gaps** — for anything Quanta lacks (date picker,
   calendar, data table, …), build a small component from Quanta primitives +
   `q-` tokens in the app's own `app/src/components/`. Never add a third-party
@@ -111,9 +112,10 @@ have read the guides + the chosen code layout, you have enough — start writing
    brand-critical. Never a second round — pick sensible defaults and state
    them.
 2. **Create** — `higgsfield website create --type app`.
-3. **Plan the screens** — pick the closest of the three code layouts in
-   `app/src/layouts` (studio / preset / app-detail; see
-   `references/app-layouts.md`) and read its code + `app/src/layouts/AGENTS.md`
+3. **Plan the screens** — pick the closest of the six code layouts in
+   `app/src/layouts` (studio / preset / app-detail / ai-stylist / skin-enhancer
+   / shots; see `references/app-layouts.md`) and read its code +
+   `app/src/layouts/AGENTS.md`
    for the composition; list the screens/states (including first-run/empty
    state) and the app's own product state for D1.
 4. **Build with Quanta** — adapt the chosen code layout using
@@ -139,6 +141,11 @@ have read the guides + the chosen code layout, you have enough — start writing
    without prompting, the same way you write real copy. (Only the cover VIDEO,
    `og_video_url`, needs the user's permission — it costs credits.) An app you
    present as done with an empty cover or empty `og_title` is INCOMPLETE.
+   **Always suggest the cover video:** when you present the finished app (and
+   again at publish), proactively offer a short animated cover for the feed card
+   ("want a short cover video? it makes the feed card play on hover") — suggest
+   it every time, then only generate it if the user says yes
+   (`references/cover-animator.md`).
 8. **Publish to community feed only when asked**.
 
 ---
@@ -373,11 +380,12 @@ longer deploys — it lists what's already live); (f) only then run
    with `higgsfield upload create`. One generation fills both this and
    `og_image_url` — there is never a reason to have one without the other.
 5. `favicon_url` — the card's logo/icon (generate one if none exists yet).
-6. `og_video_url` — the **cover video**, OPTIONAL and permission-gated: OFFER
-   it to the user ("want a short cover video for the feed card?") and ASK
-   PERMISSION FIRST — generating a video costs credits; never generate it
-   unprompted. If they say yes, follow `references/cover-animator.md` (the ~5s
-   end-frame reveal of the launch cover via `seedance_2_0`).
+6. `og_video_url` — the **cover video**, OPTIONAL and permission-gated: ALWAYS
+   SUGGEST it (offer it every time — "want a short cover video for the feed
+   card? it plays on hover"), but ASK PERMISSION FIRST — generating a video
+   costs credits; never generate it unprompted. If they say yes, follow
+   `references/cover-animator.md` (the ~5s end-frame reveal of the launch cover
+   via `seedance_2_0`).
 
 (1–5 are generated without asking — they are part of the publish, not a
 separate credit decision; only the cover VIDEO (6) needs permission.)

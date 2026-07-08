@@ -336,17 +336,20 @@ Generated app UIs must look designed, not like raw low-level layouts.
 
 ### Code layouts (preferred starting points)
 
-The template ships **three** layout screens as REAL CODE in
+The template ships **six** layout screens as REAL CODE in
 `app/src/layouts/` — start from the closest one, copy it into your route, and
 adapt it from the code (and the reusable pieces in `app/src/components`), never
 from a screenshot. See `references/app-layouts.md` + `app/src/layouts/AGENTS.md`
 for each one's full anatomy.
 
-| Product shape                                                                | Code layout (copy + adapt)      |
-| ---------------------------------------------------------------------------- | ------------------------------- |
-| Full workspace — projects sidebar + prompt composer + generations feed        | `app/src/layouts/studio.tsx`     |
-| Pick-a-style-then-generate — preset/template gallery + a creation rail        | `app/src/layouts/preset.tsx`     |
-| Single tool's landing/detail page — two-column generator hero + how-it-works  | `app/src/layouts/app-detail.tsx` |
+| Product shape                                                                | Code layout (copy + adapt)        |
+| ---------------------------------------------------------------------------- | --------------------------------- |
+| Full workspace — projects sidebar + prompt composer + generations feed        | `app/src/layouts/studio.tsx`       |
+| Pick-a-style-then-generate — preset/template gallery + a creation rail        | `app/src/layouts/preset.tsx`       |
+| Single tool's landing/detail page — two-column generator hero + how-it-works  | `app/src/layouts/app-detail.tsx`   |
+| Upload-configure-iterate workspace (try-on / restyle / character)             | `app/src/layouts/ai-stylist.tsx`   |
+| Before/after enhance tool (retouch / restore / upscale)                       | `app/src/layouts/skin-enhancer.tsx`|
+| Step-by-step generate → select → refine wizard                                | `app/src/layouts/shots.tsx`        |
 
 When none fits and the user asks for a custom shell, compose one of the generic
 shapes below.
