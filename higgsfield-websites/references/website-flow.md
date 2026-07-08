@@ -154,7 +154,7 @@ Build static-but-complete; motion is the next phase.
 
 ### Phase 5 — Mechanical gate (before first deploy; every item fixed)
 
-Run `bun run qa:fill -- --strict`, then the grep checklist in
+Run the grep checklist in
 **`references/review-rubric.md` §A**: placeholders; em/en-dashes; banned palette
 families in tokens; eyebrow ration; unreferenced generated assets (every kit
 file used); `h-screen`; SSR safety; reduced-motion coverage; **repeated CTA
@@ -172,7 +172,7 @@ deploy with a failing item.
    the user" rule).
 
 Do NOT navigate to, screenshot, or run image analysis on the deployed site —
-the mechanical gates (`bun run typecheck`, `bun run qa:fill -- --strict`) are
+the mechanical gate (the grep checklist in `references/review-rubric.md` §A) is
 the only verification. Do NOT publish/list on the community feed unless the user
 explicitly asks to publish/go live on the feed.
 
@@ -250,14 +250,13 @@ Supercomputer Design mode. The split is strict:
 - Agents never manually implement inspector code, refs, source markers, or
   `data-hf-*` attributes.
 
-Required scripts (LOCAL work only — the deploy build is owned by CI):
+Local scripts (LOCAL work only — the deploy build is owned by CI):
 
-- `bun run build` is the local build without the inspector: no inspector
-  runtime and no source metadata.
-- `bun run build:design` is the local inspector-enabled build:
-  `HF_DESIGN_INSPECTOR=1 vite build --mode design`.
+- `bun run build` is inspector-free by default: no inspector runtime and no
+  source metadata. Setting `HF_DESIGN_INSPECTOR=1` in the env turns the same
+  build into the inspector-enabled one (this is what platform CI does on
+  every deploy).
 - `bun run dev:design` is local dev with the inspector enabled.
-- `bun run build:prod` is an alias for the inspector-free build.
 
 The platform CI sets `HF_DESIGN_INSPECTOR=1` on every deploy build, so the live
 deployed site always carries the inspector and IS the surface Supercomputer
@@ -270,9 +269,9 @@ For every Supercomputer website-builder task there is ONE deploy —
 `higgsfield website deploy <website_id>` — and it ships the live public site
 immediately; there is no preview stage or environment choice. Publishing/listing on
 the community feed is separate: do NOT run `higgsfield website publish` unless
-the user explicitly asks to publish, list, or share the site. Never rename
-`build:design` into `build` and never hand-edit the build scripts to toggle
-`HF_DESIGN_INSPECTOR` — the script split exists for local work only.
+the user explicitly asks to publish, list, or share the site. Never hard-code
+`HF_DESIGN_INSPECTOR=1` into the `build` script and never hand-edit the build
+script to toggle it — the deploy build is CI-owned.
 ### 1. SSR-safe rendering
 Every route renders on the server per request. NEVER touch browser-only globals
 (`window`, `document`, `localStorage`, `navigator`) at module top level or during
@@ -413,19 +412,16 @@ WITHOUT a feed listing.
 ```bash
 cd app
 bun install          # only when you changed dependencies / package.json
-bun run typecheck    # tsc --noEmit
-bun run build        # local build without the inspector
-bun run build:design # local inspector-enabled build
+bun run typecheck    # tsc --noEmit — only to chase a type error on deploy
+bun run build        # local build — only to chase a build error on deploy
 ```
 Run them when: you changed dependencies or build/runtime config, you're debugging
 a build/type error, or a command genuinely needs `node_modules`.
 
 **Small edits to an existing site** (copy tweak, one component, styling fix): the
-pipeline does not restart. Make the edit, run `bun run qa:fill -- --strict`,
-deploy.
+pipeline does not restart. Make the edit, deploy.
 
-**Before claiming a build done / deploying, no placeholders may remain.** Run
-`bun run qa:fill -- --strict` (add `--url <live-url>` to also scan the rendered
-page). It fails if any template placeholder survives — a `<...>`-style token,
-`lorem ipsum`, or the scaffold blank-page marker (`REMOVE_THIS` / `blank-app-v1`).
-It is a completion gate, not a CI build step.
+**Before claiming a build done / deploying, no placeholders may remain** — no
+`<...>`-style tokens, `lorem ipsum`, or scaffold blank-page markers
+(`REMOVE_THIS` / `blank-app-v1`). This is covered by the mechanical gate (the
+grep checklist in `references/review-rubric.md` §A).

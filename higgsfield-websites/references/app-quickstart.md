@@ -239,6 +239,5 @@ For a gap, build a small component from Quanta primitives in
 
 ---
 
-**Then follow `app-flow.md` steps 6–9:** gate (`bun run typecheck` +
-`bun run qa:fill -- --strict`) → deploy → cover + metadata (generate the cover
-per `references/app-cover.md`) → publish only when asked.
+**Then follow `app-flow.md` steps 6–8:** deploy → cover + metadata (generate the
+cover per `references/app-cover.md`) → publish only when asked.

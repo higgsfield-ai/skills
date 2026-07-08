@@ -2,16 +2,16 @@
 
 §A runs BEFORE deploy (grep/read the code — every item is mechanically
 checkable). It is a completion gate, not a suggestion. There is no post-deploy
-visual/screenshot review — the mechanical gate plus `bun run qa:fill --
---strict` are the only verification.
+visual/screenshot review — this mechanical gate is the only verification.
 
 ## §A. Mechanical gate (pre-deploy, code-level)
 
-Run `bun run qa:fill -- --strict` first. Then check each item; fix every hit
-before deploying.
+Check each item; fix every hit before deploying.
 
-1. **Placeholders** — `qa:fill --strict` passes; zero `<...>` tokens, `lorem`,
-   `REMOVE_THIS`, `blank-app-v1`, empty `src=""`.
+1. **Placeholders** — zero `<...>`-style tokens (e.g. `<brand name>`, `<product>`),
+   `lorem`, `REMOVE_THIS`, `blank-app-v1`, or empty `src=""`. Grep for the
+   literal markers: `grep -rniE 'lorem ipsum|REMOVE_THIS|blank-app-v1' app/src/`,
+   and scan for any remaining `<...>` placeholder tokens in quoted strings.
 2. **Em-dash ban** — `grep -rn "—\|–" app/src/` over user-visible strings returns
    nothing (code comments exempt).
 3. **Banned default palette** — none of the banned palette families from

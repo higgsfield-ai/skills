@@ -37,18 +37,17 @@ read `references/auth.md`.
   bridge that runs inside the iframe.
 - Child bridge code lives in `app/src/module/design-inspector`:
   `registry.ts`, `runtime.ts`, and `vite.ts`.
-- `bun run build` is the local inspector-free build: no inspector runtime, no
-  source metadata, and no per-element debug attributes.
-- `bun run build:design` is the local inspector-enabled build and must run
-  `HF_DESIGN_INSPECTOR=1 vite build --mode design`. Both scripts exist for
-  LOCAL work only.
+- `bun run build` is inspector-free by default: no inspector runtime, no
+  source metadata, and no per-element debug attributes. Setting
+  `HF_DESIGN_INSPECTOR=1` in the env turns the same build into the
+  inspector-enabled one (for LOCAL work only).
 - The deploy platform CI sets `HF_DESIGN_INSPECTOR=1` on every deploy build,
   so the live deployed site always carries the inspector.
 - There is ONE deploy per website (`higgsfield website deploy <website_id>`),
   and it ships the live public site immediately. The live site is the surface
   Supercomputer Design mode opens.
-- Never rename `build:design` into `build` and never hand-edit the build
-  scripts to toggle `HF_DESIGN_INSPECTOR` — the deploy build is controlled by
+- Never hard-code `HF_DESIGN_INSPECTOR=1` into the `build` script and never
+  hand-edit the build script to toggle it — the deploy build is controlled by
   CI, not by these scripts.
 - The design build attaches source metadata through callback refs and a
   `WeakMap` registry. It must not add per-element DOM attributes.

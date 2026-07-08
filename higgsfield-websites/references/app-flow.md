@@ -102,10 +102,8 @@ build the whole app. **Do NOT open, `cat`, or `grep`
 `app/packages/{quanta,fnf,fnf-react}/src/**`** — every prop and method you need
 is in the guides, and reading package source is the single biggest time sink in
 a build (it also bloats context and slows every later step). If a specific prop
-or field is genuinely missing from a guide, make the reasonable call and let
-`bun run typecheck` catch a mistake — do NOT dig through `src/` to pre-confirm
-it; note the doc gap in your final summary instead. Once you have read the
-guides + the chosen code layout, you have enough — start writing.
+or field is genuinely missing from a guide, make the reasonable call. Once you
+have read the guides + the chosen code layout, you have enough — start writing.
 
 1. **Intake** (ONE batched round — ask the user only for what the brief doesn't
    answer): confirm `type: "app"` is what the user wants (it is the USER'S
@@ -128,13 +126,11 @@ guides + the chosen code layout, you have enough — start writing.
    generation/media through server functions per `references/fnf-sdk.md` +
    `references/fnf-react.md`, product state in D1 (rules 3/3a below). Poll
    jobs, render real results.
-6. **Gate** — `bun run typecheck` and `bun run qa:fill -- --strict` must pass;
-   fix every item.
-7. **Deploy** (`higgsfield website deploy <website_id>` — this ships the live
+6. **Deploy** (`higgsfield website deploy <website_id>` — this ships the live
    public site immediately). Report the live URL (from
    `higgsfield website status`) in product terms, no repo/commit/deploy jargon
    (see the SKILL.md "Talking to the user" rule).
-8. **Cover + metadata — ALWAYS, as part of building (not just at publish).**
+7. **Cover + metadata — ALWAYS, as part of building (not just at publish).**
    Every app ships with a launch cover and filled feed-card metadata. Generate
    them per `references/app-cover.md`: the branded 3:2 cover + stadium-capsule
    OG image, then fill `app/src/app-meta.json` — `og_title`, `og_description`,
@@ -143,8 +139,7 @@ guides + the chosen code layout, you have enough — start writing.
    without prompting, the same way you write real copy. (Only the cover VIDEO,
    `og_video_url`, needs the user's permission — it costs credits.) An app you
    present as done with an empty cover or empty `og_title` is INCOMPLETE.
-9. **Publish only when asked** — then the publish gate below re-checks the
-   cover + metadata are filled.
+8. **Publish to community feed only when asked**.
 
 ---
 
@@ -160,7 +155,6 @@ guides + the chosen code layout, you have enough — start writing.
 | Auth, current user, login/logout, `/api/user`, `__auth` routes | `references/auth.md` + `references/runtime-and-infra.md` |
 | TanStack Start routes, SSR, server functions, Cloudflare Worker runtime | `references/runtime-and-infra.md` |
 | Heavy / long-running work (ffmpeg, headless browser, background jobs), containers | `references/containers.md` |
-| Security: Worker hardening, OWASP audit, threat modeling | `references/security.md` |
 
 Do NOT search the skill library for other design guidance — everything is here.
 
@@ -186,14 +180,14 @@ Supercomputer Design mode. The split is strict:
 - Agents never manually implement inspector code, refs, source markers, or
   `data-hf-*` attributes.
 
-Local scripts: `bun run build` (inspector-free), `bun run build:design`
-(inspector-enabled, `HF_DESIGN_INSPECTOR=1`), `bun run dev:design` — for LOCAL
-work only. The platform CI sets `HF_DESIGN_INSPECTOR=1` on every deploy build,
-so the live deployed site always carries the inspector and IS the surface
-Supercomputer Design mode opens. There is ONE deploy
-(`higgsfield website deploy <website_id>`) and it ships the live public site
-immediately; never rename `build:design` into `build` or hand-edit the build
-scripts to toggle the inspector.
+Local scripts: `bun run build` (inspector-free by default; set
+`HF_DESIGN_INSPECTOR=1` in the env for the inspector-enabled build) and
+`bun run dev:design` — for LOCAL work only. The platform CI sets
+`HF_DESIGN_INSPECTOR=1` on every deploy build, so the live deployed site always
+carries the inspector and IS the surface Supercomputer Design mode opens. There
+is ONE deploy (`higgsfield website deploy <website_id>`) and it ships the live
+public site immediately; never hard-code `HF_DESIGN_INSPECTOR=1` into the
+`build` script or hand-edit the build scripts to toggle the inspector.
 
 ### 1. SSR-safe rendering
 Every route renders on the server per request. NEVER touch browser-only
@@ -332,18 +326,18 @@ Durable Object for strong consistency.
   Quanta's `q-` tokens ARE the theme; the app is permanently dark.
 - D1 schema → `app/migrations/000N_*.sql` (additive; see rule 5).
 
-## Verify + deploy
+## Deploy
 
 The trusted platform CI builds the app on **every deploy** (always with
 `HF_DESIGN_INSPECTOR=1` and `HF_ENV="production"` — the live site carries the
 design inspector), so a deploy already gives you the authoritative build
 result. The sandbox cannot deploy/migrate; the trusted platform CI does that.
 
-**Default: build, pass the gates (`bun run typecheck`,
-`bun run qa:fill -- --strict`), deploy**
-(`higgsfield website deploy <website_id>` — this ships the live site
-immediately). Never publish/list on the community feed unless the user
-explicitly asked to publish.
+**Default: deploy** — `higgsfield website deploy <website_id>` builds via CI and
+ships the live site immediately. You don't have to lint, build, or typecheck
+locally unless you think it's necessary (e.g. to debug); just make sure you
+pushed your changes to the remote repository before deploying. Never publish/list
+on the community feed unless the user explicitly asked to publish.
 
 **Publishing ("show in feed").** When the user asks to publish / share / put
 the app on the feed, run `higgsfield website publish <website_id>` — it deploys
@@ -386,19 +380,11 @@ WITHOUT a feed listing.
 ```bash
 cd app
 bun install          # only when you changed dependencies / package.json
-bun run typecheck    # tsc --noEmit
-bun run build        # local build without the inspector
-bun run build:design # local inspector-enabled build
+bun run typecheck    # tsc --noEmit — only to chase a type error on deploy
+bun run build        # local build — only to chase a build error on deploy
 ```
 
-**Adding a dependency: NEVER `bun add`** (it hangs on this runner). Edit
-`package.json` by hand, then run `bun install`.
+**Adding a dependency: `bun add`.**
 
 **Small edits to an existing app** (copy tweak, one component, styling fix):
-make the edit, run `bun run qa:fill -- --strict`, deploy.
-
-**Before claiming a build done / deploying, no placeholders may remain.** Run
-`bun run qa:fill -- --strict` (add `--url <live-url>` to also scan the rendered
-page). It fails if any template placeholder survives — a `<...>`-style token,
-`lorem ipsum`, or the scaffold blank-page marker (`REMOVE_THIS` /
-`blank-app-v1`). It is a completion gate, not a CI build step.
+make the edit, deploy.
