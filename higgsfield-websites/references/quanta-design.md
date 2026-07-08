@@ -446,6 +446,9 @@ import { Button } from '@higgsfield/quanta/button'
 import { Loader } from '@higgsfield/quanta/loader'
 ```
 
+- **Default size is `md`.** Set `size="md"` on Buttons by default — Quanta's own
+default is `sm`, which reads too small on app surfaces, so pass `md` explicitly
+(drop to `sm`/`xs` only in genuinely dense toolbars/pills, per below).
 - Main/generate action: `variant="marketingPrimary" size="md"` — the accent CTA
 every Higgsfield product uses for the generate/main action (like the composer's
 GENERATE button).

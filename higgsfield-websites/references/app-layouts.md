@@ -101,6 +101,8 @@ Anything these don't cover, build your own component from Quanta primitives
   `tertiary`/`ghost`; `secondary` (white) only where the real product shows a
   white button. **Default button `size="md"`** — Quanta's own default is `sm`
   (too small for app surfaces), so pass `md` explicitly; use `sm`/`xs` only in
+  dense toolbars/pills. **Default button `size="md"`** — Quanta's own default is `sm`
+  (too small for app surfaces), so pass `md` explicitly; use `sm`/`xs` only in
   dense toolbars/pills.
 - **Quanta first** — `Button`, `Input`, `Textarea`, `Dropdown`, `Select`,
   `Modal`, `Tabs`, `Sidebar`, `Accordion`, `Avatar`, `Badge`, `Tooltip`,
