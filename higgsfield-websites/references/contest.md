@@ -7,8 +7,9 @@ user wants to enter (or asks what the contest is), this is the reference.
 > Prizes, dates, and rules below are the **current** contest as of 2026-07-08.
 > The contest is admin-curated and recurs — treat specifics (amounts, dates) as
 > this round's, and the live details are on
-> `https://higgsfield.ai/supercomputer/apps?tab=prizes`. The mechanics (publish
-> first, social-link submission, judging on real usage) are stable.
+> `https://higgsfield.ai/supercomputer/apps?tab=prizes`. The mechanics
+> (auto-publish on entry, social-link submission, judging on real usage) are
+> stable.
 
 ## What it is
 
@@ -41,15 +42,18 @@ practice — and they're the eligibility bar and the scoring rubric:
   result, an obvious reason to generate again, shareable output. Artificially
   inflated usage is discounted at Higgsfield's discretion.
 
-## Entering — publish first, then `higgsfield website contest`
+## Entering — `higgsfield website contest` (it publishes for you)
 
-`higgsfield website contest` has a HARD precondition: the app must already be
-**published to the community feed**. The flow when the user asks to enter:
+An app not yet on the community feed is **published automatically by the
+entry** — no separate `higgsfield website publish` needed. The flow when the
+user asks to enter:
 
-1. **Publish if it isn't already.** If the app hasn't been published yet, run
-   `higgsfield website publish <website_id>` first (it runs the publish gate —
-   cover + `og_title` + metadata must be filled; see `references/app-flow.md`).
-   Don't make the user do a separate "publish" step — just publish, then enter.
+1. **Make it listable.** The app needs a **live production deploy**
+   (`higgsfield website deploy <website_id>`) — an undeployed app is rejected
+   ("deploy first"). And because the entry lists the app on the feed, the page
+   metadata (cover + `og_title`, see `references/app-flow.md`) must be filled
+   BEFORE entering — the auto-published listing renders from it, and an empty
+   `og_title` is invisible on the feed. Deploy after changing metadata.
 2. **Get the social link(s).** The contest requires the app posted to at least
    one **public** social platform (Instagram, TikTok, YouTube, or X) with a
    link back to the Higgsfield app and the **`#HiggsfieldApp`** hashtag. Pass
@@ -63,14 +67,15 @@ practice — and they're the eligibility bar and the scoring rubric:
    create a second entry).
 
 ```bash
-# after `higgsfield website publish <website_id>` has succeeded
+# after `higgsfield website deploy <website_id>` has shipped (metadata filled)
 higgsfield website contest <website_id> \
   --url https://x.com/<user>/status/…   # ≥1 public post, #HiggsfieldApp
 ```
 
-If the user asks to enter but hasn't posted anywhere yet, publish the app,
-then tell them the one thing only they can do — post it publicly with the app
-link and `#HiggsfieldApp` — and enter as soon as they give you the URL.
+If the user asks to enter but hasn't posted anywhere yet, get the app deployed
+with real metadata, then tell them the one thing only they can do — post it
+publicly with the app link and `#HiggsfieldApp` — and enter as soon as they
+give you the URL.
 
 ## Eligibility (relay if asked)
 

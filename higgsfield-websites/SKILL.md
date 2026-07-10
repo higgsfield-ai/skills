@@ -106,7 +106,12 @@ are rejected — if that happens, try a close variant.
 
 ## Pick the path, then follow ONE flow end-to-end
 
-1. Resolve the `--type` (ask the user if unclear — it's their choice).
+1. Resolve the `--type` (ask the user if unclear — it's their choice). In the
+   SAME first question, also ask whether they want to **publish it to the
+   Higgsfield community feed (marketplace)** when it's ready (yes/no). Remember
+   the answer: if yes, publish automatically at the end (after deploy +
+   metadata), no need to ask again; if no, only deploy. Don't block the build
+   on it.
 2. Read the matching flow and follow it — it is the complete workflow for that
    type, including its own references, hard rules, editing map, and
    deploy/publish gates:
@@ -196,4 +201,4 @@ path: auth, generation submit/poll, result rendering, common Quanta components),
 `references/fnf-sdk.md`, `references/fnf-react.md`, `references/auth.md`,
 `references/containers.md`, `references/cover-animator.md` (permission-gated
 ~5s cover video → `og_video_url`), `references/contest.md` (the $100k app
-contest — publish first, then submit with social links).
+contest — the entry auto-publishes the app; submit with social links).

@@ -108,9 +108,10 @@ have read the guides + the chosen code layout, you have enough — start writing
 
 1. **Intake** (ONE batched round — ask the user only for what the brief doesn't
    answer): confirm `type: "app"` is what the user wants (it is the USER'S
-   choice), what the app does (which generation models/flows), and anything
-   brand-critical. Never a second round — pick sensible defaults and state
-   them.
+   choice), what the app does (which generation models/flows), anything
+   brand-critical, and whether to **publish to the community feed
+   (marketplace)** when ready (remember it for step 8). Never a second round —
+   pick sensible defaults and state them.
 2. **Create** — `higgsfield website create --type app`.
 3. **Plan the screens** — pick the closest of the six code layouts in
    `app/src/layouts` (studio / preset / app-detail / ai-stylist / skin-enhancer
@@ -146,7 +147,13 @@ have read the guides + the chosen code layout, you have enough — start writing
    ("want a short cover video? it makes the feed card play on hover") — suggest
    it every time, then only generate it if the user says yes
    (`references/cover-animator.md`).
-8. **Publish to community feed only when asked**.
+8. **Publish.** If the user opted in at intake (step 1), publish automatically
+   once the app is deployed with its cover + metadata filled — run
+   `higgsfield website publish <website_id>` without waiting to be asked, and
+   share the community-feed listing URL it reports. Otherwise publish only when
+   asked. **After a successful publish, suggest entering the $100k app contest**
+   ("want to enter it in the Higgsfield app contest? you'd add a couple of
+   social links") — `higgsfield website contest`, see `references/contest.md`.
 
 ---
 
@@ -160,7 +167,7 @@ have read the guides + the chosen code layout, you have enough — start writing
 | Higgsfield-SDK app UI (generation console, fnf-backed tool) | `references/app-layouts.md` + `references/quanta-design.md` + `references/fnf-sdk.md` + `references/fnf-react.md` + `references/auth.md` (component gaps: build from Quanta primitives) |
 | Cover / OG image ("cover", "обложка", "OG image", publish prep) | `references/app-cover.md` — branded 3:2 cover + capsule OG mask |
 | Cover video / "animate the cover" (`og_video_url`, permission-gated) | `references/cover-animator.md` — ~5s end-frame reveal via `seedance_2_0` |
-| App contest ("enter the contest", "$100k contest", `higgsfield website contest`) | `references/contest.md` — publish first, then submit with social links |
+| App contest ("enter the contest", "$100k contest", `higgsfield website contest`) | `references/contest.md` — entry auto-publishes; submit with social links |
 | Auth, current user, login/logout, `/api/user`, `__auth` routes | `references/auth.md` + `references/runtime-and-infra.md` |
 | TanStack Start routes, SSR, server functions, Cloudflare Worker runtime | `references/runtime-and-infra.md` |
 | Heavy / long-running work (ffmpeg, headless browser, background jobs), containers | `references/containers.md` |
@@ -395,10 +402,10 @@ WITHOUT a feed listing.
 
 **Entering the app contest.** If the user asks to enter the app in the
 Higgsfield contest ("enter the contest", "submit to the $100k contest"), run
-`higgsfield website contest <website_id> --url <link>` — but it requires the app
-to be **published** first. If it isn't published yet, run
-`higgsfield website publish <website_id>` first (don't make the user do a
-separate step), then submit. The submission needs one or more public
+`higgsfield website contest <website_id> --url <link>` — an unpublished app is
+published automatically by the entry (it just needs a live prod deploy, and
+fill the page metadata FIRST — the auto-published listing renders from it), so
+there's no separate publish step. The submission needs one or more public
 social-media links (Instagram / TikTok / YouTube / X) with the app link and
 `#HiggsfieldApp` — the user posts those themselves, so ask for the URL(s). Full
 rules, prizes, and how the contest shapes the build are in

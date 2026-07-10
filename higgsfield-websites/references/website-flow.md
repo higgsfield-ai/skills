@@ -37,8 +37,10 @@ pipeline — see "Small edits" at the bottom.)
 
 ### Before Phase 0 — intake (ONE batched round of questions, then never again)
 
-The `type` is already resolved (the main skill asks it). The only other thing
-worth one question is **brand constraints** — an existing brand to honor (ask
+The `type` is already resolved (the main skill also asks, in that first round,
+whether to publish to the community feed when ready — remember that for Phase
+6). The only other thing worth one question is **brand constraints** — an
+existing brand to honor (ask
 for colors/fonts/logo/photos/links) vs. free rein ("design the brand for me").
 Whatever they don't have, you generate: the full identity kit plus the
 personalization ladder in `references/asset-system.md` (logo family, icon set,
@@ -173,8 +175,14 @@ deploy with a failing item.
 
 Do NOT navigate to, screenshot, or run image analysis on the deployed site —
 the mechanical gate (the grep checklist in `references/review-rubric.md` §A) is
-the only verification. Do NOT publish/list on the community feed unless the user
-explicitly asks to publish/go live on the feed.
+the only verification.
+
+3. **Publish.** If the user opted in at intake, publish automatically now that
+   the site is deployed with its cover + metadata filled — run
+   `higgsfield website publish <website_id>` (don't wait to be asked) and share
+   the community-feed listing URL it reports. Otherwise publish only when the
+   user asks. (The $100k contest is for `--type app` products — don't pitch it
+   for a plain website.)
 
 ---
 
