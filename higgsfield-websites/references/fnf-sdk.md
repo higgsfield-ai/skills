@@ -71,7 +71,8 @@ For prompts like "create a Nano Banana generation app", "build a Seedance form",
   `/__auth/login?return=<current path>`.
 - Logout action to `/__auth/logout?return=/`.
 - Server-side auth guard before every SDK submit, upload, cost, feed, profile,
-  credits, workspace, Elements, and character-training operation.
+  credits, workspace, Elements, character-training, realtime edit/finalize,
+  and saved-style operation.
 - Profile tab/panel showing safe user fields, current workspace, and display
   credits from profile APIs.
 - Model form with validated settings for the requested model.
@@ -196,6 +197,76 @@ states, Elements refresh, Soul generation using `customReferenceId`, the
 normal confirmation/cost flow, generation polling, and history/result
 rendering.
 
+## Stateful realtime image editing and saved custom styles
+
+Use the realtime client when an app needs successive image edits in one chain or
+user-level saved styles:
+
+```ts
+import {
+  buildRealtimeChainEditRequest,
+  createRealtimeClient,
+  type RealtimeChainEditInput,
+} from '@higgsfield/fnf/realtime'
+import { createWorkflowPlatformAdapter } from '@higgsfield/fnf/workflow-platform'
+
+const adapter = createWorkflowPlatformAdapter({ baseUrl: 'https://fnf.internal' })
+const realtime = createRealtimeClient({ adapter, jobAdapter: adapter })
+
+const input: RealtimeChainEditInput = {
+  params: {
+    prompt: 'Turn this into a candid editorial portrait',
+    resolution: '1k',
+    aspectRatio: '1:1',
+    images, // explicit MediaRef/image-job refs; at most four
+  },
+}
+const cost = await realtime.estimateChainCost({
+  resolution: input.params.resolution,
+  aspectRatio: input.params.aspectRatio,
+})
+// Browser: request approval for the exact validated wire.
+const wire = buildRealtimeChainEditRequest(input)
+const confirmationToken = await window.hf.requestGeneration(
+  'flux_klein_realtime',
+  wire,
+  { credits: cost.credits },
+)
+// Authenticated server function: submit the same input with its opaque token.
+const edit = await realtime.editChain(input, { confirmationToken })
+const generation = await realtime.pollEditJob(edit.jobId)
+
+// Continue by passing edit.chainId and a new explicit image set.
+await realtime.finalizeChain({ chainId: edit.chainId })
+```
+
+The confirmation call runs in the browser through
+`window.hf.requestGeneration`; the client creation, edit, polling, finalize,
+and style calls stay behind authenticated server functions. Send the opaque
+token and the exact same input to the server; never log it. If one action
+launches several independent edits, build every wire request first and use the
+existing batch confirmation form, matching returned tokens by index. Every
+`editChain` call is billable and intentionally not retried.
+
+Realtime contract:
+
+- Omit `chainId` to start; pass the returned `chainId` to continue. Previous
+  outputs are not appended automatically: every attempt supplies its own
+  `images` array of up to four uploaded `media_input` or image-job refs.
+- Provide exactly one of `prompt` or structured `settings`. Structured
+  settings may select a saved style with `style: 'custom'` and
+  `customStyleId`.
+- Use `getEditJob` / `pollEditJob` and normal `Generation` selectors to
+  render the result. Call `finalizeChain` when the editing session ends.
+- Saved styles are authenticated user-level data. Manage them only through
+  `listCustomStyles`, `createCustomStyle`, `updateCustomStyle`, and
+  `deleteCustomStyle`. A style reference `mediaId` must be an upload or job
+  the user/app may access; a listed Element's metadata is not a raw-media
+  picker.
+- Never hand-write `/realtime/*` requests or invent a separate approval
+  mechanism. Reuse the platform adapter, auth guard, multipart upload path, and
+  confirmation infrastructure.
+
 ## Common Imports
 
 ```ts
@@ -285,6 +356,9 @@ clients, and let `createWorkflowPlatformAdapter` send the correct operation:
 | media get/list | `GET /jobs/media/{id}` / `GET /jobs/media?...` |
 | Element get/list | `GET /reference-elements/{id}` / `GET /reference-elements?...` |
 | character train/read | `POST /custom-references` / `GET /custom-references/{id}` |
+| realtime edit/cost/finalize | `POST /realtime/chain/edit` / `POST /realtime/chain/cost` / `POST /realtime/chain/finalize` |
+| saved style list/create | `GET /realtime/custom-styles` / `POST /realtime/custom-styles` |
+| saved style update/delete | `PATCH /realtime/custom-styles/{id}` / `DELETE /realtime/custom-styles/{id}` |
 | profile user | `GET /user` |
 | workspace list/current/wallet | `GET /workspaces`, `/workspaces/current`, `/workspaces/wallet` |
 | workspace switch | `POST /workspaces/switch` |

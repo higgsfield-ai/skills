@@ -56,6 +56,9 @@ Provider hooks:
 
 - `useFnf()` returns the composed client bundle.
 - `useFnfJobClient()` returns the SDK job client.
+- `useFnfRealtimeClient()` returns the stateful image-editing/custom-style
+  client when the adapter implements the realtime backend (or an explicit
+  `realtimeAdapter` is supplied).
 - `useFnfCharacterClient()` returns the character-training client.
 - `useFnfReferenceClient()` returns the signed-in user's Elements client.
 - `useFnfMediaClient()` returns the SDK media client.
@@ -72,7 +75,8 @@ references stable. Do not create a new adapter or new job array on every render.
 - Use exported query option factories and `fnfKeys`.
 - Do not hand-build query key arrays.
 - Use cache-door helpers for generation updates.
-- Workspace switches should scope or clear generation/feed/job-set/cost caches.
+- Workspace switches should scope or clear generation/feed/job-set/cost and
+  realtime caches.
 - Use `scopeKey` for user/workspace-aware websites, usually
   `${userId}:${workspaceId}`.
 - Use profile query options for profile panels and workspace switchers.
@@ -89,7 +93,18 @@ jobsFeedQueryOptions(jobClient, { type: 'image', size: 20 }, { scopeKey })
 profileSnapshotQueryOptions(profileClient, { scopeKey })
 profileCreditsQueryOptions(profileClient, { scopeKey, includeOnDemand: true })
 costQueryOptions(jobClient, input, { scopeKey, enabled })
+realtimeChainCostQueryOptions(realtimeClient, input, { scopeKey, enabled })
+realtimeCustomStylesQueryOptions(realtimeClient, query, { scopeKey, enabled })
 ```
+
+The realtime query helpers cache read-only cost estimates and saved-style
+pages. Run `editChain`, `finalizeChain`, and style mutations through the
+realtime client and the authenticated server boundary; after a style mutation,
+invalidate the matching `fnfKeys.realtime({ scopeKey })` subtree. Poll edit
+results with `getEditJob` / `pollEditJob` and render their normal `Generation`
+shape. Workspace switching clears the previous scope's realtime cache. Full
+contract: `references/fnf-sdk.md` → "Stateful realtime image editing and saved
+custom styles".
 
 For Elements and character workflows, use `referencesQueryOptions` for the
 Elements picker and `characterQueryOptions` to poll newly trained characters.
