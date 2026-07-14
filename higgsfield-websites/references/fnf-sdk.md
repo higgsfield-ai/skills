@@ -567,6 +567,27 @@ export const generate = createServerFn({ method: 'POST' })
 Do not use `createServerFn({ method: "GET" })` or a `GET` server route for
 generation. Generation is a mutation even when the form has no uploaded file.
 
+## LLM chat / text — `createLlmClient` (NOT a job)
+
+Chat/text generation is separate from the media jobs registry. Worker-side
+ONLY, zero-token (no `getToken`/`userId` — the platform attaches the visitor's
+identity and bills their credits):
+
+```ts
+import { createLlmClient } from '@higgsfield/fnf'
+const llm = createLlmClient({ baseUrl: 'https://fnf.internal/llm' })
+const res = await llm.complete({
+  model: 'claude-sonnet-4-6', // the only exposed model today
+  messages: [{ role: 'user', content: '…' }],
+})
+// llm.stream(...) yields OpenAI-shape SSE deltas; tool-calling supported
+// (LlmToolDef / LlmToolCall). In React: FnfProvider's `llm` prop + useFnfLlmClient().
+```
+
+**App-only.** Text generation is generation → `type: "app"` (Sign in with
+Higgsfield, visitor credits). NEVER on a `type: "website"` build, and never a
+"bring your own LLM key" path.
+
 ## Submission Confirmation Gate
 
 The SDK requires hosts that submit generations on behalf of a user to
