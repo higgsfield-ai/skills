@@ -64,12 +64,15 @@ Provider hooks:
 - `useFnfMediaClient()` returns the SDK media client.
 - `useFnfProfileClient()` returns the SDK profile client.
 - `useFnfLlmClient()` returns the LLM chat/text client (OpenAI-shape
-  `complete`/`stream`, tool-calling) when an `llm` client is passed to
-  `FnfProvider`; the hook throws if none was provided. Construct it
-  Worker-side with `createLlmClient({ baseUrl: 'https://fnf.internal/llm' })`
-  (zero-token — the platform attaches the visitor's identity and bills
-  their credits); never mint it in browser code. App-only, not for a
-  `type: "website"` build. See `references/fnf-sdk.md` → "LLM chat / text".
+  `complete`/`stream`, tool-calling) when a browser-safe `llm` backend is
+  passed to `FnfProvider`; the hook throws if none was provided. The raw
+  `createLlmClient({ baseUrl: 'https://fnf.internal/llm' })` client is
+  Worker-side only (zero-token — the platform attaches the visitor's identity
+  and bills their credits) and must be called through authenticated app-local
+  server functions or routes. Discover the exact available model ids there via
+  `listModels()`; never ship the raw client or a hardcoded catalog to browser
+  code. App-only, not for a `type: "website"` build. See
+  `references/fnf-sdk.md` → "LLM chat / text".
 - `useFnfJobs()` returns the registered model entries.
 - `useFnfScopeKey()` returns the cache scope.
 - `useFnfObservability()` returns the observer config.

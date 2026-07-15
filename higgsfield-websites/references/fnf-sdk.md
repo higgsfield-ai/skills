@@ -610,13 +610,24 @@ identity and bills their credits):
 ```ts
 import { createLlmClient } from '@higgsfield/fnf'
 const llm = createLlmClient({ baseUrl: 'https://fnf.internal/llm' })
+
+const [model] = await llm.listModels()
+if (!model) throw new Error('No LLM models are currently available')
+
 const res = await llm.complete({
-  model: 'claude-sonnet-4-6', // the only exposed model today
+  model,
   messages: [{ role: 'user', content: '…' }],
 })
 // llm.stream(...) yields OpenAI-shape SSE deltas; tool-calling supported
 // (LlmToolDef / LlmToolCall). In React: FnfProvider's `llm` prop + useFnfLlmClient().
 ```
+
+Model availability is runtime gateway configuration. Never hardcode a catalog
+or claim that one model is always available. Call `listModels()` server-side,
+use the exact returned id, and handle an empty list. Model pickers may receive
+those ids through an authenticated app-local server function or route; if a
+previously selected id disappears, refresh the list and show that it is no
+longer available instead of silently substituting another model.
 
 **App-only.** Text generation is generation → `type: "app"` (Sign in with
 Higgsfield, visitor credits). NEVER on a `type: "website"` build, and never a
