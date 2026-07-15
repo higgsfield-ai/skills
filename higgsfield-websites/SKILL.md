@@ -49,12 +49,8 @@ question, up front):
   ```
 - **`--type app`** — a product tightly integrated with Higgsfield: its users
   Sign in with Higgsfield and generate images/videos through the fnf SDK (the
-  full auth + D1 contract applies). Apps can ALSO do chat/text via the fnf SDK's
-  LLM client (`createLlmClient` / `useFnfLlmClient`, with available model ids
-  discovered at runtime via `listModels()`, billed to the visitor's Higgsfield
-  credits — `references/fnf-sdk.md` → "LLM chat / text"); app-only, never a
-  website. An app must look and feel like a Higgsfield product: UI built with
-  **Quanta** (`references/quanta-design.md`) — and, for
+  full auth + D1 contract applies). An app must look and feel like a Higgsfield
+  product: UI built with **Quanta** (`references/quanta-design.md`) — and, for
   anything Quanta lacks, your own component built from Quanta primitives (never a
   third-party UI library) — starting from a standard app layout
   (`references/app-layouts.md`). Quanta and the app layouts are app-only — never
