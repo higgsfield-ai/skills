@@ -76,23 +76,33 @@ clean", "Inter", "blue accent") means the brief is not done:
   See `references/reference-boards.md` for what to reach for instead.
 - **Locked type** — pairing from the recipe's tables; serif only with a written
   brand justification.
-- **Tier-1 technique — default to the animated website.** Every website is an
-  **animated website** by default: the seam-locked scroll-scrub camera journey
-  (**A4** in `references/wow-catalog.md`), where the visitor's scroll flies the
-  page through several connected generated scenes. Do NOT shop the catalog for a
-  technique — the animated website IS the technique unless the user EXPLICITLY
-  asks for a different treatment. When it's the animated website (the default),
-  read **`references/scroll-scrub.md`** NOW and add its journey, camera
-  architecture, seam direction, and mobile framing to the brief before boards or
-  generation; write one sentence on how the journey enacts the concept spine.
-  The anti-convergence "no repeat of the previous technique" rule does NOT force
-  you off the animated website — instead differ on the OTHER five identity axes
-  (world/subject, journey shape, palette, type, CTA garments, corner language).
-  ONLY when the user explicitly asks for something other than an animated
-  website do you open **`references/wow-catalog.md`**, pick another technique
-  named with its catalog ID + one sentence defending the spine pairing, and
-  apply the full ledger (no repeat of the previous technique, ≥4 of 6 axes
-  differ). Either way, a passive autoplay loop is never the Tier-1 mechanic.
+- **`Animation mode` — MANDATORY explicit state, exactly one value. HARD STOP.**
+  The brief MUST contain a literal line `Animation mode: <value>` and you may not
+  leave Phase 0 without it. Only two values are legal:
+  - **`animated-website`** (the DEFAULT — use this unless the rule below fires):
+    the seam-locked scroll-scrub camera journey (**A4**), where the visitor's
+    scroll flies the page through several connected generated scenes. Choosing
+    this OBLIGATES you to also write the journey block into the brief NOW, before
+    boards or generation: read **`references/scroll-scrub.md`** and add its
+    **Journey** (4–7 named scenes), **Camera architecture** (A or B), **seam
+    direction**, and **mobile framing**, plus one sentence on how the journey
+    enacts the concept spine. `Animation mode: animated-website` with no journey
+    block is an INCOMPLETE brief — a hard stop, not a proceed-anyway.
+  - **`override — "<verbatim quote of the user's explicit request>"`**: legal
+    ONLY when the user EXPLICITLY asked, in their own words, for something other
+    than a scroll-driven animated website. You must quote their request verbatim
+    on the line. A brief that reads as "calm/minimal/B2B", your own taste, or
+    "it's just a simple landing page" is NOT an override — that is still
+    `animated-website`. When (and only when) this value is set, open
+    **`references/wow-catalog.md`**, pick another technique named with its
+    catalog ID + one sentence defending the spine pairing, and apply the full
+    ledger (≥4 of 6 axes differ).
+
+  Do NOT shop the wow-catalog on the default path — the animated website IS the
+  technique. The anti-convergence "no repeat of the previous technique" rule does
+  NOT force you off the animated website: instead differ on the OTHER five
+  identity axes (world/subject, journey shape, palette, type, CTA garments,
+  corner language). Either way, a passive autoplay loop is never the mechanic.
 - **Section plan** — ordered, one layout family per section, no consecutive
   repeats, ≥4 families for 6+ sections, eyebrow budget ceil(sections/3).
 - **Asset plan** — the full kit per `references/asset-system.md` (hero visual,
@@ -142,6 +152,18 @@ its own component with its own interaction identity; no site-wide button
 utility classes. Registry components (`references/wow-maker.md` §5) remain
 available as raw material — restyled to the boards, never default-skinned.
 Build static-but-complete; motion is the next phase.
+
+**HARD STOP for `Animation mode: animated-website` — build the journey as the
+spine, not an afterthought.** The scroll-scrub scene media (Phase 2) and the
+scroll-scrub component (`app/src/components/scroll-scrub/scroll-scrub.tsx` +
+`.css`, per `references/scroll-scrub.md` Phase 3) ARE the page — the semantic
+chapters are the page structure, not decoration added later. Materialize the
+scroll-scrub component and wire the real scene data in THIS phase. Do NOT build a
+generic static page of sections and plan to "add the camera journey later" — that
+is the exact failure this flow guards against, and it is caught by the Phase 5
+gate. If the scene MP4 chain is still rendering, build the scroll-scrub component
+against its posters and swap the clips in when they land — never substitute a
+plain static layout for the animated website.
 
 ### Phase 4 — Motion pass (tier-mandated, one focused pass)
 

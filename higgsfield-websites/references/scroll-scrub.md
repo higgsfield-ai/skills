@@ -26,7 +26,10 @@ the design brief.
 
 ### Phase 0 — lock the journey
 
-Write these A4-specific decisions into `app/design-brief.md`:
+This is the journey block that `Animation mode: animated-website` obligates (see
+`references/website-flow.md` Phase 0). The brief is INCOMPLETE — a hard stop —
+until these decisions are written into `app/design-brief.md`; the Phase 5 gate
+(item 9f) checks that the Journey and Camera architecture are present. Write:
 
 - **Journey:** order 4–7 scenes as a real narrative or value chain. Give each
   scene a physical subject, one focal point, one short headline, one sentence,

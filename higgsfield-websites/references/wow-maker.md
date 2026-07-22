@@ -5,24 +5,31 @@ pick and fill — you **compose** a distinctive, award-tier site from the direct
 below: bespoke AI-generated assets, signature animation patterns, motion/3D
 libraries, and copy-paste component/block registries.
 
-**Every site must ship a real wow moment.** A flat page of text and default
-components is a failure. Open this file on every build (marketing site, app,
-dashboard, the simplest landing — all of them), pick ingredients that fit the brief,
-and build something that feels expensive and alive. Do not search the skill library
-for other design guidance — everything is here. Use `design-recipe.md` (or
-`quanta-design.md` for Higgsfield-SDK apps) for HOW to execute with taste; this file
-is WHAT to build with.
+**The mandatory wow on a website is the ANIMATED WEBSITE.** On every
+`--type website` build the Tier-1 wow is fixed by the brief's `Animation mode`
+(`references/website-flow.md` Phase 0): the DEFAULT is the **animated website** —
+the seam-locked scroll-scrub camera journey in `references/scroll-scrub.md` — and
+that is what "ships a real wow moment" MEANS here. This file is the ingredient
+directory you build the SURROUNDING craft with (bespoke assets, section motion,
+component registries); it is NOT a menu of alternatives to the animated website.
+Use `design-recipe.md` for HOW to execute with taste; this file is WHAT to build
+the supporting layer with.
 
-## The minimum wow bar (every site — before it is "done")
+## What counts as "done" (every site)
 
-Wow is part of DONE, not optional polish. Treat these as a checklist the site must
-hit before you call it finished — doing one cheap thing (e.g. "generated one image,
-done") is NOT enough:
+Wow is part of DONE, not optional polish. The bar is the `Animation mode` the
+brief committed to — nothing lighter:
 
-1. **≥1 bespoke generated asset**, downloaded into `app/public/` and actually
+1. **The Tier-1 wow matches `Animation mode`.** Default `animated-website` → the
+   scroll-scrub camera journey is built (component + scene media), per
+   `references/scroll-scrub.md` and enforced by the Phase 5 gate item 9f. The
+   items below are the craft AROUND it, not a substitute: a ticker, hover motion,
+   entrance transitions, animated numbers, a shader gradient, or any single §2
+   effect DO NOT satisfy the animated-website requirement. Only when the brief
+   records `Animation mode: override — "<user request>"` does a §2 signature
+   effect become the Tier-1 wow.
+2. **≥1 bespoke generated asset**, downloaded into `app/public/` and actually
    referenced — never stock, picsum, an icon-font hero, or a CSS-only hero. (§1)
-2. **≥1 signature/hero effect** beyond a static image — a §2 pattern, a shader
-   gradient, a particle field, a scrub, a cursor reveal. The hero must do something.
 3. **Motivated entrance motion** (scroll reveals / spring transitions via
    `motion/react`, GSAP, or a registry reveal), `prefers-reduced-motion`-gated. Not a
    dead static page.
@@ -33,16 +40,18 @@ done") is NOT enough:
    `morphing-text`/`aurora-text`) and animated numbers (`@number-flow/react`) instead
    of static text.
 
-**Order of work — do the wow pass FIRST.** Decide the wow moment and generate the hero
-asset BEFORE you build the page, so wow drives the design. Do not ship the structure
-first and plan to "add polish later" — you won't.
+**Order of work — the camera journey FIRST.** On the animated-website default,
+decide the journey and generate the scene media BEFORE you build the page, so the
+scroll-scrub spine drives the design. Do not ship a generic static structure and
+plan to "add the animation later" — you won't, and the gate will fail it.
 
-**Restraint is NOT an excuse to skip wow.** "Clean", "minimal", "trustworthy",
-"Linear-like", "Notion-like" briefs STILL require a real wow moment — restraint means
-the wow is *precise and deliberate*, not absent. Linear has a deliberate gradient +
-smooth scroll; Notion has crisp motion; a children's clinic can have animated stats +
-a soft signature effect. Never use a minimal/serious brief as cover to ship a plain
-page.
+**Restraint is NOT an escape hatch from the animated website.** "Clean",
+"minimal", "trustworthy", "Linear-like", "Notion-like" briefs are STILL
+`Animation mode: animated-website` — restraint means the journey is *calm and
+deliberate* (slower camera, quieter scenes), not absent. A minimal or serious
+brief is never an `override`; only the user's explicit request for a different
+treatment is. Never use "it's minimal" as cover to ship a plain page or downgrade
+the animated website to a soft effect.
 
 ## Rules (short)
 
