@@ -1,10 +1,10 @@
 # review-rubric — Phase 5 mechanical gate
 
 §A runs BEFORE deploy and is a completion gate, not a suggestion. Most items
-are verified by grep/code inspection; when the brief selects A4, item 9e also
-requires its interactive runtime checks in local preview before the final
-deploy. There is no post-deploy visual/screenshot review — this mechanical
-gate is the only verification.
+are verified by grep/code inspection; for the animated website (A4, the default
+for every website), item 9e also requires its interactive runtime checks in
+local preview before the final deploy. There is no post-deploy visual/screenshot
+review — this mechanical gate is the only verification.
 
 ## §A. Mechanical gate (pre-deploy, code-level)
 
@@ -75,8 +75,9 @@ Check each item; fix every hit before deploying.
    flood-fill, framed block) appear at most once page-wide combined; the
    Tier-1 technique carries a `wow-catalog.md` ID and is interactive (not a
    passive loop) on cinema/spectacle.
-9e. **A4 seam-locked scroll scrub (conditional)** — when the brief selects
-   A4, verify every media segment has a first-frame poster extracted from the
+9e. **Animated website — A4 seam-locked scroll scrub (every website by default;
+   skip only if the user explicitly opted out)** — verify every media segment
+   has a first-frame poster extracted from the
    exact deployed clip; chapter copy is server-rendered in semantic document
    flow (not hidden until a viewport callback); `prefers-reduced-motion`
    performs no video fetch and shows the complete static story; desktop and

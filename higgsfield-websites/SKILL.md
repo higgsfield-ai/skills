@@ -116,9 +116,15 @@ are rejected — if that happens, try a close variant.
    type, including its own references, hard rules, editing map, and
    deploy/publish gates:
 
+Every `--type website` build is an **animated website** by default — a
+scroll-driven, seam-locked camera journey through several generated scenes
+(`references/scroll-scrub.md`). Build it that way unless the user EXPLICITLY
+asks for a different treatment; the flow below carries the full pipeline and the
+opt-out path.
+
 | Type | Flow |
 |---|---|
-| `--type website` | **`references/website-flow.md`** — phased pipeline: intake → concept → reference boards → asset system → build-to-boards → motion → cover + metadata → mechanical gate → deploy |
+| `--type website` | **`references/website-flow.md`** — phased pipeline (animated website by default): intake → concept → reference boards → asset system → build-to-boards → motion → cover + metadata → mechanical gate → deploy |
 | `--type app` | **`references/app-flow.md`** — the Quanta toolkit, the six code layouts, fnf SDK + auth + D1 contract, launch cover + metadata, publish gate |
 
 Both flows share the same platform mechanics (SSR Worker, `app.manifest.json`

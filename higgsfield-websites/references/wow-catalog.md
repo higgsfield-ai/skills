@@ -5,6 +5,12 @@ the design brief, fully executed — and chosen from THIS catalog, not from the
 first idea that comes to mind. Every technique here leans on Higgsfield
 generation: the wow is bespoke media responding to input, not a CSS trick.
 
+**The default is the animated website (A4).** Every `--type website` build is
+an **animated website** — the seam-locked scroll-scrub camera journey (A4) — and
+you do NOT open this menu unless the user EXPLICITLY asked for a different
+treatment. Skip straight to `references/scroll-scrub.md`. The rules below apply
+only on that explicit-alternative path.
+
 **Selection rules (mechanical):**
 
 1. Pick the technique that pays off the CONCEPT SPINE — the mechanic should
@@ -37,13 +43,14 @@ generation: the wow is bespoke media responding to input, not a CSS trick.
 - **A3 — Product turntable.** Multi-angle generated shots of the SAME product
   (reference-driven so identity holds) or a short orbit clip → frame scrub =
   the user rotates the product by scrolling. For physical-product briefs.
-- **A4 — Seam-locked scroll scrub.** A full-site camera journey through 4–7
-  generated scenes. Chain each leg from the previous rendered leg's ACTUAL
-  boundary frame (grounded continuous-forward architecture), or join
-  miniature/isometric dives with start/end-frame-locked aerial connectors.
-  Scrub optimized MP4 segments directly while semantic chapter copy remains in
-  normal document flow. Use for "scrollable world", diorama fly-through,
-  continuous camera journey, or browse-through-an-industry briefs. This is a
+- **A4 — Seam-locked scroll scrub (the "animated website" — DEFAULT for every
+  website).** A full-site camera journey through 4–7 generated scenes. Chain
+  each leg from the previous rendered leg's ACTUAL boundary frame (grounded
+  continuous-forward architecture), or join miniature/isometric dives with
+  start/end-frame-locked aerial connectors. Scrub optimized MP4 segments
+  directly while semantic chapter copy remains in normal document flow. This is
+  what "animated website" means and it is the default experience — reach for
+  another technique here ONLY when the user explicitly asked for one. This is a
   specialized pipeline: read and follow **`references/scroll-scrub.md`** before
   boards/assets/code.
 
@@ -115,7 +122,11 @@ differ on AT LEAST four:
 1. **Palette family** (already a hard ban on repeat)
 2. **Type pairing** (no repeat of the exact display face two builds running)
 3. **Hero architecture** (image-as-canvas / split / masked / rail…)
-4. **Tier-1 technique** (this catalog — no repeat, per selection rule 2)
+4. **Tier-1 technique** (this catalog — no repeat, per selection rule 2).
+   EXCEPTION: the animated website (A4) is the default and repeats build-to-
+   build by design — it is exempt from this no-repeat axis. When two consecutive
+   builds are both animated websites, differ instead on the world/subject,
+   journey shape, and the remaining axes.
 5. **CTA garment set** (see garment catalog in `image-to-code.md` — zero
    garment overlap with the previous build)
 6. **Corner/border language** (sharp vs. soft vs. pill vs. hairline-ruled)

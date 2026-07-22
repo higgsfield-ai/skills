@@ -84,7 +84,12 @@ same-origin. Downscale: hero ≤2k, cutouts ~800px, icons ~256px.
 
 **Cinema tier adds:**
 
-7. **Hero video — cinema tier REQUIRES the scroll-scrub, not the loop.** A
+7. **Hero video — cinema tier REQUIRES the scroll-scrub, not the loop.**
+   (The DEFAULT website is the **animated website** — the full-site seam-locked
+   chain in `references/scroll-scrub.md` — whose MP4 chain replaces this single
+   hero scrub; see the note after this list. This §7 single-hero recipe is the
+   hero mechanic only when the user explicitly asked for a non-animated-website
+   treatment.) A
    static image + CSS effect is the floor; an autoplay ambient loop is barely
    above it (it moves, but the user's scroll does nothing — passive motion
    doesn't register as craft). The cinema-tier Tier-1 carrier is the
@@ -112,7 +117,7 @@ same-origin. Downscale: hero ≤2k, cutouts ~800px, icons ~256px.
      (dense collage heroes) or video generation failed per the failure rules;
      say so in the report. A mid-page band may still use a loop freely.
 
-For **A4 — Seam-locked scroll scrub**, read
+For the **animated website (A4 — Seam-locked scroll scrub, the default)**, read
 `references/scroll-scrub.md` and let its entry still, exact deployed-segment
 posters, and chained MP4s replace the ordinary single hero scrub above. Those
 posters also satisfy hero/content imagery for their chapters. Continue the

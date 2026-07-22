@@ -58,11 +58,16 @@ clean", "Inter", "blue accent") means the brief is not done:
 - **Concept spine** — a nameable narrative idea threading the whole page (e.g.
   "the site is a calibration instrument", "an archive dossier", "a stage").
   Pick from `references/reference-boards.md`'s spine list or invent better.
-- **Delivery tier** — `editorial` (calm/minimal/B2B: typography + imagery +
-  bespoke chrome, micro-motion only) · `cinema` (**default** for marketing/
-  portfolio/brand: Lenis+GSAP, Tier-1 hero, scroll chapters) · `spectacle`
-  (briefs saying awwwards/webgl/3d/immersive: cinema + WebGL/3D/scrub + custom
-  cursor + a second beat).
+- **Delivery tier** — `cinema` (**default**: Lenis+GSAP, Tier-1 hero, scroll
+  chapters — carries the animated website) · `spectacle` (briefs saying
+  awwwards/webgl/3d/immersive: cinema + WebGL/3D/scrub + custom cursor + a
+  second beat) · `editorial` (calm/minimal/B2B: typography + imagery + bespoke
+  chrome, micro-motion only). The animated website is the default Tier-1
+  experience regardless of tier, so cinema/spectacle is the normal home for it.
+  `editorial` drops the scroll-scrub journey to micro-motion — treat choosing it
+  as one of the "user explicitly asked for something other than an animated
+  website" cases, not a default an ordinary B2B/minimal brief falls into on its
+  own.
 - **Locked palette** — exact hexes + a one-line defense. Hard bans (mechanical,
   gate-checked): (1) graphite/near-black + orange/amber/ember accent, (2)
   near-black + neon cyan/blue/green accent, (3) beige/cream + brass/clay/
@@ -71,16 +76,23 @@ clean", "Inter", "blue accent") means the brief is not done:
   See `references/reference-boards.md` for what to reach for instead.
 - **Locked type** — pairing from the recipe's tables; serif only with a written
   brand justification.
-- **Tier-1 technique** — chosen from **`references/wow-catalog.md`** (read it
-  at this step), named with its catalog ID, with one sentence defending why
-  it enacts the concept spine. Cinema/spectacle require an interactive
-  technique (film scrub, layered depth, canvas/pixel, spatial layout) — a
-  passive autoplay loop is the documented fallback only. The catalog's
-  anti-convergence ledger applies: no repeat of the previous build's
-  technique, and ≥4 of the 6 identity axes must differ. For **A4 —
-  Seam-locked scroll scrub**, read `references/scroll-scrub.md` NOW and add
-  its journey, camera architecture, seam direction, and mobile framing to the
-  brief before boards or generation.
+- **Tier-1 technique — default to the animated website.** Every website is an
+  **animated website** by default: the seam-locked scroll-scrub camera journey
+  (**A4** in `references/wow-catalog.md`), where the visitor's scroll flies the
+  page through several connected generated scenes. Do NOT shop the catalog for a
+  technique — the animated website IS the technique unless the user EXPLICITLY
+  asks for a different treatment. When it's the animated website (the default),
+  read **`references/scroll-scrub.md`** NOW and add its journey, camera
+  architecture, seam direction, and mobile framing to the brief before boards or
+  generation; write one sentence on how the journey enacts the concept spine.
+  The anti-convergence "no repeat of the previous technique" rule does NOT force
+  you off the animated website — instead differ on the OTHER five identity axes
+  (world/subject, journey shape, palette, type, CTA garments, corner language).
+  ONLY when the user explicitly asks for something other than an animated
+  website do you open **`references/wow-catalog.md`**, pick another technique
+  named with its catalog ID + one sentence defending the spine pairing, and
+  apply the full ledger (no repeat of the previous technique, ≥4 of 6 axes
+  differ). Either way, a passive autoplay loop is never the Tier-1 mechanic.
 - **Section plan** — ordered, one layout family per section, no consecutive
   repeats, ≥4 families for 6+ sections, eyebrow budget ceil(sections/3).
 - **Asset plan** — the full kit per `references/asset-system.md` (hero visual,
@@ -113,10 +125,10 @@ logo/monogram + favicon, the OG card — plus video loop (cinema) / GLB
 (spectacle). Poll between build steps; download into `app/public/assets/`;
 verify kit coherence when it lands (re-generate anything whose grade fights the
 boards). Never idle waiting on renders; never fall back to stock/picsum/CSS-only.
-For A4, follow `references/scroll-scrub.md`'s specialized scene/clip chain:
-independent stills/dives may batch, but exact-frame forward legs are
-intentionally sequential. The normal "submit everything up front" rule never
-overrides a real rendered-frame dependency.
+For the animated website (A4, the default), follow `references/scroll-scrub.md`'s
+specialized scene/clip chain: independent stills/dives may batch, but exact-frame
+forward legs are intentionally sequential. The normal "submit everything up
+front" rule never overrides a real rendered-frame dependency.
 
 ### Phase 3 — Build to the boards, section by section
 
@@ -137,15 +149,15 @@ Build static-but-complete; motion is the next phase.
   (`autoRaf: false` + `gsap.ticker` — without the bridge, scrub stutters).
 - The **Tier-1 hero mechanic** from the brief, fully executed — a half-wired
   version fails review. The hero is the wow carrier and it must respond to
-  the USER'S INPUT: for cinema/spectacle that means the scroll-scrubbed hero
-  film per `asset-system.md` §7 (scroll plays the movie), not a passive
-  autoplay loop. Passive motion the user can't influence does not count as
-  the Tier-1 mechanic.
-- **A4 exception:** the full-site seam-locked MP4 chain from
-  `references/scroll-scrub.md` replaces the ordinary single hero frame
-  sequence. Let its controller own scroll-to-video time; keep the Lenis/GSAP
-  bridge for surrounding motion, and never drive the same media with a second
-  ScrollTrigger timeline.
+  the USER'S INPUT (scroll plays the movie), never a passive autoplay loop.
+  Passive motion the user can't influence does not count as the Tier-1 mechanic.
+- **Animated website (default):** the full-site seam-locked MP4 chain from
+  `references/scroll-scrub.md` IS the hero mechanic — it replaces the ordinary
+  single hero frame sequence. Let its controller own scroll-to-video time; keep
+  the Lenis/GSAP bridge for surrounding motion, and never drive the same media
+  with a second ScrollTrigger timeline. Only when the user explicitly asked for
+  a non-animated-website treatment do you instead wire the chosen catalog
+  technique — e.g. the single scroll-scrubbed hero film per `asset-system.md` §7.
 - Scroll-chapter reveals: staggered headline builds (`split-type` + GSAP or
   registry text components), per-section distinct timing; work rows / cards
   with hover reveals; magnetic nav/CTA physics via `useMotionValue`, never
@@ -203,11 +215,12 @@ the only verification.
 ## Design references — read order
 
 1. **`references/design-recipe.md`** — craft floor (ALWAYS read; short).
-2. **`references/wow-catalog.md`** — Phase 0: Tier-1 technique selection +
-   the anti-convergence ledger; Phase 4: implementation contracts.
-   If the selected technique is A4, read **`references/scroll-scrub.md`** next;
-   it owns the specialized boards/assets/runtime sequence and bundled Markdown
-   code references for that build.
+2. **`references/scroll-scrub.md`** — the **animated website**, which is the
+   DEFAULT Tier-1 experience for every website: read it in Phase 0. It owns the
+   specialized boards/assets/runtime sequence and bundled Markdown code
+   references for that build. Only read **`references/wow-catalog.md`** (Tier-1
+   technique menu + anti-convergence ledger + Phase 4 implementation contracts)
+   when the user explicitly asked for something other than an animated website.
 3. **`references/reference-boards.md`** — Phase 1: per-section design boards.
 4. **`references/asset-system.md`** — Phase 2: the Higgsfield asset kit.
 5. **`references/image-to-code.md`** — Phase 3: faithful implementation +
@@ -230,7 +243,7 @@ Then route to the FUNCTIONAL reference for the task:
 
 | Task | Read |
 |---|---|
-| Scrollable world / continuous camera journey / diorama fly-through / browse-through-an-industry site | `references/scroll-scrub.md` — seam-locked media pipeline + React/CSS Markdown assets + mobile/QA contract |
+| **Any website (the DEFAULT — animated website)** / scrollable world / continuous camera journey / diorama fly-through / browse-through-an-industry site | `references/scroll-scrub.md` — seam-locked media pipeline + React/CSS Markdown assets + mobile/QA contract |
 | TanStack Start routes, SSR, server functions, Cloudflare Worker runtime | `references/runtime-and-infra.md` |
 | Cover / OG image ("cover", "обложка", "OG image", publish prep) | `references/app-cover.md` — branded 3:2 cover + capsule OG mask |
 | SEO: meta tags, OG/Twitter cards, robots/sitemap, JSON-LD, entity, GEO, audit | `references/seo.md` |

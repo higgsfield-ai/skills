@@ -1,9 +1,13 @@
-# scroll-scrub — seam-locked camera journeys (`--type website` only)
+# scroll-scrub — the animated website: seam-locked camera journeys (`--type website` only)
 
-Use this reference when the brief asks for a scrollable world, continuous
-camera journey, diorama fly-through, browse-through-the-industry site, or a
-landing page where scrolling flies through several connected scenes. Select
-**A4 — Seam-locked scroll scrub** in `references/wow-catalog.md`.
+This is the **animated website** — the DEFAULT Tier-1 experience for every
+`--type website` build. The visitor's scroll flies the page through several
+connected generated scenes as one continuous camera journey. Follow this
+reference for every website unless the user EXPLICITLY asked for a different
+treatment (in which case pick a technique from `references/wow-catalog.md`
+instead). It is also the reference for any brief that asks for a scrollable
+world, continuous camera journey, diorama fly-through, or browse-through-the-
+industry site. In catalog terms this is **A4 — Seam-locked scroll scrub**.
 
 This is a specialized website build, not a Higgsfield app. Generate the scene
 media with Higgsfield during the build, download it into the site, and ship a
