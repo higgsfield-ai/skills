@@ -12,6 +12,24 @@ description: |
   source files.
 argument-hint: "[game brief or asset request] [reference files]"
 allowed-tools: Bash
+models:
+  # This skill's asset pipelines are deterministic: their output feeds ffmpeg frame
+  # extraction, spritesheet assembly, and rigging steps whose parameters are tuned to a
+  # specific model's behavior. These pins are load-bearing — a substitution silently
+  # produces unusable assets rather than an error. Re-tune the pipeline before changing one.
+  pinned:
+    - id: seedance1_5
+      reason: 2D spritesheet frame extraction is tuned to this model's 4s/720p motion cadence
+    - id: flux_2
+      reason: key-pose stage depends on this model's full-body pose adherence at explicit AR
+    - id: image_background_remover
+      reason: per-frame alpha extraction; the only background remover in the catalog
+    - id: z_image
+      reason: 3D rigging needs a strict T-pose text-to-image, which this model holds reliably
+    - id: gpt_image_2
+      reason: seamless-tile edit and grid sheets depend on its documented border/palette drift
+    - id: nano_banana_2
+      reason: sprite/tile/texture batch stage is calibrated to its 1k output at fixed AR
 ---
 
 # Higgsfield Game Generation

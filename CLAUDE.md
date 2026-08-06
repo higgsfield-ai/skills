@@ -82,18 +82,48 @@ All skills route through one binary: the [`higgsfield` CLI](https://github.com/h
 - One-shot create+wait: `higgsfield generate create <model> ... --wait` blocks until terminal and prints the result itself (media URL or Virality Predictor text summary). Prefer this over the legacy two-step `create` → `wait`. Tunables: `--wait-timeout`, `--wait-interval`. `product-photoshoot create` waits internally — no `--wait` needed.
 - Machine output: add `--json` to any command for parseable output.
 - Media inputs: every `--image`, `--start-image`, `--video`, etc. flag accepts a local path (auto-uploaded) OR a UUID (upload id or previous job id).
-- Source of truth: never invent model or workflow names. Run `higgsfield model list` for the live model catalog and `higgsfield workflow list` for public workflows. Reference catalogs in `references/model-catalog.md` and `references/workflows.md` are mappings (intent → command), not the database.
+- Source of truth: never invent model or workflow names. Run `higgsfield model list` for the live model catalog (`--role <role>` to see one role's candidates, `higgsfield model roles` to list roles) and `higgsfield workflow list` for public workflows. Reference catalogs in `references/model-catalog.md` and `references/workflows.md` are mappings (intent → role → command), not the database. The catalog is per-credential — the same command legitimately returns 6 entries for one account and 84 for another, so a thin result is not an error and "I don't see it" is not proof a model doesn't exist.
 - Explainer presets are live CMS data: list them with `higgsfield preset list video-explainer` and import a chosen style with `higgsfield preset resolve video-explainer <id>`. Never embed the catalog in a skill.
 - Animation actions are live server-managed data: search them with `higgsfield preset list animation-action`; never embed the catalog in a skill.
 
 ## Model and workflow knowledge
 
-When FNF adds a model executor or chain executor, update the generate skill knowledge instead of relying on memory.
+**Skills reference roles, not models.** A role (`role:default-video`, `role:text-render-image`)
+is a stable, use-case-named pointer published as a tag on the live catalog. The skill resolves
+it at runtime via `higgsfield model recommend --role <role>` and submits the concrete id it
+gets back. This repo reaches users only when they re-run an install command, so anything
+model-specific committed here is stale for as long as they don't — roles move that knowledge
+to the server, where a change reaches everyone on the next fnf deploy.
 
-For models:
-- Update `higgsfield-generate/references/model-catalog.md` with the model's purpose and provider.
-- Update `higgsfield-generate/references/media-inputs.md` only for unusual media roles, transforms, single-media limits, video analysis, 3D, or audio.
-- Update `higgsfield-generate/SKILL.md` only when model routing/defaults change.
+For models, when FNF adds an executor:
+- **Usually do nothing in this repo.** Once fnf tags the new model into a role, the skills are
+  already pointing at it. Verify with `higgsfield model list --role <role>`.
+- Edit `higgsfield-generate/references/model-catalog.md` only when the set of *intents* changes
+  — a genuinely new job to be done, or a routing row moving to another skill. It is an
+  intent→role map and **must not** become a model database again.
+- Never add a provider, parameter, aspect ratio, duration, or per-model media role to any file
+  here. That is live catalog data: `higgsfield model get <id>`.
+- Update `higgsfield-generate/SKILL.md` only when the role vocabulary itself changes.
+
+Three classes of model reference, so the right fix gets applied:
+
+- **Role-shaped** (nearly everything) — "the default video model", routing tables, per-stage
+  defaults. Reference a role; resolve it live.
+- **Pinned** — a flow whose reproducibility depends on an exact model, e.g. the
+  `game-generation` 2D spritesheet pipeline, whose frame extraction is tuned to one model's
+  motion cadence. Keep the pin, but declare it once per skill in `SKILL.md` frontmatter under
+  `models.pinned[]` with an `id` and a `reason`, so it is auditable instead of scattered
+  through prose. A pinned id in prose must say it is pinned and point at the frontmatter.
+- **Craft** — a skill that *is* a model's prompt grammar. A role cannot help; when the model
+  changes a human must re-tune the prose. Declare `models.family` + `models.craft: true`.
+
+Never write a superlative bound to a named model ("SOTA", "top-tier", "best-in-class"). They
+age into false claims about a specific version within one release.
+
+For media inputs:
+- `higgsfield-generate/references/media-inputs.md` explains what each media *role* means and
+  how to react to a rejection. It deliberately carries no per-model table — read `.medias` off
+  `higgsfield model get`.
 
 For workflows:
 - FNF may call these "chains"; public docs and user-facing instructions call them "workflows".
@@ -154,7 +184,7 @@ CI fails if any drift. Don't bump versions by hand on feature branches — let r
 Skills communicate through return values, not implicit state.
 
 - `higgsfield-soul-id` returns a `reference_id` (Soul Character).
-- `higgsfield-generate` consumes it via `--soul-id` for Soul-aware models (`text2image_soul_v2`, `soul_cinematic`) or as `custom` avatar in Marketing Studio.
+- `higgsfield-generate` consumes it via `--soul-id` on a Soul-aware model resolved from `role:character-image`, or as a `custom` avatar in Marketing Studio. Not every candidate for that role is Soul-aware — the skill checks the resolved model's params before passing `--soul-id`.
 - `higgsfield-product-photoshoot` does not chain — it owns its own pipeline.
 - `higgsfield-marketplace-cards` does not chain by default; it can reuse an existing main image job through `--main-job`.
 - `higgsfield-video-explainer` owns complete narrated explainers: live style resolve, Seed Audio blocks, Gemini Omni clips, then `explainer_video` assembly. Generic short video generation stays in `higgsfield-generate`.

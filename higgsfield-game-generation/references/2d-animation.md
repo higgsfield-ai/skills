@@ -60,9 +60,13 @@ Hard rules (each one is a known failure when violated):
   visible empty margin above the head and below the feet. A key pose, a video
   frame, or a sheet cell that clips the subject is a rejected asset —
   regenerate, do not "fix in post".
-- **The video model is `seedance1_5` exactly.** Not `seedance_2_0`, not the
-  current default of `higgsfield generate create`. Verify availability via
-  `higgsfield model list` if a call errors, but do not silently substitute a model.
+- **The video model is `seedance1_5` exactly** — a deliberate pin, declared with its
+  reason in this skill's `SKILL.md` frontmatter (`models.pinned`). This pipeline is not
+  picking "a good video model"; the frame-extraction and spritesheet stages below are
+  tuned to this model's motion cadence at 4 s / 720p, so a newer or better general-purpose
+  video model produces *worse* sprites here, not better ones. Do NOT resolve a role for
+  this stage and do NOT silently substitute. If the call errors, verify availability with
+  `higgsfield model list` and stop to ask — swapping the model means re-tuning stages 4–7.
 - **start = end only for loops.** Looping actions pass the SAME image as both
   start frame and end frame. One-shot actions (attack, death, hit, cast) pass
   only the start frame — forcing them back to the start pose ruins the action.

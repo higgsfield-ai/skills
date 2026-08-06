@@ -2,10 +2,10 @@
 version: 0.12.0
 name: higgsfield-generate
 description: |
-  Generate images/videos/3D assets/audio via Higgsfield AI. Defaults:
-  GPT Image 2 for image/design/text, Seedance 2.0 for
-  video, Nano Banana 2/Lite/Pro for character/reference
-  images, Marketing Studio for ads, Seed Audio 1.0 for audio.
+  Generate images/videos/3D assets/audio via Higgsfield AI.
+  Picks the model by resolving a live role from the CLI catalog
+  (default-image, character-image, default-video, marketing-video,
+  default-audio) instead of a hardcoded model name.
   Use when: "generate an image", "make a video", "animate
   this photo", "image-to-video", "edit/stylize/remix this
   image", "reframe this video", "edit this video from a
@@ -22,6 +22,16 @@ description: |
   higgsfield-game-generation), or TTS.
 argument-hint: "[prompt-or-analysis-request] [--model <name>] [--image|--video <path-or-id>]"
 allowed-tools: Bash
+models:
+  pinned:
+    - id: brain_activity
+      reason: Virality Predictor is a named product feature with no substitute model
+    - id: multi_image_to_3d
+      reason: only model that returns a 3D mesh/GLB; no role has a second candidate
+    - id: marketing_studio_video
+      reason: Marketing Studio's avatars/product_ids/hook_id flag contract is unique to it
+    - id: marketing_studio_image
+      reason: Marketing Studio's avatars/product_ids flag contract is unique to it
 ---
 
 # Higgsfield Generate
@@ -44,13 +54,16 @@ Before any other command:
 1. Be concise. No raw IDs, no JSON dumps in chat. Print the media URL for generated assets, or the text summary for Virality Predictor.
 2. No internal jargon. Don't narrate "calling higgsfield cost", "polling job".
 3. Detect the user's language from the first message and reply in it. Technical args (`--aspect_ratio 16:9`) stay English.
-4. Don't batch-ask. Pick a sane default model and ask one thing at a time only if genuinely missing.
-5. Don't pre-estimate cost or optimize for cheaper models unless the user asks. Prefer the quality default first.
+4. Don't batch-ask. Resolve the default role for the intent and ask one thing at a time only if genuinely missing.
+5. Don't pre-estimate cost or optimize for cheaper models unless the user asks. Prefer the quality default first — `fast-video` is opt-in, never an unprompted downgrade.
 6. Pass `--wait` to `generate create` so the command blocks until done and prints the result URL itself. Avoid the two-step `create` → `wait` pattern.
+7. Name the resolved model, not the role, when you tell the user what ran. Roles are internal plumbing; the user is billed for a specific model.
 
 ## Discovery guardrail
 
 When looking for a Higgsfield feature/model, do not rely only on semantic search or CLI `--help`. First run an unfiltered model list, then inspect likely `job_set_type` names. If the user says a model exists but search returns no results, trust that signal and verify with the full model list before answering.
+
+The catalog is per-credential, so "I don't see it" is never proof a model does not exist and a thin catalog is not an error. `higgsfield model roles` lists resolvable roles; `higgsfield model list --role <role>` lists one role's candidates, best first — use it when the user wants to choose rather than have you pick.
 
 Workflows are separate from models. Discover them with `higgsfield workflow list` and inspect params with `higgsfield workflow get <workflow_name>`.
 
@@ -66,57 +79,46 @@ If the user says "analyze this video", "score this ad", "evaluate the hook", or 
 
 ## Workflow — generic generation
 
-1. **Pick a model.** Start with the core defaults unless the brief clearly needs a specialist:
+1. **Pick a role, then resolve it to a model.** Never hardcode a model name and never pass a
+   role name to `generate create`. The roles, and the intent that selects each, are tabulated
+   in `references/model-catalog.md` — read it whenever the intent is not one of these:
 
-   - **GPT Image 2** → default image model for high-fidelity general generation, graphic design, UI, banners, typography, and on-image text.
-   - **Seedance 2.0** → default video model for serious motion, cinematic clips, multi-shot work, image-to-video, and 4–15s production-quality output up to 4K. 12s is valid.
-   - **Nano Banana 2/Lite/Pro** → default for character, cartoon, stylized, and reference-driven image work; use Lite for speed/cost, Pro for harder briefs.
-   - **Marketing Studio** → default for ads, UGC, product demos, unboxing, TV spots, presenter videos, and brand/product workflows.
-   - **Seed Audio 1.0** → default audio model for text-to-audio, voice, sound effects, ambience, foley, and music-like audio unless the user names Sonilo/Mirelo.
+   - **image** → `default-image` · `text-render-image` · `character-image` ·
+     `identity-edit-image` · `logo-vector-image` · `marketing-image`
+   - **video** → `default-video` · `cinematic-video` · `fast-video` · `marketing-video`
+   - **audio** → `default-audio` · `voiceover-audio`
 
-   **Image:**
-   - Complete brand identity, logo system, palette, typography, brandbook, packaging system, signage, or coordinated branded asset suite → use `higgsfield-brandkit` instead.
-   - YouTube thumbnail, Shorts cover, or Instagram video cover → use `higgsfield-youtube-thumbnail` instead.
-   - Brand product visual (Pinterest pin, lifestyle, hero banner, ad pack, virtual try-on) → use `higgsfield-product-photoshoot` instead. NOT this skill.
-   - Generated product concept / packaging / can / bottle with brand name or label text → GPT Image 2.
-   - Branded ad image with avatar + product (Marketing Studio shape) → Marketing Studio Image (see Marketing Studio below)
-   - Aesthetic UGC / fashion editorial / lifestyle character → Soul 2.0
-   - Cinematic still frame → Soul Cinema
-   - Highly characterful creative persona (text-only, distinctive) → Soul Cast
-   - Locations / environments / no-people scenes → Soul Location (best in class)
-   - Logo, icon, vector-like illustration, brand mark, controlled-palette graphic → Recraft V4.1 (`recraft_v4_1`, often with `--model_type vector`)
-   - Face edit + complex scene swap → Seedream 4.5
-   - Soul Character (reference id from `higgsfield-soul-id`) → Soul 2.0 for stills, Soul Cinema for cinematic
-   - Character or cartoon-style work → Nano Banana 2; use Nano Banana 2 Lite (`nano_banana_2_lite`) for fast/simple reference edits, step up to Nano Banana Pro on hard cases
-   - Fast and cheap iteration → Z Image
-   - **Default for everything else → GPT Image 2.** Graphic design, UI, banners, typography, and high-fidelity general generation.
+   `default-*` is the answer unless a more specific role clearly matches. `fast-video` is
+   opt-in only — the user must actually ask for cheaper or faster.
 
-   **Video:**
-   - Complete narrated explainer from a topic, story, or document → use `higgsfield-video-explainer`, not generic video generation.
-   - All advertising / commercial / branded ad video → Marketing Studio (see Marketing Studio below)
-   - Edit existing video from sketch/timestamp, or reframe to another aspect ratio → workflow (`draw_to_video` or `reframe`), not a model. See `references/workflows.md`.
-   - **Default all-purpose serious video (multi-shot, consistent identity, motion-heavy, image-to-video, 4–15s requests) → Seedance 2.0.** SOTA. Do not downgrade to Seedance 1.5 just because its duration enum is easier to read; validate Seedance 2.0 first.
-   - Single-plane scene without strong dynamics, cheaper than Seedance 2.0 → Kling 3.0; if the user explicitly asks for Turbo, faster, or lower-cost Kling output → Kling 3.0 Turbo (`kling3_0_turbo`)
-   - Cheap clean shot without cuts, only when the user asks for cheaper/budget output → Seedance 1.5 Pro
-   - Cinema-grade highest fidelity → Cinema Studio Video 3.0
-   - Cheap with strong physics, no audio needed → Minimax Hailuo
-   - Fast batch / volume → Veo 3.1 Lite
-   - Bold/stylized image-to-video from a required start image → Grok Video 1.5 (`grok_video_v15`). Requires one `--start-image` or `--image`, duration 2–15s, resolution `480p` or `720p`.
-   - Multimodal reference-to-video with up to 7 images or one video reference → Gemini Omni Flash (`gemini_omni`); keep Seedance 2.0 as the default serious-video pick.
+   Resolve live — three rungs, fall through silently, never report a failure:
 
-   **Video analysis:**
-   - Rate a finished video's hook, virality potential, attention, retention, or distraction risk → Virality Predictor (`brain_activity`). This is a video analysis model that returns a text score/report, not a generated media asset.
+   ```bash
+   ROLE=default-video
+   MODEL=$(higgsfield model recommend --role "$ROLE" --json | jq -r '.id // empty')
+   # Older CLI without --role: the role tags still ship in the catalog, so filter locally.
+   [ -n "$MODEL" ] || MODEL=$(higgsfield model list --json \
+     | jq -r --arg r "role:$ROLE" 'map(select((.tags // []) | index($r))) | .[0].id // empty')
+   # Still empty → documented fallback from references/model-catalog.md.
+   ```
 
-   **3D:**
-   - A 3D asset within a playable game or game-wide asset system → use `higgsfield-game-generation`.
-   - Create an actual 3D mesh/model/GLB from one or more object/product reference images → Multi-Image to 3D (`multi_image_to_3d`). Pass 1–4 images with repeated `--image`; use `--should_texture true` when the asset needs texture. If the user only asks for a 3D-rendered picture, use an image model instead.
+   **`references/model-catalog.md` is the single source of truth** for the full intent→role
+   tables, the fallback literals, the capabilities that are not roles, and the specialist
+   looks. Read it when the intent is not obvious; do not re-document it here.
 
-   **Audio:**
-   - **Default for audio generation → Seed Audio 1.0 (`seed_audio`).** Use for text-to-audio, sound effects, ambience, foley, impacts, environmental audio, voice-style generations, and music-like audio. It requires `--prompt`; use optional `--audio-references`/`--image-references` only when the user provides references.
-   - Use Sonilo Music (`sonilo_music`) only when the user explicitly asks for Sonilo or you need that specialist music model. It requires `--prompt` and `--duration`, and returns audio.
-   - Use Mirelo Text to Audio (`mirelo_text_to_audio`) only when the user explicitly asks for Mirelo or you need that legacy SFX model. It requires `--prompt` and `--duration`, and returns audio.
+   **Route to another skill instead** when the request is: a brand product visual, Pinterest
+   pin, lifestyle or hero banner, ad pack, virtual try-on → `higgsfield-product-photoshoot` ·
+   a complete brand identity, logo system, palette, brandbook → `higgsfield-brandkit` · a
+   YouTube thumbnail, Shorts or Instagram cover → `higgsfield-youtube-thumbnail` · a narrated
+   explainer → `higgsfield-video-explainer` · a playable game or game-wide asset system →
+   `higgsfield-game-generation`.
 
-   For the actual `--model` ID to pass to `higgsfield generate create`, run `higgsfield model list --json | jq` to map display names to IDs. See `references/model-catalog.md` for the full table.
+   **Named features, not roles** — no substitute exists, so call them by id: Virality Predictor
+   (`brain_activity`, video in / text report out) · `multi_image_to_3d` (1–4 reference images →
+   mesh/GLB; a merely 3D-*looking* picture is an image job) · `draw_to_video` and `reframe`,
+   which are **workflows** rather than models (see `references/workflows.md`).
+
+   When the user names a specific model, use it — verify it resolves first.
 
 2. **Pass media inputs straight to flags.** Media flags accept a local file path **or** a UUID. CLI auto-uploads paths and auto-detects job vs upload for UUIDs. No need to pre-upload. Each model declares accepted media roles or `*_references` params — see `references/media-inputs.md`.
 3. **Validate quickly.** If unsure of params, run `higgsfield model get <jst> --json` once and pass only what's needed. Validate the preferred model before falling back to an older one. Use schema defaults otherwise. The server returns `adjustments` for non-fatal coercions (e.g. `aspect_ratio=99:99` → closest match) and a structured error for invalid declared-param values.
@@ -129,44 +131,66 @@ For workflow jobs, use `higgsfield generate workflow <workflow_name> ... --wait`
 
 ## Media flags
 
-| Flag | Purpose | Models that accept it |
+| Flag | Media role | Purpose |
 |---|---|---|
-| `--image <path-or-id>` | reference image | most image models, `grok_video_v15`, `multi_image_to_3d`, `seedance_2_0`, `veo3`, `marketing_studio_video` |
-| `--start-image <path-or-id>` | first frame for image-to-video transitions | `grok_video_v15`, `kling3_0`, `kling3_0_turbo`, `kling2_6`, `veo3_1`, `seedance_2_0`, `marketing_studio_video` |
-| `--end-image <path-or-id>` | last frame for transitions | `kling3_0`, `seedance_2_0`, `marketing_studio_video` |
-| `--video <path-or-id>` | reference or analyzed video | `seedance_2_0`, `brain_activity` |
-| `--audio <path-or-id>` | reference audio (lipsync, soundtrack match) | `seedance_2_0` (use this, NOT `--generate-audio`) |
+| `--image <path-or-id>` | `image` | a reference the model looks at — subject, style, or the thing to edit |
+| `--start-image <path-or-id>` | `start_image` | first frame of a generated video |
+| `--end-image <path-or-id>` | `end_image` | last frame; the model interpolates toward it |
+| `--video <path-or-id>` | `video` | a video to reference, or the clip to analyze |
+| `--audio <path-or-id>` | `audio` | reference audio for lipsync / soundtrack match |
+
+**Which flags a given model accepts is live schema data, not a fact to memorize** — read it off
+the resolved model with `higgsfield model get <resolved_id> --json | jq '.medias'`.
 
 For reference-array models, the explicit flags are `--image-references`, `--video-references`, and `--audio-references`; `--image`, `--video`, and `--audio` are short aliases when the schema exposes those params.
 
-Each flag accepts either a local file path (auto-uploaded) or a UUID (upload id from `higgsfield upload create`, or a previous job id). Each model declares its own media roles or `*_references` params. See `references/media-inputs.md` for the full table.
+Each flag accepts either a local file path (auto-uploaded) or a UUID (upload id from `higgsfield upload create`, or a previous job id). See `references/media-inputs.md` for what each role means and how to handle rejections.
 
 ## Common params
 
-Flags pass through to model schema. Use `higgsfield model get <jst>` to discover.
+Param flags pass straight through to the resolved model's schema, so discover them with
+`higgsfield model get <resolved_id>` rather than assuming. Every generation is the same two
+steps — resolve `$MODEL` (step 1), then submit. Only the role and the flags change:
 
 ```bash
-higgsfield generate create gpt_image_2 --prompt "neon city at dusk" --aspect_ratio 16:9 --resolution 2k --wait
-higgsfield generate create nano_banana_2 --prompt "anime character concept, expressive pose" --image ./ref.png --wait
-higgsfield generate create seedance_2_0 --prompt "camera dollies in" --start-image ./first.png --duration 12 --resolution 4k --wait
-higgsfield generate create grok_video_v15 --prompt "cinematic handheld shot, neon rainy street" --start-image ./image.png --duration 5 --resolution 720p --wait
-higgsfield generate create text2image_soul_v2 --prompt "..." --soul-id <soul_ref_id> --quality 2k --wait
+higgsfield generate create "$MODEL" --prompt "neon city at dusk" --aspect_ratio 16:9 --wait
+```
+
+| Intent | Role | Adds |
+|---|---|---|
+| General image | `default-image` | — |
+| Packaging, banner, UI with readable text | `text-render-image` | — |
+| Character / cartoon from a reference | `character-image` | `--image ./ref.png` |
+| Stills from a trained Soul Character | `character-image` | `--soul-id <soul_ref_id>` — verify the resolved model is Soul-aware first, see `references/model-catalog.md` row 6b |
+| Image-to-video | `default-video` | `--start-image ./first.png` |
+| Sound, ambience, music bed | `default-audio` | — |
+| Spoken narration | `voiceover-audio` | — |
+
+Named features are called by id, since they have no substitute:
+
+```bash
 higgsfield generate create multi_image_to_3d --image ./front.png --image ./side.png --should_texture true --wait
-higgsfield generate create seed_audio --prompt "cinematic rain ambience with distant thunder" --wait
-higgsfield generate create sonilo_music --prompt "cinematic synthwave track" --duration 12 --wait
-higgsfield generate create mirelo_text_to_audio --prompt "glass breaking in a large hall" --duration 4 --wait
 higgsfield generate create brain_activity --video ./ad.mp4 --wait
 ```
 
+Note that nothing above hardcodes a duration, resolution, or quality tier. Those enums are
+per-model and change per release — add them only after reading the resolved model's schema, or
+omit them and let the schema defaults apply. When the user asks for a specific duration or
+resolution, check it is accepted before submitting; the CLI clamps to the nearest allowed
+value and reports an `adjustments` map rather than failing.
+
 For machine-readable output (chained pipelines, agent context), add `--json`. With `--wait --json` you get the final job object array. Without `--wait`, you get the job IDs. Virality Predictor stores raw analysis and render artifacts in the job params, but the default text output should stay to scores plus Open report.
 
-Stdin prompt: `echo "..." | higgsfield generate create z_image --wait`.
+Stdin prompt: `echo "..." | higgsfield generate create "$MODEL" --wait`.
 
-Soul image quality: for `text2image_soul_v2` and `soul_cinematic`, pass `--quality 1.5k` or `--quality 2k`. These are UI-facing tiers; the backend maps them to `720p`/`1080p` and model-specific dimensions from the selected `--aspect_ratio`. `soul_location` has no quality selector; it uses fixed dimensions per aspect ratio.
+Soul-aware models take `--soul-id <reference_id>` from `higgsfield-soul-id`. Some also expose a
+UI-facing `--quality` tier that the backend maps to a resolution and to dimensions derived from
+`--aspect_ratio`; others have no quality selector at all. Check `parameters` in
+`higgsfield model get` instead of assuming either shape.
 
 ## Marketing Studio
 
-Branded image/video gen: avatars + products + optional setup hooks/settings + ad-style modes. Use models `marketing_studio_video` and `marketing_studio_image`.
+Branded image/video gen: avatars + products + optional setup hooks/settings + ad-style modes. Use models `marketing_studio_video` and `marketing_studio_image` — these are what `role:marketing-video` and `role:marketing-image` resolve to, and they are named by id here because this whole section documents their specific flag contract (`--avatars`, `--product_ids`, `--hook_id`), which no other model shares.
 
 ### Concepts
 
@@ -238,7 +262,7 @@ higgsfield marketing-studio ad-formats list --json
    ```
    Add `--hook_id <hook_id>` and/or `--setting_id <setting_id>` when a setup hook/setting was selected.
    `product_ids` and `avatars` are JSON arrays; pass them via `@/path/to/file.json`. Do not pass a bare UUID to `--product_ids`.
-   Resolution is `480p` or `720p`. Aspect ratio is one of `auto`/`21:9`/`16:9`/`4:3`/`1:1`/`3:4`/`9:16`. `--generate-audio true` is supported here (unlike `seedance_2_0`). `--wait` blocks until done; bump `--wait-timeout 30m` for longer ad runs.
+   Read the accepted `resolution` and `aspect_ratio` sets off `higgsfield model get marketing_studio_video --json` rather than assuming them. `--generate-audio true` is supported here; on plain video models audio is a media *reference* role instead, so check `medias` before reaching for the flag. `--wait` blocks until done; bump `--wait-timeout 30m` for longer ad runs.
 6. **Deliver.** URL + one-line summary (mode, duration).
 
 ### Click-to-Ad shortcut (URL-driven)
@@ -310,7 +334,7 @@ See `references/troubleshooting.md` for more.
 
 Load on demand:
 
-- `references/model-catalog.md` — picking the right model for the task
+- `references/model-catalog.md` — **the single source of truth for model choice**: intent→role tables, how to resolve a role live, and the one fallback table
 - `references/workflows.md` — `draw_to_video` and `reframe` workflow generation
 - `references/prompt-engineering.md` — writing prompts that work
 - `references/media-inputs.md` — image/video/audio reference flows and Virality Predictor video analysis

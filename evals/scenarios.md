@@ -4,9 +4,31 @@ Starter scenarios across the Higgsfield skills. Each is one user request + what 
 
 These exist to be run by a human (or by another agent acting as the user) in a fresh session with skills installed.
 
+## Scoring generation model choice
+
+**Never score on a specific model id.** `higgsfield-generate` resolves a **role** against the
+live catalog, so the concrete model a correct run picks changes whenever Higgsfield reships a
+role — and a scenario that asserts `seedance_2_0` would start failing correct behavior on the
+next catalog deploy. That is exactly the rot this repo moved away from.
+
+Score the **role** and the **resolution mechanism** instead:
+
+- Did the agent pick the right role for the intent?
+- Did it resolve that role live (`higgsfield model recommend --role <role>`, or the tag filter
+  on an older CLI) rather than typing a model name from memory?
+- Did it submit the **resolved concrete id** to `generate create` — never the role name?
+- Did it report the actual model to the user, not the role?
+
+Degradation is a pass, not a partial: an older CLI rejecting `--role`, or a thin catalog
+returning nothing, should fall through to the tag filter and then to the documented fallback
+**silently**. An agent that surfaces "role resolution failed" to the user is a partial.
+
+Skills with **pinned** models (`models.pinned` in their frontmatter — `game-generation`,
+`youtube-thumbnail`) are the exception: there, substituting the pinned id IS the failure.
+
 ---
 
-## Scenario 1 — Cheap photorealistic image (generate)
+## Scenario 1 — Quick photorealistic image (generate)
 
 **User request:**
 
@@ -14,18 +36,23 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 **Expected behavior:**
 
-- Picks `nano_banana_2`, `flux_2`, or another photorealistic-default model.
-- Does NOT pick a Soul model (no face mentioned).
-- Does NOT pick `gpt_image_2` (overkill for "quick").
-- Submits via `higgsfield generate create <model> --prompt "..." --wait` (one-shot create+poll, no separate `wait` step).
+- Picks `role:default-image`. No text to render, no identity to preserve, no vector output.
+- Does NOT pick `role:character-image` (no person or character), and does NOT route to
+  `product-photoshoot` or `brandkit`.
+- Resolves the role live, then submits the resolved id via
+  `higgsfield generate create <resolved_id> --prompt "..." --wait` (one-shot create+poll, no separate `wait` step).
+- Does NOT pass `--duration`/`--resolution`/`--quality` values it never verified against the
+  resolved model's schema.
 - Stays silent until done (no "checking status..." spam).
-- Delivers ONE URL with a short summary.
+- Delivers ONE URL with a short summary naming the model that actually ran.
 
 **Score:**
 
-- Pass: correct model class, single URL out, no internal narration.
-- Partial: correct model but excessive narration ("calling the API now…").
-- Fail: wrong model class, multiple jobs submitted, broken URL.
+- Pass: correct role, resolved live, single URL out, no internal narration.
+- Partial: correct role but excessive narration ("calling the API now…"), or reports the role
+  name to the user instead of the resolved model.
+- Fail: typed a model name from memory instead of resolving, passed a role name as the model id,
+  wrong role, multiple jobs submitted, or broken URL.
 
 ---
 
@@ -38,17 +65,24 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 **Expected behavior:**
 
-- Picks `kling3_0` (default for image-to-video) or `seedance_2_0`.
+- Picks `role:default-video`. Image-to-video is the default video role plus a start frame, NOT
+  a separate role and NOT `role:fast-video` — the user asked for neither cheap nor fast.
+- Resolves the role live and submits the resolved id.
 - Uses `--start-image still.jpg`.
 - Uses motion verbs in the prompt ("pulls back", "ambient motion") not redescribed scene.
-- `--duration 5`.
+- Confirms `5` is an accepted duration for the resolved model before passing `--duration 5`
+  (durations are a per-model closed list or range), or accepts the CLI's `adjustments`
+  coercion and discloses it.
 - Delivers ONE video URL.
 
 **Score:**
 
-- Pass: correct model, `--start-image` used, prompt focuses on motion.
-- Partial: redescribed scene in prompt instead of motion-only.
-- Fail: text-only video model picked (ignored the photo), wrong duration, no `--start-image`.
+- Pass: `default-video` resolved live, `--start-image` used, duration verified or coercion
+  disclosed, prompt focuses on motion.
+- Partial: redescribed scene in prompt instead of motion-only, or passed an unverified duration
+  and stayed silent about the adjustment.
+- Fail: downgraded to `role:fast-video` unprompted, typed a model name from memory, ignored the
+  photo (no `--start-image`), or passed a role name as the model id.
 
 ---
 
@@ -157,7 +191,8 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 - Pass: full 3-step Marketing Studio flow, single-question phases.
 - Partial: batch-asked questions upfront.
-- Fail: tried to use generic `kling3_0` instead of `marketing_studio_video`.
+- Fail: used a generic video role (`default-video` / `fast-video`) instead of
+  `role:marketing-video`, losing the avatar/product/hook contract entirely.
 
 ---
 
@@ -171,8 +206,10 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 - Detects user_language = `ru`.
 - Replies in Russian for status, questions, summary.
-- Keeps technical flags English (`--model nano_banana_2`, `--aspect_ratio 16:9`).
-- Picks `nano_banana_2` or `flux_2`.
+- Keeps technical flags and model ids English (`--aspect_ratio 16:9`); never translates a
+  resolved model id or a role name.
+- Picks `role:default-image`, same as Scenario 1 — the language of the request must not change
+  the routing.
 
 **Score:**
 
@@ -212,14 +249,48 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 - Notices the model name is unfamiliar.
 - Runs `higgsfield model list` to verify.
-- Reports back: "supernova_v9 isn't in the catalog. Suggested alternatives: …".
+- Reports back: "supernova_v9 isn't in the catalog. Suggested alternatives: …", sourcing the
+  alternatives from the live catalog (ideally `higgsfield model list --role default-image`), not
+  from memory.
+- Does NOT claim the model definitively does not exist — the catalog is per-credential, so the
+  honest statement is "not available on this account".
 - Does NOT submit with a fabricated model name.
 
 **Score:**
 
-- Pass: verified before submitting, correct fallback.
-- Partial: submitted anyway and surfaced the API error.
+- Pass: verified before submitting, alternatives sourced live, scoped the claim to this account.
+- Partial: submitted anyway and surfaced the API error, or asserted the model "does not exist".
 - Fail: hallucinated some other model name without verification.
+
+---
+
+## Scenario 15 — Role resolution on an older CLI (generate)
+
+Regression guard for the graceful-degradation path. The `--role` flags ship in a separate CLI
+release, so every installed CLI older than that must still work.
+
+**Setup:** an installed `higgsfield` CLI that does not support `higgsfield model recommend --role`
+(rejects it as an unknown flag).
+
+**User request:**
+
+> Make me a 6-second video of waves hitting rocks at sunset.
+
+**Expected behavior:**
+
+- Picks `role:default-video`, tries `higgsfield model recommend --role default-video` first.
+- On the unknown-flag error, falls through to the client-side tag filter over
+  `higgsfield model list --json` (role tags ship with the catalog, independently of the CLI).
+- If that is also empty, uses the documented fallback literal from
+  `higgsfield-generate/references/model-catalog.md`.
+- Generates successfully and says nothing to the user about any of this.
+
+**Score:**
+
+- Pass: video delivered; degradation invisible to the user.
+- Partial: video delivered but the agent narrated the fallback or apologized for a "failure".
+- Fail: aborted the generation, told the user to upgrade the CLI, asked the user which model to
+  use, or invented a model id after resolution came back empty.
 
 ---
 
@@ -331,6 +402,7 @@ Scenario 11: ...
 Scenario 12: ...
 Scenario 13: ...
 Scenario 14: ...
+Scenario 15: ...
 
 Aggregate: <P pass / Q partial / F fail>
 Time-to-result mean: <Ns>

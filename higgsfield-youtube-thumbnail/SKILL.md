@@ -2,9 +2,15 @@
 version: 0.12.0
 name: higgsfield-youtube-thumbnail
 description: |
-  Create high-click-through YouTube thumbnails and vertical video covers through the Higgsfield CLI. Builds a truthful information-gap concept, preserves up to three referenced identities, supports logos and controlled variants, renders the main image with Nano Banana Pro, and applies focused Seedream edits. Use when: "make a YouTube thumbnail", "thumbnail for this video", "MrBeast-style cover", "Shorts cover", or "Instagram video cover". Chain after any video workflow once its truthful topic and visual direction are known. NOT for producing the video itself (use higgsfield-generate), product catalog photos (use higgsfield-product-photoshoot), or marketplace cards (use higgsfield-marketplace-cards).
+  Create high-click-through YouTube thumbnails and vertical video covers through the Higgsfield CLI. Builds a truthful information-gap concept, preserves up to three referenced identities, supports logos and controlled variants, renders the main image on a pinned 4K render model, and applies focused identity-preserving edits. Use when: "make a YouTube thumbnail", "thumbnail for this video", "MrBeast-style cover", "Shorts cover", or "Instagram video cover". Chain after any video workflow once its truthful topic and visual direction are known. NOT for producing the video itself (use higgsfield-generate), product catalog photos (use higgsfield-product-photoshoot), or marketplace cards (use higgsfield-marketplace-cards).
 argument-hint: "[video-topic-or-title] [--image <face-or-logo>] [--ratio 16:9|9:16|4:5]"
 allowed-tools: Bash
+models:
+  pinned:
+    - id: nano_banana_pro
+      reason: the whole prompt contract (identity lock, lighting rig, 4K) is tuned to it
+    - id: gpt_image_2
+      reason: 3D logo extrusion stage depends on its edit fidelity on flat logo input
 ---
 
 # Higgsfield YouTube Thumbnail
@@ -20,12 +26,12 @@ Before any generation:
    curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh
    ```
 2. If `higgsfield account status` reports `Session expired` or `Not authenticated`, ask the user to run `higgsfield auth login`, then wait.
-3. Confirm the locked model contracts when the catalog may have changed:
+3. Confirm the pinned render contracts when the catalog may have changed, and read the live param sets rather than assuming them:
    ```bash
-   higgsfield model get nano_banana_pro --json
-   higgsfield model get gpt_image_2 --json
-   higgsfield model get seedream_v5_pro --json
+   higgsfield model get nano_banana_pro --json | jq '{aspect_ratios, parameters, medias}'
+   higgsfield model get gpt_image_2 --json | jq '{aspect_ratios, parameters, medias}'
    ```
+   The edit model is not pinned — it is resolved from `role:identity-edit-image` at tweak time. See "Surgical tweaks".
 
 ## UX rules
 
@@ -151,18 +157,37 @@ On a hard failure, retry the same prompt at most twice. If visual inspection is 
 
 Use the picked completed job ID as the only image input. Keep the edit prompt narrowly scoped and state that every other pixel-level property remains unchanged.
 
+The edit step needs identity preservation, which is a role — resolve it rather than hardcoding a model, so the tweak follows whatever currently edits faces best:
+
 ```bash
-higgsfield generate create seedream_v5_pro \
+EDIT=$(higgsfield model recommend --role identity-edit-image --json | jq -r '.id')
+
+# Older CLI without --role support: the role tags still ship in the catalog, so filter
+# them client-side. Do not report a failure — fall through silently.
+[ -n "$EDIT" ] || EDIT=$(higgsfield model list --json \
+  | jq -r 'map(select((.tags // []) | index("role:identity-edit-image"))) | .[0].id // empty')
+
+# Neither worked (thin catalog, or role tags not deployed yet) — documented fallback.
+[ -n "$EDIT" ] || EDIT=seedream_v4_5
+```
+
+```bash
+higgsfield generate create "$EDIT" \
   --prompt "Change ONLY the person's facial expression to: <phrase>. Keep identity, face structure, hair, pose, body, clothing, logo, background, lighting and composition EXACTLY unchanged, pixel-faithful. Keep the YouTube thumbnail lighting rig intact." \
   --image <picked_job_id> \
   --aspect_ratio 16:9 \
-  --resolution 2k \
   --wait --json
 ```
 
-If `seedream_v5_pro` is absent or rejects the submit, retry once with `seedream_v4_5 --quality high`. For a `4:5` main render, Seedream has no `4:5`; ask before changing the edit to `3:4`, and disclose the crop/ratio change. Each accepted edit becomes the source ID for the next tweak.
+**Check the ratio and the quality/resolution params against the resolved edit model instead of assuming them.** Both differ per model and per release, so read the live schema before submitting an edit at a non-`16:9` ratio:
 
-CLI compatibility: versions through `1.1.20` can mislabel a `nano_banana_pro` job reference as `nano_banana_pro_job`. If the edit is rejected with a `medias.0...data.type` error, download the picked `result_url` to a local image and retry the same edit with `--image ./picked-thumbnail.png`. A local path is auto-uploaded as `media_input`; do not retry the invalid job-id payload.
+```bash
+higgsfield model get "$EDIT" --json | jq '{aspect_ratios, parameters}'
+```
+
+If the main render's ratio is not in that set, ask the user before switching to the nearest supported one, and disclose the crop/ratio change. Never change it silently. Each accepted edit becomes the source ID for the next tweak.
+
+**If an edit is rejected with a `medias.0...data.type` error**, the job-id reference was not accepted: download the picked `result_url` to a local image and retry the same edit with `--image ./picked-thumbnail.png`. A local path is auto-uploaded as `media_input`. Do not retry the same job-id payload. Treat this as a live check on the error, not a check on the CLI version — run `higgsfield --version` only if the user asks why it happened.
 
 Allowed tweak scopes: expression only, background replacement only, background recolor only, or rim-light recolor only. Never silently regenerate the full composition for a surgical request.
 
