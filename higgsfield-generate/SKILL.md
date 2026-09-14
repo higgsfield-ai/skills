@@ -94,7 +94,7 @@ If the user says "analyze this video", "score this ad", "evaluate the hook", or 
    **Video:**
    - Complete narrated explainer from a topic, story, or document → use `higgsfield-video-explainer`, not generic video generation.
    - All advertising / commercial / branded ad video → Marketing Studio (see Marketing Studio below)
-   - Edit existing video from sketch/timestamp, or reframe to another aspect ratio → workflow (`draw_to_video` or `reframe`), not a model. See `references/workflows.md`.
+   - Edit existing video from a sketch frame, or reframe to another aspect ratio → workflow (`draw_to_video` or `reframe`), not a model. See `references/workflows.md`.
    - **Default all-purpose serious video (multi-shot, consistent identity, motion-heavy, image-to-video, 4–30s requests) → Seedance 2.5.** SOTA. Do not downgrade to Seedance 1.5 just because its duration enum is easier to read; validate Seedance 2.5 first.
    - Single-plane scene without strong dynamics, lower-cost option → Kling 3.0; if the user explicitly asks for Turbo, faster, or lower-cost Kling output → Kling 3.0 Turbo (`kling3_0_turbo`)
    - Cheap clean shot without cuts, only when the user asks for cheaper/budget output → Seedance 1.5 Pro
@@ -312,7 +312,7 @@ See `references/troubleshooting.md` for more.
 Load on demand:
 
 - `references/model-catalog.md` — picking the right model for the task
-- `references/workflows.md` — `draw_to_video` and `reframe` workflow generation
+- `references/workflows.md` — workflow discovery, generation, and cost estimates
 - `references/prompt-engineering.md` — writing prompts that work
 - `references/media-inputs.md` — image/video/audio reference flows and Virality Predictor video analysis
 - `references/troubleshooting.md` — common errors and fixes

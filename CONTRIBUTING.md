@@ -122,7 +122,7 @@ For workflows:
 - Add/update `higgsfield-generate/references/workflows.md` with use case, create example, cost example when supported, and result retrieval.
 - Use `higgsfield generate workflow <workflow_name> ... --wait` for creation and `higgsfield generate cost workflow <workflow_name> ...` for cost.
 - Do not add workflow-only items to `model-catalog.md`.
-- `draw_to_video` and `reframe` are the current public workflows. Do not mention `game_character_creator` unless it is publicly exposed and explicitly requested.
+- Discover public workflows with `higgsfield workflow list`; all listed workflows support `generate workflow`. Do not mention `game_character_creator` unless it is publicly exposed and explicitly requested.
 
 ## License
 

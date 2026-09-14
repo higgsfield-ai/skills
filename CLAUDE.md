@@ -101,7 +101,7 @@ For workflows:
 - Update `higgsfield-generate/references/workflows.md` with the use case, create command, cost command when available, and result retrieval.
 - Use public command shapes: `higgsfield generate workflow <workflow_name> ... --wait`, `higgsfield generate cost workflow <workflow_name> ...`, and `higgsfield generate get/wait <job_id>`.
 - Do not add workflow-only entries to `model-catalog.md`.
-- Current public workflows are `draw_to_video` and `reframe`. Do not mention `game_character_creator` unless the CLI exposes it publicly and the user explicitly asks for it.
+- Discover public workflows with `higgsfield workflow list`; all listed workflows support `generate workflow`. Do not mention `game_character_creator` unless the CLI exposes it publicly and the user explicitly asks for it.
 
 ## The 300-line rule
 
