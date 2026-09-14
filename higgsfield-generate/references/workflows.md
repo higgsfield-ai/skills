@@ -16,7 +16,7 @@ Examples of public workflows (use the live list for all available names):
 
 | Workflow | Use when |
 |---|---|
-| `draw_to_video` | Edit a source video using an edited sketch/image frame at a timestamp. Business name may be "Draw To Edit"; CLI name is `draw_to_video`. |
+| `draw_to_video` | Edit a source video using an edited sketch/image frame. Business name may be "Draw To Edit"; CLI name is `draw_to_video`. |
 | `reframe` | Reframe a source video to another aspect ratio and optional resolution. |
 
 Do not use or mention `game_character_creator` unless the current CLI exposes it publicly and the user explicitly asks for it.
@@ -28,19 +28,17 @@ Do not use or mention `game_character_creator` unless the current CLI exposes it
 Use when the user has:
 - a source video
 - an edited/sketched frame image
-- the timestamp for that frame
 - an edit instruction
 
 ```bash
 higgsfield generate workflow draw_to_video \
   --video ./source.mp4 \
   --sketch ./frame.png \
-  --timestamp 3.2 \
   --prompt "make the jacket red" \
   --wait
 ```
 
-`--image` is an alias for `--sketch`.
+`--sketch` and `--image` supply the required image reference. Check `workflow get` for the current optional parameters.
 
 ### Reframe
 
@@ -55,10 +53,9 @@ higgsfield generate workflow reframe \
 ```
 
 Optional:
-- `--mode std|pro`; default `std`
 - `--start-image <path-or-id>`
-- `--image <path-or-id>` references for `--mode pro`; use 1-2 images
-- `--folder-id <folder_id>`
+- `--image <path-or-id>` references; use 1-2 images
+- `--duration <seconds>` for pricing
 
 ## Cost
 
@@ -90,7 +87,7 @@ When FNF adds a public chain, document it here as a workflow:
 
 1. Verify it appears in `higgsfield workflow list`.
 2. Inspect params with `higgsfield workflow get <workflow_name> --json`.
-3. Add it to the Current public workflows table with a clear use case.
+3. Add it to the workflow examples table with a clear use case.
 4. Add a create example using `higgsfield generate workflow <workflow_name> ... --wait`.
 5. Add a cost example only when `workflow get` exposes `cost_params`.
 6. Keep result retrieval on `higgsfield generate get/wait <job_id>`.
