@@ -85,8 +85,16 @@ and recreate presets can refer to different tables, especially for motion.
 Only published, usable preset rows are listed. Reference-to-video entries use
 the separate `marketing_studio_v2_reference2video` workflow without a preset
 selection field; they are not listed as selectable presets. Inspect live
-`workflow get` for input requirements and cost params; pass duration explicitly
-when estimating motion costs instead of assuming the preset duration is inferred.
+`workflow get` for input requirements and cost params. For `hypermotion`,
+`mixed_media`, and `saas_motion`, cost with `preset_id` resolves duration from the
+selected preset; `2d_motion` defaults to 5 seconds. An explicit `--duration`
+overrides the default and must also be passed to generation. Missing presets or
+unavailable preset durations fail instead of returning an assumed price.
+
+```bash
+higgsfield generate cost workflow marketing_studio_v2_video \
+  --type hypermotion --preset_id <preset_id>
+```
 
 ## Cost
 
