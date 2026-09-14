@@ -57,6 +57,37 @@ Optional:
 - `--image <path-or-id>` references; use 1-2 images
 - `--duration <seconds>` for pricing
 
+### Marketing Studio V2
+
+Use `marketing_studio_2_image` for product shots, product shots with people,
+posters, ads, and marketplace images. Use `marketing_studio_v2_video` for
+2D motion, hypermotion, mixed media, SaaS motion, and UGC videos.
+
+```bash
+higgsfield preset list marketing-studio-v2 --type hypermotion --json
+higgsfield workflow get marketing_studio_v2_video
+higgsfield generate workflow marketing_studio_v2_video \
+  --type hypermotion --preset_id <preset_id> --image ./product.png --wait
+```
+
+Each preset item supplies `job_set_type` and `params`. Match its generation
+`type` and selection field: most use `preset_id`; `ugc_v2` uses `mode_id`.
+Native `ugc` also supplies `delivery_specs` for the preset's delivery mode.
+Use `--query` to search names/IDs/types and `--type` to filter a generation type.
+
+`--image` maps to `input_images` for product shots, posters, and motion;
+`product_image` for ads, marketplace, and product shots with people;
+`product_photo` for native UGC; and `medias` for UGC V2. Supply other named
+image inputs as schema-shaped objects, for example `--character_photo @character.json`.
+Do not combine the preset selection with `style_id`. IDs from the style catalog
+and recreate presets can refer to different tables, especially for motion.
+
+Only published, usable preset rows are listed. Reference-to-video entries use
+the separate `marketing_studio_v2_reference2video` workflow without a preset
+selection field; they are not listed as selectable presets. Inspect live
+`workflow get` for input requirements and cost params; pass duration explicitly
+when estimating motion costs instead of assuming the preset duration is inferred.
+
 ## Cost
 
 Workflow cost uses `generate cost workflow`, not `generate workflow cost`.
