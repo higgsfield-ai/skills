@@ -10,9 +10,9 @@ higgsfield workflow get draw_to_video
 higgsfield workflow get reframe --json
 ```
 
-Use `workflow get` before creating a job when unsure about params. Do not expect workflows to appear in `higgsfield model list`.
+Every workflow returned by `workflow list` is accepted by `generate workflow`, including image workflows. Use `workflow get` before creating a job when unsure about params. Do not expect workflows to appear in `higgsfield model list`.
 
-Current public workflows:
+Examples of public workflows (use the live list for all available names):
 
 | Workflow | Use when |
 |---|---|
@@ -68,6 +68,8 @@ Workflow cost uses `generate cost workflow`, not `generate workflow cost`.
 higgsfield generate cost workflow draw_to_video --duration 8.2 --resolution 720p
 higgsfield generate cost workflow reframe --duration 7.1 --resolution 1080p
 ```
+
+Cost parameters come from `workflow get <name> --json` (`cost_params`), independently of creation parameters. No cost schema means estimation is unavailable; an empty schema means no parameters are required. The CLI accepts cost estimates for every listed workflow with a cost schema.
 
 If the user asks "how much will this workflow cost?", run cost first and report credits before creating.
 
