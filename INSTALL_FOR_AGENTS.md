@@ -30,16 +30,27 @@ Verify: `higgsfield account status`. Expect `<email> — <plan> plan, <N> credit
 
 ## Step 3 — Install the skills
 
-Detect the agent platform:
+Detect the agent platform.
+
+**Claude Code** discovers each skill at `~/.claude/skills/<skill-name>/SKILL.md` — one directory per skill, not one directory per repo. This repo's 8 skills each live in their own `higgsfield-*` folder at the repo root, so clone it somewhere else and symlink each skill folder into place:
+
+```bash
+git clone https://github.com/higgsfield-ai/skills.git ~/.agents/vendor/higgsfield-skills
+mkdir -p ~/.claude/skills
+for d in ~/.agents/vendor/higgsfield-skills/higgsfield-*/; do
+  ln -s "$d" "$HOME/.claude/skills/$(basename "$d")"
+done
+```
+
+Cloning straight to `~/.claude/skills/higgsfield` (one folder per repo) nests every `SKILL.md` one level too deep for Claude Code to find.
+
+**Cursor, Codex, and other agents** that expect one clone per plugin:
 
 | Agent | Path |
 |---|---|
-| Claude Code | `~/.claude/skills/higgsfield` |
 | Cursor | `~/.cursor/plugins/higgsfield` |
 | Codex | `~/.codex/plugins/higgsfield` |
 | Other | `~/.<agent>/skills/higgsfield` |
-
-Clone:
 
 ```bash
 git clone https://github.com/higgsfield-ai/skills.git <path>
