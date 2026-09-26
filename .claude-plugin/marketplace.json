@@ -11,46 +11,14 @@
       "description": "Image/video generation, complete brand systems, narrated explainers, YouTube thumbnails, browser games, Marketing Studio, video engagement analysis, and Soul Character training via the Higgsfield CLI.",
       "version": "0.12.0",
       "skills": [
-        {
-          "name": "generate",
-          "path": "higgsfield-generate",
-          "invoke": "/higgsfield:generate"
-        },
-        {
-          "name": "soul-id",
-          "path": "higgsfield-soul-id",
-          "invoke": "/higgsfield:soul-id"
-        },
-        {
-          "name": "product-photoshoot",
-          "path": "higgsfield-product-photoshoot",
-          "invoke": "/higgsfield:product-photoshoot"
-        },
-        {
-          "name": "brandkit",
-          "path": "higgsfield-brandkit",
-          "invoke": "/higgsfield:brandkit"
-        },
-        {
-          "name": "marketplace-cards",
-          "path": "higgsfield-marketplace-cards",
-          "invoke": "/higgsfield:marketplace-cards"
-        },
-        {
-          "name": "websites",
-          "path": "higgsfield-websites",
-          "invoke": "/higgsfield:websites"
-        },
-        {
-          "name": "video-explainer",
-          "path": "higgsfield-video-explainer",
-          "invoke": "/higgsfield:video-explainer"
-        },
-        {
-          "name": "youtube-thumbnail",
-          "path": "higgsfield-youtube-thumbnail",
-          "invoke": "/higgsfield:youtube-thumbnail"
-        }
+        "./higgsfield-generate",
+        "./higgsfield-soul-id",
+        "./higgsfield-product-photoshoot",
+        "./higgsfield-brandkit",
+        "./higgsfield-marketplace-cards",
+        "./higgsfield-websites",
+        "./higgsfield-video-explainer",
+        "./higgsfield-youtube-thumbnail"
       ]
     }
   ]
