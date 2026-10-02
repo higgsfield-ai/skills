@@ -1,5 +1,4 @@
 ---
-version: 0.13.0
 name: higgsfield-marketplace-cards
 description: |
   Generate marketplace product image cards through Higgsfield: compliant
@@ -12,7 +11,9 @@ description: |
   NOT for generic brand product photography without marketplace/listing context
   (use higgsfield-product-photoshoot), video generation or UGC ads (use
   higgsfield-generate), or Soul Character training (use higgsfield-soul-id).
-argument-hint: "[--scope main|product-images|aplus|full-set] [prompt]"
+metadata:
+  version: "0.13.0"
+  argument-hint: "[--scope main|product-images|aplus|full-set] [prompt]"
 allowed-tools: Bash
 ---
 

@@ -1,5 +1,4 @@
 ---
-version: 0.13.0
 name: higgsfield-product-photoshoot
 description: |
   Generate brand-quality product images through Higgsfield product-photoshoot
@@ -18,7 +17,9 @@ description: |
   video (use higgsfield-generate Marketing Studio), marketplace listing cards
   (use higgsfield-marketplace-cards), Soul Character training (use
   higgsfield-soul-id).
-argument-hint: "[--mode <mode>] [--count N] [prompt]"
+metadata:
+  version: "0.13.0"
+  argument-hint: "[--mode <mode>] [--count N] [prompt]"
 allowed-tools: Bash
 ---
 

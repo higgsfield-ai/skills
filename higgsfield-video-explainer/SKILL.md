@@ -1,5 +1,4 @@
 ---
-version: 0.13.0
 name: higgsfield-video-explainer
 description: |
   Build a complete non-photoreal narrated explainer or story video from
@@ -12,7 +11,9 @@ description: |
   mascot/faceless modes, two aspects, and optional burned subtitles. NOT for:
   photoreal films, ads/UGC, talking heads, podcasts, motion typography reels,
   one-off clips without narration, or editing a finished video.
-argument-hint: "[topic or source files] [duration] [language] [aspect ratio]"
+metadata:
+  version: "0.13.0"
+  argument-hint: "[topic or source files] [duration] [language] [aspect ratio]"
 allowed-tools: Bash
 ---
 

@@ -47,8 +47,8 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) so future au
 
 Before merging, confirm:
 
-1. **Frontmatter is valid.** YAML parses. `name` matches the directory exactly. `version` is set. `description` includes Use-when triggers, Chain rules, and a NOT-for boundary.
-2. **Versions are in sync.** `VERSION`, every `*/SKILL.md` `version:` field, `.claude-plugin/marketplace.json`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and `.cursor-plugin/plugin.json` all match. Don't bump versions by hand on feature branches — release-please (when enabled) handles it on merge to `main`.
+1. **Frontmatter is valid.** YAML parses. `name` matches the directory exactly. `metadata.version` is set. `description` includes Use-when triggers, Chain rules, and a NOT-for boundary. Keep host-specific fields such as `argument-hint` inside `metadata` so the skill remains compatible with Codex and the Agent Skills specification.
+2. **Versions are in sync.** `VERSION`, every `*/SKILL.md` `metadata.version` field, `.claude-plugin/marketplace.json`, `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and `.cursor-plugin/plugin.json` all match. Don't bump versions by hand on feature branches — release-please (when enabled) handles it on merge to `main`.
 3. **All references resolve.** Every `references/X.md` mentioned in `SKILL.md` exists in the same skill's bundle. No `../` parent-directory references — each skill must be installable standalone via `gh skill install`.
 4. **No orphan reference files.** Every file inside `<skill>/references/` is mentioned at least once in that skill's `SKILL.md`. If it isn't reachable, delete it or link it.
 5. **`marketplace.json` is up to date.** If you added or renamed a skill folder, update the `skills` array in `.claude-plugin/marketplace.json`.
@@ -63,14 +63,15 @@ A new skill is a new top-level folder named `higgsfield-<name>/` containing `SKI
 
 ```yaml
 ---
-version: 0.3.0
 name: higgsfield-<name>
 description: |
   <One paragraph: what it does and which API surface it wraps>
   Use when: "<trigger phrase>", "<trigger phrase>", ...
   Chain with: <other skill> when ...
   NOT for: <case A> (use <skill A>), <case B> (use <skill B>).
-argument-hint: "[primary-arg] [--flag <value>]"
+metadata:
+  version: "0.3.0"
+  argument-hint: "[primary-arg] [--flag <value>]"
 allowed-tools: Bash
 ---
 

@@ -106,7 +106,7 @@ Each `SKILL.md` should aim for under 300 lines. Skill files are loaded into the 
 
 **What stays in SKILL.md:**
 
-- Frontmatter (`name`, `description`, `argument-hint`, `allowed-tools`).
+- Frontmatter (`name`, `description`, `metadata`, `allowed-tools`). Keep version and host-specific UI hints under `metadata` for Codex and Agent Skills compatibility.
 - Stage flow overview — what stages exist, when to enter each.
 - Decision trees — model selection, mode selection, target detection.
 - UX rules that apply on every turn.
@@ -131,14 +131,7 @@ If two skills happen to share a doc (e.g. both `higgsfield-generate` and `higgsf
 A single repo-wide version must match every skill and plugin manifest:
 
 - `VERSION` — the source of truth.
-- `higgsfield-generate/SKILL.md` — `version:` in frontmatter.
-- `higgsfield-soul-id/SKILL.md` — `version:` in frontmatter.
-- `higgsfield-product-photoshoot/SKILL.md` — `version:` in frontmatter.
-- `higgsfield-marketplace-cards/SKILL.md` — `version:` in frontmatter.
-- `higgsfield-video-explainer/SKILL.md` — `version:` in frontmatter.
-- `higgsfield-brandkit/SKILL.md` — `version:` in frontmatter.
-- `higgsfield-websites/SKILL.md` — `version:` in frontmatter.
-- `higgsfield-youtube-thumbnail/SKILL.md` — `version:` in frontmatter.
+- Every `higgsfield-*/SKILL.md` — `metadata.version` in frontmatter.
 - `.claude-plugin/marketplace.json` — `plugins[0].version`.
 - `.claude-plugin/plugin.json` — top-level `version`.
 - `.codex-plugin/plugin.json` — top-level `version`.

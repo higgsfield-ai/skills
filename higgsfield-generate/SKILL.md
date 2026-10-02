@@ -1,5 +1,4 @@
 ---
-version: 0.13.0
 name: higgsfield-generate
 description: |
   Generate images/videos/3D assets/audio via Higgsfield AI. Defaults:
@@ -20,7 +19,9 @@ description: |
   (use higgsfield-youtube-thumbnail), explainers (use
   higgsfield-video-explainer), playable games/assets (use
   higgsfield-websites), or TTS.
-argument-hint: "[prompt-or-analysis-request] [--model <name>] [--image|--video <path-or-id>]"
+metadata:
+  version: "0.13.0"
+  argument-hint: "[prompt-or-analysis-request] [--model <name>] [--image|--video <path-or-id>]"
 allowed-tools: Bash
 ---
 
