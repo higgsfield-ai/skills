@@ -34,7 +34,7 @@ jobs:
       - name: Install PyYAML
         run: pip install pyyaml --quiet
 
-      - name: Validate frontmatter and name
+      - name: Validate portable frontmatter and name
         run: |
           set -euo pipefail
           fail=0
@@ -57,10 +57,24 @@ jobs:
               sys.exit(1)
           fm = yaml.safe_load(m.group(1))
           errors = []
+          allowed = {"name", "description", "license", "metadata", "allowed-tools"}
+          unexpected = sorted(set(fm) - allowed)
+          if unexpected:
+              errors.append(
+                  "unsupported top-level frontmatter keys: " + ", ".join(unexpected)
+              )
           if fm.get("name") != expected_name:
               errors.append(f"name '{fm.get('name')}' != directory '{expected_name}'")
-          if not fm.get("version"):
-              errors.append("version missing")
+          metadata = fm.get("metadata", {})
+          if not isinstance(metadata, dict):
+              errors.append("metadata must be a mapping")
+              metadata = {}
+          elif any(not isinstance(k, str) or not isinstance(v, str) for k, v in metadata.items()):
+              errors.append("metadata keys and values must be strings")
+          if not metadata.get("version"):
+              errors.append("metadata.version missing")
+          if not metadata.get("argument-hint"):
+              errors.append("metadata.argument-hint missing")
           if not fm.get("description"):
               errors.append("description missing")
           desc = fm.get("description", "")
@@ -74,7 +88,7 @@ jobs:
               print(f"::error file={path}::{err}")
           if errors:
               sys.exit(1)
-          print(f"✓ {path} — frontmatter valid (name={fm['name']}, version={fm['version']})")
+          print(f"✓ {path} — portable frontmatter valid (name={fm['name']}, version={metadata['version']})")
           PY
           done
           [ "$fail" -eq 0 ]
@@ -87,9 +101,9 @@ jobs:
           fail=0
 
           for skill_dir in higgsfield-*/; do
-            v=$(awk '/^---/{c++; next} c==1 && /^version:/{gsub(/^version:[[:space:]]*/,""); gsub(/[[:space:]]*#.*$/,""); gsub(/[[:space:]]/,""); print; exit}' "${skill_dir}SKILL.md")
+            v=$(python3 -c "import pathlib,yaml; text=pathlib.Path('${skill_dir}SKILL.md').read_text(); print(yaml.safe_load(text.split('---', 2)[1])['metadata']['version'])")
             if [ "$v" != "$ROOT_VERSION" ]; then
-              echo "::error file=${skill_dir}SKILL.md::version $v != VERSION $ROOT_VERSION"
+              echo "::error file=${skill_dir}SKILL.md::metadata.version $v != VERSION $ROOT_VERSION"
               fail=1
             fi
           done

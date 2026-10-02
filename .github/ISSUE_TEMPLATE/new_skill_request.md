@@ -43,14 +43,15 @@ assignees: ""
 
 ```yaml
 ---
-version: 0.3.0
 name: higgsfield-<name>
 description: |
   ...
   Use when: ...
   Chain with: ...
   NOT for: ...
-argument-hint: ""
+metadata:
+  version: "0.3.0"
+  argument-hint: ""
 allowed-tools: Bash
 ---
 ```
