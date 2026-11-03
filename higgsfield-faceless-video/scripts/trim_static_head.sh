@@ -2,6 +2,8 @@
 # Usage: trim_static_head.sh input.mp4 output.mp4 reference.png
 set -euo pipefail
 IN="$1"; OUT="$2"; REF="${3:-}"
+python3 -c 'import numpy' 2>/dev/null || {
+  echo "trim_static_head: python3 cannot import numpy (pip install numpy); nothing was checked" >&2; exit 2; }
 TRIM=$(python3 - "$IN" "$REF" <<'PY'
 import subprocess, sys
 import numpy as np
