@@ -3,7 +3,7 @@ version: 0.14.0
 name: higgsfield-generate
 description: |
   Generate images/videos/3D assets/audio via Higgsfield AI. Defaults:
-  GPT Image 2.5 for image/design/text, Seedance 2.5 for
+  GPT Image 2.6 for images, animated GIFs and SVG, Seedance 2.5 for
   video, Nano Banana 2 for cartoon characters, Marketing
   Studio for ads, Seed Audio 1.0 for audio.
   Use when: "generate an image", "make a video", "animate
@@ -41,12 +41,13 @@ Before any other command:
 
 ## UX Rules
 
-1. Be concise. No raw IDs, no JSON dumps in chat. Print the media URL for generated assets, or the text summary for Virality Predictor.
+1. Be concise. No raw IDs, no JSON dumps in chat. Return the media URL from the CLI unchanged for generated assets, or the text summary for Virality Predictor.
 2. No internal jargon. Don't narrate "calling higgsfield cost", "polling job".
 3. Detect the user's language from the first message and reply in it. Technical args (`--aspect_ratio 16:9`) stay English.
 4. Don't batch-ask. Pick a sane default model and ask one thing at a time only if genuinely missing.
 5. Don't pre-estimate cost or optimize for cheaper models unless the user asks. Prefer the quality default first.
 6. Pass `--wait` to `generate create` so the command blocks until done and prints the result URL itself. Avoid the two-step `create` → `wait` pattern.
+7. Prompt-only or explanation-only requests return text without submitting a job.
 
 ## Discovery guardrail
 
@@ -68,7 +69,7 @@ If the user says "analyze this video", "score this ad", "evaluate the hook", or 
 
 1. **Pick a model.** Start with the core defaults:
 
-   - **GPT Image 2.5** → default image model for high-fidelity general generation, graphic design, UI, banners, typography, and on-image text.
+   - **GPT Image 2.6 Sunburst** (`gpt_image_2_6`) → default image model for high-fidelity general generation, graphic design, UI, banners, typography, and on-image text. Flare is the separate model `gpt_image_2_6_flare`, not a `variant` parameter.
    - **Seedance 2.5** (`seedance_2_5`) → SOTA default video model for serious motion, cinematic clips, multi-shot work, and image-to-video. Supports 4–30s output up to 1080p; use Seedance 2.0 when native 4K is required.
    - **Nano Banana 2** (`nano_banana_flash`) → cartoon and illustrated characters.
    - **Marketing Studio** → default for ads, UGC, product demos, unboxing, TV spots, presenter videos, and brand/product workflows.
@@ -81,6 +82,7 @@ If the user says "analyze this video", "score this ad", "evaluate the hook", or 
    - YouTube thumbnail, Shorts cover, or Instagram video cover → use `higgsfield-youtube-thumbnail` instead.
    - Brand product visual (Pinterest pin, lifestyle, hero banner, ad pack, virtual try-on) → use `higgsfield-product-photoshoot` instead. NOT this skill.
    - Branded ad image with avatar + product (Marketing Studio shape) → Marketing Studio Image (see Marketing Studio below)
+   - Standalone animated GIF or SVG → GPT Image 2.6, before subject/style auto-picks. Set `--output_format gif` or `--output_format svg` **before the first submission**; mentioning GIF/SVG in the prompt does not select the format. A GIF request is not a video/conversion workflow. SVG accepts no reference images. Preserve explicit model choices and specialized workflow pins; check the named model's format support instead of silently changing it. See `references/model-catalog.md` for frame controls and examples.
    - Soul Character (reference id from `higgsfield-soul-id`) → Soul 2.0 for stills, Soul Cinema (`soul_cinematic`) for cinematic
    - New original person — UGC, editorial, fashion, lifestyle → Soul 2.0
    - Cinematic still frame → Soul Cinema (`soul_cinematic`)
@@ -88,7 +90,7 @@ If the user says "analyze this video", "score this ad", "evaluate the hook", or 
    - Locations / environments / no-people scenes → Soul Location
    - Logo, icon, vector-like illustration, brand mark, controlled-palette graphic → Recraft V4.1 (`recraft_v4_1`, often with `--model_type vector`)
    - Cartoon or illustrated characters, heavily textured photos → Nano Banana 2 (`nano_banana_flash`). The id `nano_banana_2` is an alias for Nano Banana Pro, not Nano Banana 2
-   - **Default for everything else → GPT Image 2.5.** Graphic design, UI, banners, typography, product concepts, editing, and high-fidelity general generation.
+   - **Default for everything else → GPT Image 2.6 Sunburst** (`gpt_image_2_6`). Graphic design, UI, banners, typography, product concepts, editing, and high-fidelity general generation.
    - User asks for cheaper or faster → Nano Banana 2 Lite (`nano_banana_2_lite`) for reference edits, Z Image for drafts.
 
    **Video:**
@@ -142,7 +144,7 @@ Each flag accepts either a local file path (auto-uploaded) or a UUID (upload id 
 Flags pass through to model schema. Use `higgsfield model get <jst>` to discover.
 
 ```bash
-higgsfield generate create gpt_image_2_5 --prompt "neon city at dusk" --aspect_ratio 16:9 --resolution 2k --wait
+higgsfield generate create gpt_image_2_6 --prompt "neon city at dusk" --aspect_ratio 16:9 --resolution 2k --wait
 higgsfield generate create nano_banana_flash --prompt "anime character concept, expressive pose" --image ./ref.png --wait
 higgsfield generate create seedance_2_5 --prompt "camera dollies in" --mode omni_reference --start-image ./first.png --duration 12 --resolution 1080p --wait
 higgsfield generate create grok_video_v15 --prompt "cinematic handheld shot, neon rainy street" --start-image ./image.png --duration 5 --resolution 720p --wait

@@ -270,5 +270,5 @@ Publishing is separate (`higgsfield website publish`) and happens only when the 
 
 1. **Train identity once, reuse forever.** Soul training is 15–45 minutes one-time. Every future video that needs the founder's face is one prompt away.
 2. **Let the backend assemble the prompt for branded work.** `product-photoshoot` enhances prompts before submitting to `gpt_image_2`. Don't write `gpt_image_2` prompts by hand.
-3. **Cheap-first iteration on request.** When the user wants to iterate cheaply, draft on `z_image`, then switch to the default model (`gpt_image_2_5`) once the direction is confirmed.
+3. **Cheap-first iteration on request.** When the user wants to iterate cheaply, draft on `z_image`, then switch to the default model (`gpt_image_2_6`) once the direction is confirmed.
 4. **Filenames have timestamps.** Use `yyyy-mm-dd-hh-mm-ss-name.ext` so you can trace which generation came from which session.
