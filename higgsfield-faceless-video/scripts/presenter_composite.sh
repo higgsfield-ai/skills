@@ -28,6 +28,10 @@ if [[ "$STYLE" == "cutout" && ( "$POS" == "tr" || "$POS" == "tl" ) ]]; then
   echo "cutout is bottom-only (torso is cut at the frame edge) — use --pos br|bl or --style badge" >&2; exit 2
 fi
 for f in "$BLOCK" "$TALK"; do [[ -f "$f" ]] || { echo "missing input: $f" >&2; exit 2; }; done
+# The matte QC below runs Python with numpy and Pillow. Without them it used to
+# report "matte QC FAILED ... regenerate this talking clip", which blames the clip.
+python3 -c 'import numpy, PIL' 2>/dev/null || {
+  echo "presenter_composite: python3 cannot import numpy and PIL (pip install numpy pillow); nothing was checked, the talking clip is not at fault" >&2; exit 2; }
 
 probe() { ffprobe -v error -select_streams v:0 -show_entries stream="$2" -of csv=p=0 "$1"; }
 BW=$(probe "$BLOCK" width); BH=$(probe "$BLOCK" height)
