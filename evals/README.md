@@ -16,7 +16,7 @@ Evals exist to:
 
 There is no automated runner yet. To run a round:
 
-1. Read [`scenarios.md`](./scenarios.md) — 10 user requests + expected agent behavior.
+1. Read [`scenarios.md`](./scenarios.md) — user requests + expected agent behavior.
 2. Run each scenario in a fresh agent session (Claude Code with skills installed).
 3. Score by the rubric in `scenarios.md`. Track in a spreadsheet or Notion.
 4. After 3+ rounds with stable results, codify findings as bullets in `CLAUDE.md` → Key Decisions.
