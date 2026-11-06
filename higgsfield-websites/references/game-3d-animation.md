@@ -143,14 +143,20 @@ proportion similarity; humanoid T-pose targets only; thin dangling parts
 
 ## Step 5 — Meshy clip merge + root-scale check (MANDATORY for Meshy)
 
-Meshy returns one GLB per animation. Two merge options:
+Meshy returns one GLB per animation task (`action_id`). On the raw-API
+fallback, `action_ids` returns up to 10 clips in one GLB instead
+(`meshy-api.md` [3]); the rig's free walk/run still arrive as separate files.
+Two merge options:
 
 - **No Blender needed (preferred for Meshy outputs, VERIFIED on a live run
   2026-06-11):** `python3 scripts/glb_merge_anims.py rigged.glb walk.glb:Walk
   run.glb:Run idle.glb:Idle attack.glb:Attack out.glb` — stdlib-only, remaps
   clips by node NAME, applies the root-scale fix and OPAQUE patch
   automatically.
-- Blender path (when the scene needs other edits anyway):
+  A multi-clip input (an `action_ids` GLB) keeps its clip names:
+  `python3 scripts/glb_merge_anims.py rigged.glb walk.glb:Walk run.glb:Run clips.glb out.glb`.
+- Blender path (when the scene needs other edits anyway; single-clip inputs
+  only, it keeps one action per file):
   `blender -b -P scripts/merge_anim_glbs.py -- rigged.glb idle.glb:Idle attack.glb:Attack out.glb`.
 
 **Scale pitfall (verified bug):** Meshy *library* animations (via
@@ -229,5 +235,5 @@ white canvas screenshot.
 - `scripts/proc_weights.py` — distance-based skin weights (ARMATURE_AUTO is broken headless).
 - `scripts/proc_anim_dragon.py` — sine-based idle/fly clips baked to keyframes.
 - `meshy-api.md` — verified Meshy API pipeline: image→3D→rig→animations, endpoints, action_id catalog, stuck-refine recovery, costs.
-- `meshy-input-rules.md` — MANDATORY pre-submit rules: input-image validation (character sheets MUST be cropped to one figure or split into multi-image views; pose_mode), low-poly paths (`model_type: lowpoly` vs `target_polycount`), polycount budgets per asset class, payload templates. Read BEFORE building any Meshy request.
+- `meshy-input-rules.md` — MANDATORY pre-submit rules: input-image validation (character sheets MUST be cropped to one figure or split into multi-image views; pose_mode), polygon-budget paths (Smart Topology `meshy-t2.5` vs remesh `target_polycount`; deprecated `model_type: lowpoly` returns 400 from 2026-11-30), polycount budgets per asset class, payload templates. Read BEFORE building any Meshy request.
 - `procedural-animation.md` — non-humanoid branch: skeleton/weights/clip recipes per creature type, vision-QC loop, phase-sampling pitfall.
