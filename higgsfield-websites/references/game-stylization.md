@@ -64,8 +64,9 @@ Rules:
 ### STYLE TOKEN (compressed form)
 
 Some downstream fields are length-limited (e.g. Meshy `texture_prompt`
-≤600 chars — the full formula usually fits; some UI fields may not). When a
-consumer cannot take the full formula, it takes the **STYLE TOKEN**: blocks
+≤800 chars, longer returns `400` — the full formula usually fits; some UI
+fields may not). When a consumer cannot take the full formula, it takes the
+**STYLE TOKEN**: blocks
 1 + 3-condensed + one accent from block 4, ≤120 chars, derived ONCE from the
 approved formula and then also frozen byte-identical. Example:
 `flat vector cartoon, deep violet dungeon palette, glowing teal accents, warm amber torchlight, thick dark-plum outlines`.
@@ -190,12 +191,12 @@ corners, so corner flood-fill alone misses it).
 
 | Aspect | 2D | 3D (image-to-3D, e.g. Meshy) |
 |---|---|---|
-| Style carrier | formula in every asset prompt | formula in the CONCEPT IMAGE prompt; formula/token in `texture_prompt` |
+| Style carrier | formula in every asset prompt | formula in the CONCEPT IMAGE prompt; formula/token in `texture_prompt` (Meshy texture model `meshy-n1` takes no `texture_prompt` and paints from the concept image, so the image alone carries the style) |
 | Background for subject shots | solid key color (magenta/green) for keying | **pure flat white, no shadow, no ground** — shadows and clutter are the top cause of bad mesh reconstruction; keying is irrelevant, the mesh replaces it |
 | Perspective word | `side-view` / `top-down` / `flat frontal` everywhere | replaced by `three-quarter isometric view` on concept images (shows top + two sides — maximum shape information for reconstruction); in-game camera is free |
 | Style drift fix | regenerate the asset (budget: 2) | **retexture the same mesh** (`retexture` API with the style string) — never regenerate a well-shaped mesh for color reasons |
 | Extra style surface | — | engine lighting: light color, fog and ambient intensity must be derived from formula blocks 3-4, or a perfectly styled texture set still reads off-style in-game |
-| Geometry style | — | add a geometry clause to 3D concept prompts when the formula implies it (`low-poly faceted`, `smooth rounded blobby`); polycount tiers: ~8000 hero/interactive props, ~3000 + lowpoly for small decoration |
+| Geometry style | — | add a geometry clause to 3D concept prompts when the formula implies it (`low-poly faceted`, `smooth rounded blobby`); polycount tiers: ~8000 hero/interactive props, ~3000 for small decoration (Smart Topology `target_polycount`; `model_type: lowpoly` is deprecated) |
 
 **Full style change in 3D** (user asks to restyle the whole game): new
 formula → **re-approval gate** (never skip it) → regenerate textures →
