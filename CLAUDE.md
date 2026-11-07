@@ -2,7 +2,7 @@
 
 ## What this is
 
-Eight skills that drive the [`higgsfield` CLI](https://github.com/higgsfield-ai/cli) — image/video generation, narrated explainers, browser games, Marketing Studio, Virality Predictor scoring, Soul Character training, branded product photography, marketplace cards, and full-stack websites.
+Skills that drive the [`higgsfield` CLI](https://github.com/higgsfield-ai/cli) — image/video generation, narrated explainers, browser games, Marketing Studio, Virality Predictor scoring, Soul Character training, branded product photography, marketplace cards, and full-stack websites.
 
 ```
 higgsfield-soul-id     →  trains identity, returns reference_id
@@ -10,7 +10,7 @@ higgsfield-generate →  consumes reference_id, plus 30+ models, plus Marketing 
 higgsfield-product-photoshoot  →  self-contained, brand visuals via gpt_image_2
 higgsfield-marketplace-cards  →  marketplace main, secondary, and A+ style images
 higgsfield-websites  →  build/edit/deploy full-stack sites via `higgsfield website …`
-higgsfield-video-explainer  →  audio + video blocks assembled by `explainer_video`
+higgsfield-faceless-video  →  narrated video assembled from audio and video blocks
 ```
 
 ## Repository structure
@@ -58,9 +58,13 @@ skills/
 ├── higgsfield-websites/
 │   ├── SKILL.md
 │   └── references/                    # stack, wow-maker, auth, fnf-sdk, seo-*, security-*
+├── higgsfield-faceless-video/
+│   ├── SKILL.md
+│   ├── scripts/
+│   └── references/
 ├── higgsfield-video-explainer/
 │   ├── SKILL.md
-│   └── references/prompts.md
+│   └── SKILL.md
 ├── evals/                             # dev-only test infrastructure
 │   ├── README.md
 │   └── scenarios.md
@@ -147,7 +151,7 @@ Skills communicate through return values, not implicit state.
 - `higgsfield-generate` consumes it via `--soul-id` for Soul-aware models (`text2image_soul_v2`, `soul_cinematic`) or as `custom` avatar in Marketing Studio.
 - `higgsfield-product-photoshoot` does not chain — it owns its own pipeline.
 - `higgsfield-marketplace-cards` does not chain by default; it can reuse an existing main image job through `--main-job`.
-- `higgsfield-video-explainer` owns complete narrated explainers: live style resolve, Seed Audio blocks, Gemini Omni clips, then `explainer_video` assembly. Generic short video generation stays in `higgsfield-generate`.
+- `higgsfield-faceless-video` owns narrated videos: live style selection, narration, scene generation, and local assembly. Generic short video generation stays in `higgsfield-generate`.
 - `higgsfield-websites` owns browser games (`--type game`): game-wide design, assets, build, verification, and deployment through `higgsfield website deploy`.
 
 When the user asks for both identity AND output in one request ("train Soul on these photos AND make a video of me"), run `higgsfield-soul-id` first, then `higgsfield-generate`. Don't batch-ask questions across skills — finish Soul, then start the video conversation.

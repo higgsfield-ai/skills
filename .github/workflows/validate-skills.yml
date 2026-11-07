@@ -184,3 +184,12 @@ jobs:
             fi
           done
           [ "$fail" -eq 0 ] && echo "✓ no parent-dir references; skills are self-contained"
+
+      - name: Verify video helpers
+        run: |
+          set -euo pipefail
+          bash -n higgsfield-faceless-video/scripts/*.sh
+          python3 higgsfield-faceless-video/scripts/tests/test_captions.py
+          python3 higgsfield-faceless-video/scripts/tests/test_channel.py
+          python3 higgsfield-faceless-video/scripts/tests/test_song.py
+          python3 higgsfield-faceless-video/scripts/tests/test_timeline.py

@@ -12,7 +12,7 @@ description: |
   (use higgsfield-product-photoshoot), video generation or UGC ads (use
   higgsfield-generate), or Soul Character training (use higgsfield-soul-id).
 metadata:
-  version: "0.13.0"
+  version: "0.14.0"
   argument-hint: "[--scope main|product-images|aplus|full-set] [prompt]"
 allowed-tools: Bash
 ---

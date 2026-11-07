@@ -29,6 +29,7 @@ echo
 
 # ─── Parse flags ────────────────────────────────────────────
 HOST_OVERRIDE=""
+TARGET_OVERRIDE=""
 SKIP_CLI=0
 SKIP_AUTH=0
 while [ $# -gt 0 ]; do
@@ -43,6 +44,12 @@ while [ $# -gt 0 ]; do
       HOST_OVERRIDE="${1#--host=}"
       shift
       ;;
+    --target-dir)
+      shift
+      [ $# -eq 0 ] && { err "--target-dir requires a directory"; exit 1; }
+      TARGET_OVERRIDE="$1"
+      shift
+      ;;
     --skip-cli)    SKIP_CLI=1; shift ;;
     --skip-auth)   SKIP_AUTH=1; shift ;;
     --help|-h)
@@ -52,6 +59,7 @@ Usage: ./setup [options]
 Options:
   --host <agent>   Force install path for: claude, cursor, codex
                    (auto-detected if omitted)
+  --target-dir <dir>  Install links into this directory
   --skip-cli       Skip 'higgsfield' CLI install (assumes it's already on PATH)
   --skip-auth      Skip 'higgsfield auth login' check
   --help           Show this message
@@ -83,7 +91,7 @@ HOST="$(detect_host)"
 case "$HOST" in
   claude)  TARGET_DIR="$HOME/.claude/skills" ;;
   cursor)  TARGET_DIR="$HOME/.cursor/plugins" ;;
-  codex)   TARGET_DIR="$HOME/.codex/plugins" ;;
+  codex)   TARGET_DIR="$HOME/.agents/skills" ;;
   unknown)
     warn "Could not auto-detect agent host."
     info "Re-run with --host <claude|cursor|codex>, or clone the repo manually into your agent's skills directory."
@@ -95,7 +103,9 @@ case "$HOST" in
     ;;
 esac
 
-SKILLS=(higgsfield-generate higgsfield-soul-id higgsfield-product-photoshoot higgsfield-brandkit higgsfield-marketplace-cards higgsfield-websites higgsfield-video-explainer higgsfield-youtube-thumbnail)
+[ -n "$TARGET_OVERRIDE" ] && TARGET_DIR="$TARGET_OVERRIDE"
+
+SKILLS=(higgsfield-generate higgsfield-soul-id higgsfield-product-photoshoot higgsfield-brandkit higgsfield-marketplace-cards higgsfield-websites higgsfield-faceless-video higgsfield-video-explainer higgsfield-youtube-thumbnail)
 
 ok "Detected host: $HOST"
 ok "Target install path: $TARGET_DIR/<skill-name>"

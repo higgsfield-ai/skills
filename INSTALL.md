@@ -1,6 +1,6 @@
 # Install Higgsfield Skills
 
-Eight skills ship in this repo:
+These skills ship in this repo:
 
 - **`higgsfield-generate`** — image and video generation, 30+ models, plus Marketing Studio (branded ads with avatars, products, hooks, and settings) and Virality Predictor scoring
 - **`higgsfield-soul-id`** — train a face-faithful Soul Character
@@ -8,7 +8,8 @@ Eight skills ship in this repo:
 - **`higgsfield-brandkit`** — complete visual identities, editable logo systems, brand applications, and PPTX/PDF brandbooks
 - **`higgsfield-marketplace-cards`** — marketplace main, secondary, and A+ style product cards with backend prompt enhancement
 - **`higgsfield-websites`** — build, edit, and deploy full-stack websites, apps, and browser games (React 19 + TanStack Start on Cloudflare) via `higgsfield website …`
-- **`higgsfield-video-explainer`** — complete narrated explainers with live style-preset selection
+- **`higgsfield-faceless-video`** — narrated faceless videos with live style-preset selection
+- **`higgsfield-video-explainer`** — compatibility entry for explainers
 - **`higgsfield-youtube-thumbnail`** — truthful YouTube thumbnails and vertical video covers with controlled variants
 
 They chain: `higgsfield-soul-id` returns a Soul ID consumable by `higgsfield-generate` (Soul models and identity-aware Marketing Studio jobs). `higgsfield-brandkit` coordinates Recraft, Seedream, GPT Image, and local deterministic tools into one approved visual system. `higgsfield-product-photoshoot` is the single entry point for professional brand product visuals; `higgsfield-marketplace-cards` is the marketplace product card pipeline. Both use backend prompt enhancement before submitting image jobs. `higgsfield-websites` chains with `higgsfield-generate` to embed bespoke hero images, video loops, and OG assets in a site.
@@ -85,3 +86,5 @@ The agent should invoke `higgsfield-generate`, run `higgsfield generate create z
 | `gh skill install` | `gh skill update higgsfield-ai/skills` |
 | Claude Code marketplace | `/plugin update higgsfield@higgsfield` |
 | Setup script | `cd skills && git pull && ./setup` |
+
+For a custom skills directory, run `./setup --host codex --target-dir <directory>`. The default Codex destination is `~/.agents/skills`.

@@ -14,7 +14,7 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 **Expected behavior:**
 
-- Picks `gpt_image_2_5` (default), or a faster option (`z_image`, `nano_banana_2_lite`) because the user said "quick".
+- Picks `gpt_image_2_6` (default), or a faster option (`z_image`, `nano_banana_2_lite`) because the user said "quick".
 - Does NOT pick a Soul model (no face mentioned).
 - Submits via `higgsfield generate create <model> --prompt "..." --wait` (one-shot create+poll, no separate `wait` step).
 - Stays silent until done (no "checking status..." spam).
@@ -171,7 +171,7 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 - Detects user_language = `ru`.
 - Replies in Russian for status, questions, summary.
 - Keeps technical flags English (`--model nano_banana_flash`, `--aspect_ratio 16:9`).
-- Picks `gpt_image_2_5` (default).
+- Picks `gpt_image_2_6` (default).
 
 **Score:**
 
@@ -254,18 +254,18 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 **Expected behavior:**
 
-- Routes to `higgsfield-video-explainer`, not generic video generation.
+- Routes to `higgsfield-faceless-video` (or the compatible explainer entry), not generic video generation.
 - Runs `higgsfield preset list video-explainer --json` and shows current preview links.
 - Waits for style selection, then resolves its UUID with `higgsfield preset resolve video-explainer`.
 - Lets the user choose one voice and creates six Russian `seed_audio` narration jobs first.
-- Creates six matching 10-second `gemini_omni` clips second, all with the resolved style key.
-- Builds ordered `blocks.json` pairs and finishes with one `explainer_video` generation job.
+- Creates six matching 10-second clips with a supported video model and the chosen style.
+- Assembles the ordered pairs with the bundled script and verifies the final MP4.
 
 **Score:**
 
 - Pass: live preset and voice selection, six matched audio/video blocks, final assembled MP4.
 - Partial: correct block pipeline but chooses a requested option without showing it or loses a block pairing.
-- Fail: embeds a preset list, fabricates an ID, uses `video_explainer`, or returns loose clips.
+- Fail: embeds a preset list, fabricates an ID, uses a retired server-side assembler, or returns loose clips.
 
 ---
 
@@ -314,6 +314,101 @@ These exist to be run by a human (or by another agent acting as the user) in a f
 
 ---
 
+## Scenario 15 — Native animated GIF
+
+**User request:**
+
+> generate a gif of a cute cat
+
+**Expected behavior:**
+
+- Uses `higgsfield-generate` with `gpt_image_2_6` and `--output_format gif` on the first submission.
+- Uses live GIF defaults unless the user specifies size, frame count or frame duration; preserves explicit values.
+- Does not submit PNG drafts, use a video model, or create a conversion pipeline.
+- Waits for the single job and returns the exact CLI result URL unchanged.
+
+**Score:**
+
+- Pass: one native GIF job, correct format flag, actual result URL.
+- Fail: PNG output, video/conversion route, extra unsolicited jobs, or a fabricated URL.
+
+---
+
+## Scenario 16 — Standalone SVG icon
+
+**User request:**
+
+> Generate an SVG icon of a cute cat.
+
+**Expected behavior:**
+
+- Uses `gpt_image_2_6` with `--output_format svg`, before the generic icon/cartoon model rules.
+- Sends no `--image` or `--image-references`; SVG takes no references.
+- Returns the actual SVG result URL, not a raster preview renamed to `.svg`.
+- Keeps complete brand identity work on the existing brandkit workflow (Scenario 14).
+
+**Score:**
+
+- Pass: one native SVG job, no references, exact SVG result URL.
+- Fail: wrong format, unsupported references, or an unsolicited brandkit workflow.
+
+---
+
+## Scenario 17 — Explicit GPT Image 2.6 Flare
+
+**User request:**
+
+> Generate an SVG coffee cup icon using GPT Image 2.6 Flare.
+
+**Expected behavior:**
+
+- Uses model `gpt_image_2_6_flare` with `--output_format svg` and no reference images.
+- Does not use `--variant flare` on `gpt_image_2_6` or `gpt_image_2_5`.
+- Returns the exact CLI result URL.
+
+**Score:**
+
+- Pass: separate Flare model ID and native SVG output.
+- Fail: changed model, legacy variant parameter, or raster output.
+
+---
+
+## Scenario 18 — Explicit MP4 remains video
+
+**User request:**
+
+> Generate a four-second MP4 video of a cute cat, not a GIF.
+
+**Expected behavior:**
+
+- Uses the video route with `seedance_2_5` and `--duration 4`.
+- Does not substitute a GIF image job because the subject could be animated.
+
+**Score:**
+
+- Pass: one video job with the requested duration.
+- Fail: GIF/image route or an unsolicited format change.
+
+---
+
+## Scenario 19 — GIF prompt only
+
+**User request:**
+
+> Write a prompt for a GIF of a cute cat. Do not generate anything.
+
+**Expected behavior:**
+
+- Returns prompt text only.
+- Does not submit image/video generation, upload media, or create a conversion pipeline.
+
+**Score:**
+
+- Pass: text only, no generation.
+- Fail: any submitted generation job.
+
+---
+
 ## Round template (copy when recording results)
 
 ```
@@ -330,6 +425,11 @@ Scenario 11: ...
 Scenario 12: ...
 Scenario 13: ...
 Scenario 14: ...
+Scenario 15: ...
+Scenario 16: ...
+Scenario 17: ...
+Scenario 18: ...
+Scenario 19: ...
 
 Aggregate: <P pass / Q partial / F fail>
 Time-to-result mean: <Ns>

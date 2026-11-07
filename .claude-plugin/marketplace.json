@@ -9,7 +9,7 @@
       "name": "higgsfield",
       "source": "./",
       "description": "Image/video generation, complete brand systems, narrated explainers, YouTube thumbnails, browser games, Marketing Studio, video engagement analysis, and Soul Character training via the Higgsfield CLI.",
-      "version": "0.13.0",
+      "version": "0.14.0",
       "skills": [
         "./higgsfield-generate",
         "./higgsfield-soul-id",
@@ -17,6 +17,7 @@
         "./higgsfield-brandkit",
         "./higgsfield-marketplace-cards",
         "./higgsfield-websites",
+        "./higgsfield-faceless-video",
         "./higgsfield-video-explainer",
         "./higgsfield-youtube-thumbnail"
       ]

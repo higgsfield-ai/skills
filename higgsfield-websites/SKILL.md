@@ -5,7 +5,7 @@ description: |
   Use when: "build me a website", "make a landing page", "create a web app", "build a SaaS dashboard / portfolio", "make me a game", "deploy this site", "publish". Also owns GAME ART: "make a spritesheet", "tileable texture", "animate a 3D character", game music/SFX — see the game-* references.
   NOT for: single image/video/audio generation (higgsfield-generate), product photos (higgsfield-product-photoshoot), marketplace cards (higgsfield-marketplace-cards).
 metadata:
-  version: "0.13.0"
+  version: "0.14.0"
   argument-hint: "[what to build or edit] [--type website|app|game]"
 allowed-tools: Bash
 ---

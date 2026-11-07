@@ -35,8 +35,9 @@ Each model declares a closed set of accepted roles or `*_references` params. Pas
 |---|---|---|
 | Most image models (`nano_banana_flash`, `flux_2`, `seedream_v4_5`, `gpt_image_2`, …) | `image` | 1+ references, often up to 8. |
 | `nano_banana_2_lite` | `image_references` | Up to 14 image references. Use repeated `--image-references` or short alias `--image`; `aspect_ratio=auto` requires at least one reference. |
-| `gemini_omni` | `image_references`, `video_references` | Fast reference-to-video. Use repeated `--image-references`/`--video-references` or aliases `--image`/`--video`. Max 1 video reference; max 7 image references, or max 5 when a video reference is included. |
+| `gemini_omni_flash_1_1` | `start_image`, `end_image`, `image_references`, `video_references` | Choose a mode first. `reference-to-video` uses `--image-references` / `--video-references`; `image-to-video` uses `--start-image` and optional `--end-image`; `edit` uses one `--video-references`. Do not mix frame slots with reference slots. Check the live schema for limits. |
 | `gpt_image_2_5` | `image_references` | Use repeated `--image-references` or the short alias `--image`. |
+| `gpt_image_2_6`, `gpt_image_2_6_flare` | `image_references` | Up to 16 references via repeated `--image-references` or `--image`, including GIF output. SVG output accepts no references. |
 | `seedance_2_5` | `start_image`, `end_image`, `image_references`, `video_references`, `audio_references` | Use `--mode omni_reference` for reference generation. `t2v` accepts no media. |
 | `seedance_2_0` | `image`, `start_image`, `end_image`, `video`, `audio` | Audio is via `medias` (role `audio`), NOT via `--generate-audio`. |
 | `brain_activity` | `video` | Virality Predictor analyzes one uploaded clip and returns a text score report plus an Open report link; no prompt required. Treat "analyze this video" / "score this ad" as this video-analysis flow even though the output is text. Raw `.glb` and `.bin` artifacts stay in JSON/debug output, not normal chat output. |
@@ -45,7 +46,6 @@ Each model declares a closed set of accepted roles or `*_references` params. Pas
 | `kling3_0_turbo` | `start_image` | Fast text-to-video or single start-frame animation. Max 1 reference; CLI also accepts `--image` and maps it to `start_image`. |
 | `kling2_6` | `start_image` | Single frame anchor. |
 | `veo3_1` | `start_image` | Max 1 reference. |
-| `veo3` | `image` | Single image-to-video. |
 | `marketing_studio_video` | `image`, `start_image`, `end_image` | Plus `avatars`, `product_ids`, `assets` as separate fields. |
 | `multi_image_to_3d` | `image` | 1–4 object/product reference images. Returns a 3D asset rather than an image/video. |
 | `seed_audio` | `audio_references` or `image_references` | Default text-to-audio model. Requires `--prompt`; optional references use repeated `--audio-references`/`--image-references` (short aliases: `--audio`/`--image`). Audio and image references are mutually exclusive. |
@@ -53,7 +53,7 @@ Each model declares a closed set of accepted roles or `*_references` params. Pas
 | `sonilo_music` | (none) | Text-to-music generation. Pass `--prompt` and `--duration`; do not pass media inputs. |
 | `z_image`, `recraft_v4_1`, `soul_cast`, `soul_location` | (none) | Prompt-only. Reject media inputs. |
 
-For simple image-to-video on a video model that only declares `image` (e.g. `veo3`), plain `--image` is auto-remapped to `start_image` by the CLI when unambiguous. When in doubt:
+For a single-start-frame model such as `grok_video_v15`, `--image` can be shorthand for `--start-image`. For models with several media slots, use explicit role flags. When in doubt:
 
 ```bash
 higgsfield model get <model_id>   # shows the accepted media roles for this model
@@ -69,7 +69,7 @@ higgsfield generate create nano_banana_flash --prompt "..." \
   --wait
 ```
 
-Single-reference video models (`grok_video_v15`, `veo3`, `veo3_1`, `kling3_0_turbo`, `kling2_6`) reject extra images — the CLI errors locally before submission with `Model accepts only one image reference`.
+Single-reference video models (`grok_video_v15`, `veo3_1`, `kling3_0_turbo`, `kling2_6`) reject extra images — the CLI errors locally before submission with `Model accepts only one image reference`.
 
 3D asset generation with `multi_image_to_3d` accepts 1–4 images. Repeat `--image` for front/side/back/detail views:
 

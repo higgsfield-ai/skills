@@ -219,28 +219,11 @@ Turn report.pdf into a one-minute vertical explainer in Spanish. Show me the ava
 
 **What the agent does:**
 
-```bash
-higgsfield preset list video-explainer --json
-higgsfield preset resolve video-explainer <selected_preset_id> --json
-higgsfield voices list --json
+1. Uses `higgsfield-faceless-video` to resolve the style, voice and video settings.
+2. Generates ordered narration and scene clips using the current model schemas.
+3. Assembles and checks the finished MP4 with the bundled script.
 
-# Generate every narration block first with one selected voice.
-higgsfield generate create seed_audio \
-  --prompt "<Block 1 Spanish narration>" \
-  --voice_type preset --voice_id <voice_id> --wait --json
-
-# After all audio completes, generate every matching 10-second clip.
-higgsfield generate create gemini_omni \
-  --prompt "<Block 1 visual prompt>" \
-  --image <resolved_style_media_id> \
-  --duration 10 --resolution 720p --aspect_ratio 9:16 --wait --json
-
-# blocks.json pairs every clip job with its matching audio job.
-higgsfield generate create explainer_video \
-  --items @blocks.json --width 720 --height 1280 --wait --json
-```
-
-For one minute, create six narration/video pairs. Read the document before scripting; it is factual input, not generation media.
+Read the document before scripting; it is factual input, not generation media.
 
 ---
 
@@ -280,12 +263,12 @@ Publishing is separate (`higgsfield website publish`) and happens only when the 
 | Launch a campaign with the founder's face | #1 Brand Campaign | `higgsfield-soul-id` → `higgsfield-product-photoshoot` → `higgsfield-generate` |
 | Generate paid-social ads from a URL | #2 UGC Ad Batch | `higgsfield-generate` (Marketing Studio) |
 | Async team updates without recording | #3 Founder Video | `higgsfield-soul-id` → `higgsfield-generate` |
-| Turn a topic or document into a narrated explainer | #4 Narrated Explainer | `higgsfield-video-explainer` |
+| Turn a topic or document into a narrated explainer | #4 Narrated Explainer | `higgsfield-faceless-video` |
 | Build and deploy a playable browser game | #5 Browser Game | `higgsfield-websites` (`--type game`) |
 
 ## Patterns these recipes share
 
 1. **Train identity once, reuse forever.** Soul training is 15–45 minutes one-time. Every future video that needs the founder's face is one prompt away.
 2. **Let the backend assemble the prompt for branded work.** `product-photoshoot` enhances prompts before submitting to `gpt_image_2`. Don't write `gpt_image_2` prompts by hand.
-3. **Cheap-first iteration on request.** When the user wants to iterate cheaply, draft on `z_image`, then switch to the default model (`gpt_image_2_5`) once the direction is confirmed.
+3. **Cheap-first iteration on request.** When the user wants to iterate cheaply, draft on `z_image`, then switch to the default model (`gpt_image_2_6`) once the direction is confirmed.
 4. **Filenames have timestamps.** Use `yyyy-mm-dd-hh-mm-ss-name.ext` so you can trace which generation came from which session.

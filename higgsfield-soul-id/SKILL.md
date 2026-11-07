@@ -12,7 +12,7 @@ description: |
   NOT for: one-shot face swaps (use higgsfield-generate with --image),
   named-character / non-photo avatars (use higgsfield-generate with prompt).
 metadata:
-  version: "0.13.0"
+  version: "0.14.0"
   argument-hint: "[name] [photo paths...]"
 allowed-tools: Bash
 ---
